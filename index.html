@@ -38,6 +38,17 @@
         <button class="btn" id="btnEntrar" style="background: #29292e;">Entrar na Sala</button>
     </div>
 
+    <div id="tela-lobby" class="hidden">
+        <h2 style="color: #8257e5;">Aguardando Jogadores...</h2>
+        <div style="background: #121214; padding: 15px; border-radius: 8px; border: 1px solid #323238; margin-bottom: 20px;">
+            <p style="margin: 5px 0; font-size: 14px; color: #a8a8b3;">Código da sua sala:</p>
+            <h1 id="lobby-codigo" style="margin: 5px 0; color: #feb72b; letter-spacing: 2px;">-</h1>
+        </div>
+        <div id="lobby-lista-jogadores" style="text-align: left; margin-bottom: 20px; font-size: 16px;"></div>
+        <button class="btn id-btn-start hidden" id="btnIniciarJogo" style="background: #04d361;">🚀 Iniciar Jogo (Play)</button>
+        <p id="lobby-msg-cliente" style="color: #7c7c8a; font-style: italic;"></p>
+    </div>
+
     <div id="tela-jogo" class="hidden">
         <h3 id="info-sala" style="color: #8257e5;">Sala: -</h3>
         
@@ -81,7 +92,6 @@
     let intervaloTimer = null;
     let jaEnviouMeme = false;
 
-    // LISTA DE IMAGENS DO SEU PACOTE (Renomeie suas fotos no GitHub para bater com esses nomes)
     const bancoImagensMemes = [
         "meme1.jpg", "meme2.jpg", "meme3.jpg", "meme4.jpg", "meme5.jpg",
         "meme6.jpg", "meme7.jpg", "meme8.jpg", "meme9.jpg", "meme10.jpg",
@@ -89,7 +99,9 @@
         "batman_bofetada.jpg", "olhar_desconfiado.jpg", "panico.jpg",
         "distraido.jpg", "bebe_vitoria.jpg", "careca_choro.jpg"
     ];
+    
     let indiceImagemAtual = 0;
+    let imagensDisponiveisRodada = [];
     
     let textosMeme = [
         { conteudo: "TEXTO SUPERIOR", x: 200, y: 40 },
@@ -98,21 +110,18 @@
     let textoArrastando = null;
 
     const telaInicial = document.getElementById('tela-inicial');
+    const telaLobby = document.getElementById('tela-lobby');
     const telaJogo = document.getElementById('tela-jogo');
     const telaVotacao = document.getElementById('tela-votacao');
     const telaRanking = document.getElementById('tela-ranking');
     const canvas = document.getElementById('memeCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Inicializa carregando a primeira imagem da lista
-    configurarNovaImagem(0);
-
     function configurarNovaImagem(indice) {
-        if(indice >= bancoImagensMemes.length) indice = 0;
+        if(indice >= bancoImagensMemes.length || indice < 0) indice = 0;
         indiceImagemAtual = indice;
         currentImage = new Image();
         
-        // CORREÇÃO CORS PARA GITHUB PAGES: Permite que imagens e canvas misturem dados sem travar o multiplayer
         currentImage.crossOrigin = "anonymous";
         currentImage.src = bancoImagensMemes[indiceImagemAtual];
         
@@ -123,13 +132,29 @@
             inicializarInputs(); 
         };
         currentImage.onerror = () => {
+            // Correção de falha de carregamento: Cria um canvas cinza temporário em vez de quebrar a tela
+            canvas.width = 400;
+            canvas.height = 300;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#29292e";
-            ctx.fillRect(0, 0, canvas.width || 400, canvas.height || 300);
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#fff";
             ctx.font = "16px sans-serif";
             ctx.textAlign = "center";
-            ctx.fillText("Imagem não encontrada: " + bancoImagensMemes[indiceImagemAtual], (canvas.width || 400)/2, (canvas.height || 300)/2);
+            ctx.fillText("Imagem offline: " + bancoImagensMemes[indiceImagemAtual], 200, 130);
+            ctx.font = "12px sans-serif";
+            ctx.fillStyle = "#a8a8b3";
+            ctx.fillText("Insira sua legenda normalmente!", 200, 160);
+            inicializarInputs();
         };
+    }
+
+    function prepararSacoDeImagens() {
+        imagensDisponiveisRodada = [...Array(bancoImagensMemes.length).keys()];
+        for (let i = imagensDisponiveisRodada.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [imagensDisponiveisRodada[i], imagensDisponiveisRodada[j]] = [imagensDisponiveisRodada[j], imagensDisponiveisRodada[i]];
+        }
     }
 
     function iniciarTemporizador() {
@@ -235,22 +260,21 @@
     document.getElementById('btnCriar').onclick = () => {
         meuNome = document.getElementById('inputNome').value.trim().replace(/['"]/g, '');
         if(!meuNome) return alert("Digite seu nome!");
-        document.getElementById('status-envio').innerText = "Criando sala...";
         codigoSala = "MIM-" + Math.random().toString(36).substring(2, 7).toUpperCase();
         modoJogo = "host";
         
         peer = new Peer(codigoSala);
         peer.on('open', () => {
-            jogadores = [{ id: peer.id, nome: meuNome, pontos: 0, enviou: false, votou: false, meme: "" }];
-            // SORTEIO ALEATÓRIO DA PRIMEIRA RODADA
-            let idAleatorio = Math.floor(Math.random() * bancoImagensMemes.length);
-            configurarNovaImagem(idAleatorio);
-            abrirTelaJogo();
-            iniciarTemporizador();
+            jogadores = [{ id: peer.id, nome: meuNome, pontos: 0, enviou: false, votou: false, meme: "", imgIndice: 0 }];
+            abrirTelaLobby();
         });
         peer.on('connection', (conn) => {
             conexoes.push(conn);
             conn.on('data', (data) => lidarComDadosHost(data, conn));
+            // Envia a lista atualizada assim que conectar
+            setTimeout(() => {
+                sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores });
+            }, 500);
         });
     };
 
@@ -266,15 +290,48 @@
             conexoes = [conn];
             conn.on('open', () => {
                 conn.send({ tipo: "entrar", nome: meuNome });
-                abrirTelaJogo();
-                iniciarTemporizador();
+                abrirTelaLobby();
             });
             conn.on('data', (data) => lidarComDadosCliente(data));
         });
     };
 
-    function abrirTelaJogo() {
+    function abrirTelaLobby() {
         telaInicial.classList.add('hidden');
+        telaLobby.classList.remove('hidden');
+        document.getElementById('lobby-codigo').innerText = codigoSala;
+        
+        if(modoJogo === "host") {
+            document.getElementById('btnIniciarJogo').classList.remove('hidden');
+            document.getElementById('lobby-msg-cliente').innerText = "";
+        } else {
+            document.getElementById('btnIniciarJogo').classList.add('hidden');
+            document.getElementById('lobby-msg-cliente').innerText = "Aguardando o Dono da Sala iniciar a partida...";
+        }
+        atualizarLobbyInterface();
+    }
+
+    function atualizarLobbyInterface() {
+        const listaDiv = document.getElementById('lobby-lista-jogadores');
+        listaDiv.innerHTML = "<strong style='color:#8257e5;'>Jogadores conectados:</strong><br>";
+        jogadores.forEach((j, i) => {
+            listaDiv.innerHTML += `<div style='padding: 5px 0;'>👤 ${j.nome} ${i === 0 ? "👑 (Host)" : ""}</div>`;
+        });
+    }
+
+    // AÇÃO DO BOTÃO PLAY (HOST)
+    document.getElementById('btnIniciarJogo').onclick = () => {
+        prepararSacoDeImagens();
+        jogadores.forEach(j => {
+            j.enviou = false; j.votou = false; j.meme = "";
+            if(imagensDisponiveisRodada.length === 0) prepararSacoDeImagens();
+            j.imgIndice = imagensDisponiveisRodada.pop();
+        });
+        sincronizarTodosOsClientes({ tipo: "começar_jogo", lista: jogadores });
+    };
+
+    function abrirTelaJogo() {
+        telaLobby.classList.add('hidden');
         telaVotacao.classList.add('hidden');
         telaRanking.classList.add('hidden');
         telaJogo.classList.remove('hidden');
@@ -286,9 +343,9 @@
     function lidarComDadosHost(data, conn) {
         if (data.tipo === "entrar") {
             if(!jogadores.find(p => p.id === conn.peer)) {
-                jogadores.push({ id: conn.peer, nome: data.nome, pontos: 0, enviou: false, votou: false, meme: "" });
+                jogadores.push({ id: conn.peer, nome: data.nome, pontos: 0, enviou: false, votou: false, meme: "", imgIndice: 0 });
             }
-            sincronizarTodosOsClientes({ tipo: "lista_jogadores", lista: jogadores, imgIndice: indiceImagemAtual });
+            sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores });
         }
         if (data.tipo === "submeter_meme") {
             let j = jogadores.find(p => p.id === conn.peer);
@@ -311,12 +368,18 @@
     }
 
     function lidarComDadosCliente(data) {
-        if (data.tipo === "lista_jogadores") { 
-            jogadores = data.lista; 
-            if(data.imgIndice !== undefined && data.imgIndice !== indiceImagemAtual) {
-                configurarNovaImagem(data.imgIndice);
+        if (data.tipo === "lista_lobby") {
+            jogadores = data.lista;
+            atualizarLobbyInterface();
+        }
+        if (data.tipo === "começar_jogo") {
+            jogadores = data.lista;
+            let meuDados = jogadores.find(p => p.id === peer.id);
+            if(meuDados && meuDados.imgIndice !== undefined) {
+                configurarNovaImagem(meuDados.imgIndice);
             }
-            atualizarListaInterface(); 
+            abrirTelaJogo();
+            iniciarTemporizador();
         }
         if (data.tipo === "ir_votacao") {
             clearInterval(intervaloTimer);
@@ -405,21 +468,20 @@
         });
     }
 
-    // LÓGICA DO BOTÃO PRÓXIMA RODADA (Sorteia uma nova imagem aleatória para todos)
     document.getElementById('btnVoltarJogo').onclick = () => {
         if(modoJogo === "host") {
-            jogadores.forEach(j => { j.enviou = false; j.votou = false; j.meme = ""; });
-            
-            // SORTEIO DA PRÓXIMA IMAGEM ALEATÓRIA
-            let novoIndiceAleatorio = Math.floor(Math.random() * bancoImagensMemes.length);
-            sincronizarTodosOsClientes({ tipo: "lista_jogadores", lista: jogadores, imgIndice: novoIndiceAleatorio });
+            prepararSacoDeImagens();
+            jogadores.forEach(j => { 
+                j.enviou = false; j.votou = false; j.meme = ""; 
+                if(imagensDisponiveisRodada.length === 0) prepararSacoDeImagens();
+                j.imgIndice = imagensDisponiveisRodada.pop();
+            });
+            sincronizarTodosOsClientes({ tipo: "começar_jogo", lista: jogadores });
         }
-        textosMeme = [{ conteudo: "TEXTO SUPERIOR", x: 200, y: 40 }, { conteudo: "TEXTO INFERIOR", x: 200, y: 260 }];
-        abrirTelaJogo();
-        iniciarTemporizador();
     };
 
     function drawMeme() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         canvas.width = currentImage.width || 400; 
         canvas.height = currentImage.height || 300;
         ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
