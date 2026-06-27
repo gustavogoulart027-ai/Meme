@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Make It Meme - Versão GitHub Local</title>
+    <title>Make It Meme - Versão Final Ultra Estável</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121214; color: #fff; text-align: center; padding: 15px; margin: 0; -webkit-user-select: none; user-select: none; }
         .container { max-width: 500px; margin: 0 auto; background: #202024; padding: 20px; border-radius: 12px; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .hidden { display: none !important; }
         .btn { background: #8257e5; color: white; border: none; padding: 14px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; margin: 10px 0; width: 100%; font-size: 16px; display: block; box-sizing: border-box; transition: 0.2s; }
         .btn:active { transform: scale(0.98); }
+        .btn:disabled { background: #323238 !important; color: #7c7c8a !important; cursor: not-allowed; transform: none !important; }
         .btn-vote { background: #04d361; margin-top: 10px; }
         .btn-sub { background: #4f46e5; padding: 8px; font-size: 14px; margin: 5px 0; }
         .btn-download { background: #2ea44f; margin-top: 5px; }
@@ -119,7 +120,7 @@
                     osc.type = 'triangle'; 
                     osc.frequency.setValueAtTime(frequencia, tempoAtual + (index * 0.12)); 
                     
-                    g.gain.setValueAtTime(0.2, tempoAtual + (index * 0.12));
+                    g.gain.setValueAtTime(0.18, tempoAtual + (index * 0.12));
                     g.gain.exponentialRampToValueAtTime(0.001, tempoAtual + 1.2);
                     
                     osc.connect(g);
@@ -146,17 +147,17 @@
             if (tipo === 'clique') {
                 osc.type = 'sine'; osc.frequency.setValueAtTime(450, tempoAtual);
                 osc.frequency.exponentialRampToValueAtTime(150, tempoAtual + 0.08);
-                gain.gain.setValueAtTime(0.6, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.08);
+                gain.gain.setValueAtTime(0.5, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.08);
                 osc.start(tempoAtual); osc.stop(tempoAtual + 0.08);
             } else if (tipo === 'voto') {
                 osc.type = 'triangle'; osc.frequency.setValueAtTime(587.33, tempoAtual);
                 osc.frequency.setValueAtTime(698.46, tempoAtual + 0.07); osc.frequency.setValueAtTime(880.00, tempoAtual + 0.14);
-                gain.gain.setValueAtTime(0.7, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.25);
+                gain.gain.setValueAtTime(0.6, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.25);
                 osc.start(tempoAtual); osc.stop(tempoAtual + 0.25);
             } else if (tipo === 'vitoria') {
                 osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, tempoAtual);
                 osc.frequency.setValueAtTime(659.25, tempoAtual + 0.1); osc.frequency.setValueAtTime(783.99, tempoAtual + 0.2);
-                osc.frequency.setValueAtTime(1046.50, tempoAtual + 0.3); gain.gain.setValueAtTime(0.6, tempoAtual);
+                osc.frequency.setValueAtTime(1046.50, tempoAtual + 0.3); gain.gain.setValueAtTime(0.5, tempoAtual);
                 gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.45);
                 osc.start(tempoAtual); osc.stop(tempoAtual + 0.45);
             }
@@ -194,8 +195,7 @@
         btn.addEventListener('click', () => { tocarSomNativo('clique'); });
     });
 
-    // LISTA CONFIGURADA PARA LER ARQUIVOS DO TEU PRÓPRIO REPOSITÓRIO GITHUB
-    // Se mudares os nomes dos ficheiros no GitHub, basta alterá-los aqui nesta lista!
+    // ARQUIVOS DO TEU PRÓPRIO REPOSITÓRIO GITHUB
     const memeImages = [
         "1782522638876.jpeg",
         "meme1.jpg",
@@ -210,14 +210,10 @@
         let urlSelecionada = memeImages[indice % memeImages.length];
         
         imagemMemeAtual = new Image();
-        // Não usamos mais "crossOrigin = anonymous" para arquivos locais do próprio repositório (evita bugs)
         imagemMemeAtual.src = urlSelecionada;
         
-        imagemMemeAtual.onload = () => { imagemCarregada = true; };
-        imagemMemeAtual.onerror = () => { 
-            // Fallback: Se o arquivo local falhar (erro de nome), ativa o canvas em branco em vez de quebrar o jogo
-            imagemCarregada = true; 
-        };
+        imagemMemeAtual.onload = () => { if(imagemMemeAtual.naturalWidth > 0) imagemCarregada = true; };
+        imagemMemeAtual.onerror = () => { imagemCarregada = true; };
 
         textosMeme = [
             { conteudo: "TEXTO SUPERIOR", x: canvas.width / 2, y: 40 },
@@ -236,6 +232,7 @@
     function iniciarTemporizador() {
         clearInterval(intervaloTimer);
         tempoRestante = 120; jaEnviouMeme = false;
+        document.getElementById('btnEnviar').disabled = false;
         document.getElementById('temporizador').style.color = "#fff";
         intervaloTimer = setInterval(() => {
             tempoRestante--;
@@ -381,8 +378,12 @@
 
     function lidarComDadosHost(data, conn) {
         if (data.tipo === "entrar") {
+            // CORREÇÃO CRÍTICA: Evita duplicar jogadores repetidos por falha ou oscilação de rede
             if(!jogadores.find(p => p.id === conn.peer)) {
                 jogadores.push({ id: conn.peer, nome: data.nome, pontos: 0, enviou: false, votou: false, meme: "", imgIndice: 0 });
+            } else {
+                let jExistente = jogadores.find(p => p.id === conn.peer);
+                if(jExistente) jExistente.nome = data.nome; 
             }
             sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores });
         }
@@ -397,7 +398,6 @@
         if (data.tipo === "voto") {
             let j = jogadores.find(p => p.id === data.idVotado); if(j) j.pontos += 10;
             let ele = jogadores.find(p => p.id === conn.peer); if(ele) ele.votou = true;
-            
             if (jogadores.every(p => p.votou)) {
                 sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
             }
@@ -429,6 +429,7 @@
 
     function enviarMemeManual() {
         if(jaEnviouMeme) return; jaEnviouMeme = true;
+        document.getElementById('btnEnviar').disabled = true; // Desativa duplo clique para não quebrar a contagem
         const imgFinal = canvas.toDataURL('image/jpeg', 0.4);
         document.getElementById('status-envio').innerText = "Meme enviado! Aguardando o grupo...";
         if (modoJogo === "host") {
@@ -454,5 +455,61 @@
             if(m.id === peer.id) { btnVoto.disabled = true; btnVoto.innerText = "Seu Meme"; btnVoto.style.background = "#323238"; }
             btnVoto.onclick = () => {
                 tocarSomNativo('voto');
+                btnVoto.disabled = true; // Proteção contra múltiplos cliques rápidos no mesmo voto
                 if(modoJogo === "host") {
-                    let j =
+                    let j = jogadores.find(p => p.id === m.id); if(j) j.pontos += 10;
+                    let ele = jogadores.find(p => p.id === peer.id); if(ele) ele.votou = true;
+                    if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
+                } else { conexoes[0].send({ tipo: "voto", idVotado: m.id }); }
+                galeria.innerHTML = "<h3>Voto enviado! Aguardando o resto do grupo...</h3>";
+            };
+            card.appendChild(img); card.appendChild(btnVoto); galeria.appendChild(card);
+        });
+    }
+
+    function montarTelaRanking(listaRanking) {
+        tocarSomNativo('vitoria');
+        telaVotacao.classList.add('hidden'); telaRanking.classList.remove('hidden');
+        const podio = document.getElementById('podio-scores'); podio.innerHTML = "";
+        let ordenada = [...listaRanking].sort((a, b) => b.pontos - a.pontos);
+        ordenada.forEach((j, idx) => {
+            const item = document.createElement('div'); item.className = "ranking-item";
+            item.innerHTML = `<span>#${idx+1} ${j.nome}</span> <span>${j.pontos} pts</span>`;
+            podio.appendChild(item);
+        });
+        
+        if(modoJogo === "host") {
+            document.getElementById('btnVoltarJogo').classList.remove('hidden');
+        } else {
+            document.getElementById('btnVoltarJogo').classList.add('hidden');
+        }
+    }
+
+    document.getElementById('btnVoltarJogo').onclick = () => {
+        tocarSomNativo('clique');
+        if(modoJogo === "host") {
+            iniciarNovaRodadaLógica();
+        }
+    };
+
+    function drawMeme() {
+        ctx.fillStyle = "#121214"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        if (imagemCarregada && imagemMemeAtual.complete && imagemMemeAtual.naturalWidth > 0) {
+            ctx.drawImage(imagemMemeAtual, 0, 0, canvas.width, canvas.height);
+        } else {
+            ctx.fillStyle = "#323238"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#fff"; ctx.font = "16px sans-serif"; ctx.textAlign = "center";
+            ctx.fillText("Carregando imagem...", canvas.width/2, canvas.height/2);
+        }
+        const fSize = Math.floor(canvas.width * 0.082);
+        ctx.font = `bold ${fSize}px Impact, Arial Black, sans-serif`; 
+        ctx.fillStyle = 'white'; ctx.strokeStyle = 'black'; ctx.lineWidth = fSize / 4; 
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        textosMeme.forEach(t => { 
+            ctx.strokeText(t.conteudo.toUpperCase(), t.x, t.y); 
+            ctx.fillText(t.conteudo.toUpperCase(), t.x, t.y); 
+        });
+    }
+</script>
+</body>
+</html>
