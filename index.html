@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Make It Meme - Minhas Imagens</title>
+    <title>Make It Meme - Imagens Corrigidas</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121214; color: #fff; text-align: center; padding: 15px; margin: 0; -webkit-user-select: none; user-select: none; }
         .container { max-width: 500px; margin: 0 auto; background: #202024; padding: 20px; border-radius: 12px; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -107,8 +107,7 @@
                 let g = audioCtx.createGain();
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(notasLobby[notaAtualIdx], audioCtx.currentTime);
-                // VOLUME DA MÚSICA AUMENTADO PARA 0.15 (10x MAIS ALTO)
-                g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                g.gain.setValueAtTime(0.6, audioCtx.currentTime);
                 g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.8);
                 osc.connect(g); g.connect(audioCtx.destination);
                 osc.start(); osc.stop(audioCtx.currentTime + 1.8);
@@ -129,17 +128,17 @@
             if (tipo === 'clique') {
                 osc.type = 'sine'; osc.frequency.setValueAtTime(450, tempoAtual);
                 osc.frequency.exponentialRampToValueAtTime(150, tempoAtual + 0.08);
-                gain.gain.setValueAtTime(0.3, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.08);
+                gain.gain.setValueAtTime(0.6, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.08);
                 osc.start(tempoAtual); osc.stop(tempoAtual + 0.08);
             } else if (tipo === 'voto') {
                 osc.type = 'triangle'; osc.frequency.setValueAtTime(587.33, tempoAtual);
                 osc.frequency.setValueAtTime(698.46, tempoAtual + 0.07); osc.frequency.setValueAtTime(880.00, tempoAtual + 0.14);
-                gain.gain.setValueAtTime(0.4, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.25);
+                gain.gain.setValueAtTime(0.7, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.25);
                 osc.start(tempoAtual); osc.stop(tempoAtual + 0.25);
             } else if (tipo === 'vitoria') {
                 osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, tempoAtual);
                 osc.frequency.setValueAtTime(659.25, tempoAtual + 0.1); osc.frequency.setValueAtTime(783.99, tempoAtual + 0.2);
-                osc.frequency.setValueAtTime(1046.50, tempoAtual + 0.3); gain.gain.setValueAtTime(0.3, tempoAtual);
+                osc.frequency.setValueAtTime(1046.50, tempoAtual + 0.3); gain.gain.setValueAtTime(0.6, tempoAtual);
                 gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.45);
                 osc.start(tempoAtual); osc.stop(tempoAtual + 0.45);
             }
@@ -177,40 +176,14 @@
         btn.addEventListener('click', () => { tocarSomNativo('clique'); });
     });
 
+    // BANCO DE IMAGENS ATUALIZADO COM LINKS 100% COMPATÍVEIS COM CORS (UNSPLASH E PLACEHOLDERS DE MEME)
     const memeImages = [
-        "https://images.weserv.nl/?url=i.postimg.cc/053vQZ2B/meme2.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/D0t3MfMm/meme3.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/fy6QrWrM/meme4.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/qq9H5B5V/meme5.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/D0t3MfMF/meme6.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/MHhJFZFw/meme7.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/rsv2PyP2/meme8.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/x8WV4j4r/meme9.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/RhjxDCbD/meme10.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/cCVGb155/meme11.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/2yPNKjXM/meme12.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/wMSYGxbr/meme13.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/x8WV4jFW/meme14.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/2yPNKjXs/meme15.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/NGVtMbfC/meme16.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/ZYgmRjKg/meme17.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/NGVtMbfp/meme18.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/v8jyBXH0/meme19.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/h4wnjMPN/meme20.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/pV7vTkXC/meme21.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/DfDhZ5y5/meme22.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/sf8zXKDW/meme23.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/QNPDtSxg/meme24.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/DfDhZ5yP/meme25.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/xj7QCgTR/meme26.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/vTpwN8N8/meme27.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/zv9YcDcX/meme28.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/T1Zv4243/meme29.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/VsTw64LM/meme30.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/6qDxm6mq/meme31.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/0jL1B5B8/meme32.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/SRwbvQvS/meme33.jpg",
-        "https://images.weserv.nl/?url=i.postimg.cc/rsv2PyPM/meme34.jpg"
+        "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=500&q=80",
+        "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=500&q=80",
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80",
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=500&q=80",
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=500&q=80",
+        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=500&q=80"
     ];
     
     function gerarFundoMemeVirtual(indice) {
@@ -223,11 +196,9 @@
         
         imagemMemeAtual.onload = () => {
             imagemCarregada = true;
-            drawMeme();
         };
         imagemMemeAtual.onerror = () => {
             imagemCarregada = true;
-            drawMeme();
         };
 
         textosMeme = [
@@ -235,9 +206,15 @@
             { conteudo: "TEXTO INFERIOR", x: canvas.width / 2, y: canvas.height - 40 }
         ];
         
-        drawMeme();
         inicializarInputs();
     }
+
+    // ATUALIZAÇÃO CONTÍNUA DO CANVAS PARA EVITAR TELAS PRETAS
+    function renderLoop() {
+        drawMeme();
+        requestAnimationFrame(renderLoop);
+    }
+    requestAnimationFrame(renderLoop);
 
     function iniciarTemporizador() {
         clearInterval(intervaloTimer);
@@ -259,10 +236,10 @@
         textosMeme.forEach((t, index) => {
             const div = document.createElement('div'); div.style.display = "flex"; div.style.gap = "5px";
             const input = document.createElement('input'); input.type = "text"; input.value = t.conteudo;
-            input.oninput = (e) => { t.conteudo = e.target.value; drawMeme(); };
+            input.oninput = (e) => { t.conteudo = e.target.value; };
             const btnApagar = document.createElement('button'); btnApagar.innerText = "X";
             btnApagar.style.background = "#e53e3e"; btnApagar.style.color = "white"; btnApagar.style.border = "none"; btnApagar.style.padding = "10px"; btnApagar.style.margin = "4px 0"; btnApagar.style.borderRadius = "6px";
-            btnApagar.onclick = () => { tocarSomNativo('clique'); textosMeme.splice(index, 1); inicializarInputs(); drawMeme(); };
+            btnApagar.onclick = () => { tocarSomNativo('clique'); textosMeme.splice(index, 1); inicializarInputs(); };
             div.appendChild(input); if(textosMeme.length > 1) div.appendChild(btnApagar); container.appendChild(div);
         });
     }
@@ -270,7 +247,7 @@
     document.getElementById('btnAdicionarTexto').onclick = () => {
         tocarSomNativo('clique');
         textosMeme.push({ conteudo: "NOVA LEGENDA", x: canvas.width / 2, y: canvas.height / 2 });
-        inicializarInputs(); drawMeme();
+        inicializarInputs();
     };
 
     function obterPosicao(e) {
@@ -291,7 +268,7 @@
         if(e.cancelable) e.preventDefault();
         const pos = obterPosicao(e);
         if (pos.x === 0 && pos.y === 0) return;
-        textoArrastando.x = pos.x; textoArrastando.y = pos.y; drawMeme();
+        textoArrastando.x = pos.x; textoArrastando.y = pos.y;
     }
 
     canvas.addEventListener('mousedown', iniciarArrasto);
@@ -403,7 +380,7 @@
         if (data.tipo === "voto") {
             let j = jogadores.find(p => p.id === data.idVotado); if(j) j.pontos += 10;
             let ele = jogadores.find(p => p.id === conn.peer); if(ele) ele.votou = true;
-            if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
+            if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jugadores });
         }
     }
 
@@ -497,22 +474,12 @@
 
     function drawMeme() {
         ctx.fillStyle = "#121214"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-        if (imagemCarregada) {
+        if (imagemCarregada && imagemMemeAtual.complete) {
             ctx.drawImage(imagemMemeAtual, 0, 0, canvas.width, canvas.height);
         } else {
             ctx.fillStyle = "#323238"; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#fff"; ctx.font = "16px sans-serif"; ctx.textAlign = "center";
-            ctx.fillText("Carregando imagem...", canvas.width/2, canvas.height/2);
+            ctx.fillText("Carregando imagem de fundo...", canvas.width/2, canvas.height/2);
         }
         const fSize = Math.floor(canvas.width * 0.082);
-        ctx.font = `bold ${fSize}px Impact, Arial Black, sans-serif`; 
-        ctx.fillStyle = 'white'; ctx.strokeStyle = 'black'; ctx.lineWidth = fSize / 4; 
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        textosMeme.forEach(t => { 
-            ctx.strokeText(t.conteudo.toUpperCase(), t.x, t.y); 
-            ctx.fillText(t.conteudo.toUpperCase(), t.x, t.y); 
-        });
-    }
-</script>
-</body>
-</html>
+        ctx.font = `bold ${fSize}px Impact, Arial Black
