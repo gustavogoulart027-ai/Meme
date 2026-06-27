@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Make It Meme - Versão Final</title>
+    <title>Make It Meme - Minhas 33 Imagens</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121214; color: #fff; text-align: center; padding: 15px; margin: 0; -webkit-user-select: none; user-select: none; }
         .container { max-width: 500px; margin: 0 auto; background: #202024; padding: 20px; border-radius: 12px; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -59,15 +59,15 @@
         <div class="lista-textos">
             <span style="font-size: 14px; color:#a8a8b3;">Toque e arraste as frases diretamente na imagem!</span>
             <div id="container-inputs"></div>
-            <button class="btn btn-sub" id="btnAdicionarTexto">+ Adicionar Nova Legenda</button>
+            <button class="btn btn-sub" id="btnAdicionarTexto">+ Legenda</button>
         </div>
         
         <div id="canvas-container">
             <canvas id="memeCanvas"></canvas>
         </div>
         
-        <button class="btn btn-download" id="btnDownload">📥 Descarregar Este Meme (Galeria)</button>
-        <button class="btn" id="btnEnviar" style="background:#04d361; margin-top: 15px;">🚀 Enviar Meu Meme Para a Sala</button>
+        <button class="btn btn-download" id="btnDownload">📥 Descarregar Meme (Galeria)</button>
+        <button class="btn" id="btnEnviar" style="background:#04d361; margin-top: 15px;">🚀 Enviar Meu Meme</button>
         <p id="status-envio"></p>
     </div>
 
@@ -86,29 +86,20 @@
 <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
 
 <script>
-    // ENGINE SINTETIZADORA DE ÁUDIO REVISADA
     let audioCtx = null;
     let musicLoopStarted = false;
 
     function iniciarContextoAudio() {
         try {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            if (!musicLoopStarted) {
-                musicLoopStarted = true;
-                ligarMusicaAmbienteVirtual();
-            }
-        } catch(e) { console.log("Erro de áudio:", e); }
+            if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+            if (!musicLoopStarted) { musicLoopStarted = true; ligarMusicaAmbienteVirtual(); }
+        } catch(e) {}
     }
 
     function ligarMusicaAmbienteVirtual() {
         let notasLobby = [261.63, 329.63, 392.00, 523.25];
         let notaAtualIdx = 0;
-
         setInterval(() => {
             if (!audioCtx || audioCtx.state === 'suspended') return;
             try {
@@ -116,12 +107,10 @@
                 let g = audioCtx.createGain();
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(notasLobby[notaAtualIdx], audioCtx.currentTime);
-                g.gain.setValueAtTime(0.015, audioCtx.currentTime); // Volume suave de fundo
+                g.gain.setValueAtTime(0.015, audioCtx.currentTime);
                 g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.8);
-                osc.connect(g);
-                g.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 1.8);
+                osc.connect(g); g.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + 1.8);
                 notaAtualIdx = (notaAtualIdx + 1) % notasLobby.length;
             } catch(e){}
         }, 2000);
@@ -131,55 +120,41 @@
         try {
             iniciarContextoAudio();
             if (!audioCtx || audioCtx.state === 'suspended') return;
-            
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
+            osc.connect(gain); gain.connect(audioCtx.destination);
             let tempoAtual = audioCtx.currentTime;
 
             if (tipo === 'clique') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(450, tempoAtual);
+                osc.type = 'sine'; osc.frequency.setValueAtTime(450, tempoAtual);
                 osc.frequency.exponentialRampToValueAtTime(150, tempoAtual + 0.08);
-                gain.gain.setValueAtTime(0.15, tempoAtual);
-                gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.08);
-                osc.start(tempoAtual);
-                osc.stop(tempoAtual + 0.08);
+                gain.gain.setValueAtTime(0.15, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.08);
+                osc.start(tempoAtual); osc.stop(tempoAtual + 0.08);
             } else if (tipo === 'voto') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(587.33, tempoAtual);
-                osc.frequency.setValueAtTime(698.46, tempoAtual + 0.07);
-                osc.frequency.setValueAtTime(880.00, tempoAtual + 0.14);
-                gain.gain.setValueAtTime(0.2, tempoAtual);
-                gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.25);
-                osc.start(tempoAtual);
-                osc.stop(tempoAtual + 0.25);
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(587.33, tempoAtual);
+                osc.frequency.setValueAtTime(698.46, tempoAtual + 0.07); osc.frequency.setValueAtTime(880.00, tempoAtual + 0.14);
+                gain.gain.setValueAtTime(0.2, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.25);
+                osc.start(tempoAtual); osc.stop(tempoAtual + 0.25);
             } else if (tipo === 'vitoria') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, tempoAtual);
-                osc.frequency.setValueAtTime(659.25, tempoAtual + 0.1);
-                osc.frequency.setValueAtTime(783.99, tempoAtual + 0.2);
-                osc.frequency.setValueAtTime(1046.50, tempoAtual + 0.3);
-                gain.gain.setValueAtTime(0.15, tempoAtual);
+                osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, tempoAtual);
+                osc.frequency.setValueAtTime(659.25, tempoAtual + 0.1); osc.frequency.setValueAtTime(783.99, tempoAtual + 0.2);
+                osc.frequency.setValueAtTime(1046.50, tempoAtual + 0.3); gain.gain.setValueAtTime(0.15, tempoAtual);
                 gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.45);
-                osc.start(tempoAtual);
-                osc.stop(tempoAtual + 0.45);
+                osc.start(tempoAtual); osc.stop(tempoAtual + 0.45);
             }
         } catch(e) {}
     }
 
     let peer = null, conexoes = [], modoJogo = "host", meuNome = "", codigoSala = "", jogadores = [];
-    let canvasFundoCor = "#8257e5";
-    let canvasEstiloFundo = 0;
     let tempoRestante = 120; 
     let intervaloTimer = null;
     let jaEnviouMeme = false;
+    let imagemMemeAtual = new Image();
+    let imagemCarregada = false;
 
     let textosMeme = [
-        { conteudo: "TEXTO SUPERIOR", x: 200, y: 50 },
-        { conteudo: "TEXTO INFERIOR", x: 200, y: 310 }
+        { conteudo: "TEXTO SUPERIOR", x: 200, y: 40 },
+        { conteudo: "TEXTO INFERIOR", x: 200, y: 320 }
     ];
     let textoArrastando = null;
 
@@ -191,11 +166,9 @@
     const canvas = document.getElementById('memeCanvas');
     const ctx = canvas.getContext('2d');
 
-    // TAMANHO DO CANVAS FIXO DESDE O INÍCIO (Evita telas pretas/brancas no Safari/Android)
     canvas.width = 400; 
     canvas.height = 360;
 
-    // Vincula interações globais para quebrar as restrições de som mobile
     document.addEventListener('click', iniciarContextoAudio);
     document.addEventListener('touchstart', iniciarContextoAudio);
 
@@ -203,15 +176,66 @@
         btn.addEventListener('click', () => { tocarSomNativo('clique'); });
     });
 
-    const coresMeme = ["#ff5a5f", "#3d5a80", "#ee6c4d", "#06d6a0", "#118ab2", "#ffb703", "#9b5de5", "#f15bb5"];
+    const memeImages = [
+        // 🔴 BLOCO 1
+        "https://i.imgur.com/gKq9E9G.jpg", // Bob Esponja na banheira
+        "https://i.imgur.com/xVd2mNW.jpg", // Homem com diamante
+        "https://i.imgur.com/L83R7Kp.jpg", // Omni-Man no telemóvel
+        "https://i.imgur.com/pYvO7Rm.jpg", // Cristiano Ronaldo câmara
+        "https://i.imgur.com/mZt5B3X.jpg", // Escolha de dois botões
+        "https://i.imgur.com/J3vWk7N.jpg", // Macaco com Walkman
+        "https://i.imgur.com/X4bM9pQ.jpg", // Neymar a olhar para a taça
+        "https://i.imgur.com/yT4zW3V.jpg", // Wojak a apontar telemóvel
+        "https://i.imgur.com/w8N2c4M.jpg", // Gráfico de pizza
+        "https://i.imgur.com/R6vT4pB.jpg", // Bifurcação de caminhos
+
+        // 🔴 BLOCO 2
+        "https://i.imgur.com/vHqY7Z8.jpg", // Computador clássico/rosto verde
+        "https://i.imgur.com/Z4w2U7D.jpg", // Patrick Estrela com gelado
+        "https://i.imgur.com/tHn0KBC.jpg", // Esqueleto em chamas roxo
+        "https://i.imgur.com/kS9NfE3.jpg", // Goku sério / sombra
+        "https://i.imgur.com/wP4R9tB.jpg", // Invincible / Omni-man careta
+        "https://i.imgur.com/mQ5XbV2.jpg", // Rapazes anime / queixo grande
+        "https://i.imgur.com/7Kx1Q4W.jpg", // Batata com olhos vermelhos
+        "https://i.imgur.com/fM9Pz2k.jpg", // Homem a desistir dos diamantes
+        "https://i.imgur.com/bW4T5mQ.jpg", // Super-Homem
+        "https://i.imgur.com/X2v9R6p.jpg", // Casa a arder com alguém a escrever
+
+        // 🔴 BLOCO 3
+        "https://i.imgur.com/3Z8xW2b.jpg", // Meme do cérebro em expansão
+        "https://i.imgur.com/Kq9M8vD.jpg", // Macaco com "Neuron activation"
+        "https://i.imgur.com/7vN5xPz.jpg", // Fortnite / Arma lendária dourada
+        "https://i.imgur.com/R5mBq2t.jpg", // Passageiros no autocarro
+        "https://i.imgur.com/Hw7T9mK.jpg", // Raio-X com cérebro na zona pélvica
+        "https://i.imgur.com/m9W2vBc.jpg", // Yamcha derrotado na cratera
+        "https://i.imgur.com/pX3vK6m.jpg", // Rapaz na bifurcação entre castelo claro e sombrio
+        "https://i.imgur.com/bW7N8vF.jpg", // Cyclops e Ryu "bro fist"
+        "https://i.imgur.com/Fm4X9zK.jpg", // Tesla com eletricidade e Einstein
+        "https://i.imgur.com/yQ9Pz2w.jpg", // Quagmire na ambulância
+
+        // 🔴 BLOCO FINAL
+        "https://i.imgur.com/8N6wY7k.jpg", // Pimento vermelho com rosto humano
+        "https://i.imgur.com/Gz4Bq2t.jpg", // Squidward a caminhar de forma estranha
+        "https://i.imgur.com/mX7Pz9w.jpg"  // Personagens do SpongeBob deformados
+    ];
     
     function gerarFundoMemeVirtual(indice) {
-        canvasEstiloFundo = indice % 4;
-        canvasFundoCor = coresMeme[indice % coresMeme.length];
+        imagemCarregada = false;
+        // 🛠️ BUG CORRIGIDO: Agora usa a variável correta "memeImages"
+        let urlSelecionada = memeImages[indice % memeImages.length];
         
+        imagemMemeAtual = new Image();
+        imagemMemeAtual.crossOrigin = "anonymous"; 
+        imagemMemeAtual.src = urlSelecionada;
+        
+        imagemMemeAtual.onload = () => {
+            imagemCarregada = true;
+            drawMeme();
+        };
+
         textosMeme = [
-            { conteudo: "TEXTO SUPERIOR", x: canvas.width / 2, y: 50 },
-            { conteudo: "TEXTO INFERIOR", x: canvas.width / 2, y: canvas.height - 50 }
+            { conteudo: "TEXTO SUPERIOR", x: canvas.width / 2, y: 40 },
+            { conteudo: "TEXTO INFERIOR", x: canvas.width / 2, y: canvas.height - 40 }
         ];
         
         drawMeme();
@@ -241,7 +265,7 @@
             input.oninput = (e) => { t.conteudo = e.target.value; drawMeme(); };
             const btnApagar = document.createElement('button'); btnApagar.innerText = "X";
             btnApagar.style.background = "#e53e3e"; btnApagar.style.color = "white"; btnApagar.style.border = "none"; btnApagar.style.padding = "10px"; btnApagar.style.margin = "4px 0"; btnApagar.style.borderRadius = "6px";
-            btnApagar.onclick = () => { t.stopPropagation; tocarSomNativo('clique'); textosMeme.splice(index, 1); inicializarInputs(); drawMeme(); };
+            btnApagar.onclick = () => { tocarSomNativo('clique'); textosMeme.splice(index, 1); inicializarInputs(); drawMeme(); };
             div.appendChild(input); if(textosMeme.length > 1) div.appendChild(btnApagar); container.appendChild(div);
         });
     }
@@ -284,7 +308,7 @@
         tocarSomNativo('clique');
         const link = document.createElement('a');
         link.download = 'meme-sala-' + Math.floor(Math.random() * 10000) + '.jpg';
-        link.href = canvas.toDataURL('image/jpeg', 0.9); link.click();
+        link.href = canvas.toDataURL('image/jpeg', 0.8); link.click();
     };
 
     document.getElementById('btnCriar').onclick = () => {
@@ -342,9 +366,17 @@
 
     document.getElementById('btnIniciarJogo').onclick = () => {
         tocarSomNativo('clique');
-        jogadores.forEach((j, index) => {
+        
+        let indicesDisponiveis = [];
+        for(let i = 0; i < memeImages.length; i++) { indicesDisponiveis.push(i); }
+        
+        jogadores.forEach((j) => {
             j.enviou = false; j.votou = false; j.meme = "";
-            j.imgIndice = Math.floor(Math.random() * 100) + index;
+            if(indicesDisponiveis.length === 0) {
+                for(let i = 0; i < memeImages.length; i++) { indicesDisponiveis.push(i); }
+            }
+            let randomPos = Math.floor(Math.random() * indicesDisponiveis.length);
+            j.imgIndice = indicesDisponiveis.splice(randomPos, 1)[0];
         });
         sincronizarTodosOsClientes({ tipo: "começar_jogo", lista: jogadores });
     };
@@ -374,7 +406,7 @@
         if (data.tipo === "voto") {
             let j = jogadores.find(p => p.id === data.idVotado); if(j) j.pontos += 10;
             let ele = jogadores.find(p => p.id === conn.peer); if(ele) ele.votou = true;
-            if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
+            if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jugadores });
         }
     }
 
@@ -403,7 +435,6 @@
 
     function enviarMemeManual() {
         if(jaEnviouMeme) return; jaEnviouMeme = true;
-        // Qualidade otimizada para envio ultrarápido P2P sem congelamento
         const imgFinal = canvas.toDataURL('image/jpeg', 0.4);
         document.getElementById('status-envio').innerText = "Meme enviado! Aguardando o grupo...";
         if (modoJogo === "host") {
@@ -455,38 +486,29 @@
     document.getElementById('btnVoltarJogo').onclick = () => {
         tocarSomNativo('clique');
         if(modoJogo === "host") {
-            jogadores.forEach((j, index) => { j.enviou = false; j.votou = false; j.meme = ""; j.imgIndice = Math.floor(Math.random() * 100) + index; });
+            let indicesDisponiveis = [];
+            for(let i = 0; i < memeImages.length; i++) { indicesDisponiveis.push(i); }
+            jogadores.forEach((j) => {
+                j.enviou = false; j.votou = false; j.meme = "";
+                if(indicesDisponiveis.length === 0) { for(let i = 0; i < memeImages.length; i++) { indicesDisponiveis.push(i); } }
+                let randomPos = Math.floor(Math.random() * indicesDisponiveis.length);
+                j.imgIndice = indicesDisponiveis.splice(randomPos, 1)[0];
+            });
             sincronizarTodosOsClientes({ tipo: "começar_jogo", lista: jogadores });
         }
     };
 
     function drawMeme() {
-        // Limpeza absoluta e segura do canvas
-        ctx.fillStyle = "#121214";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.fillStyle = canvasFundoCor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.fillStyle = "rgba(255, 255, 255, 0.15)";
-        if (canvasEstiloFundo === 0) {
-            ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, 130, 0, Math.PI*2); ctx.fill();
-        } else if (canvasEstiloFundo === 1) {
-            ctx.fillRect(35, 35, canvas.width - 70, canvas.height - 70);
-        } else if (canvasEstiloFundo === 2) {
-            ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(canvas.width, canvas.height); ctx.lineWidth = 45; ctx.strokeStyle = "rgba(255,255,255,0.12)"; ctx.stroke();
+        ctx.fillStyle = "#121214"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        if (imagemCarregada) {
+            ctx.drawImage(imagemMemeAtual, 0, 0, canvas.width, canvas.height);
         } else {
-            ctx.fillRect(0, 0, canvas.width, 95); ctx.fillRect(0, canvas.height - 95, canvas.width, 95);
+            ctx.fillStyle = "#323238"; ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
-
         const fSize = Math.floor(canvas.width * 0.082);
         ctx.font = `bold ${fSize}px Impact, Arial Black, sans-serif`; 
-        ctx.fillStyle = 'white'; 
-        ctx.strokeStyle = 'black'; 
-        ctx.lineWidth = fSize / 4; 
-        ctx.textAlign = 'center'; 
-        ctx.textBaseline = 'middle';
-        
+        ctx.fillStyle = 'white'; ctx.strokeStyle = 'black'; ctx.lineWidth = fSize / 4; 
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         textosMeme.forEach(t => { 
             ctx.strokeText(t.conteudo.toUpperCase(), t.x, t.y); 
             ctx.fillText(t.conteudo.toUpperCase(), t.x, t.y); 
