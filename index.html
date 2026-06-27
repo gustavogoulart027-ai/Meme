@@ -74,7 +74,7 @@
     </div>
 
     <div id="tela-exposicao" class="hidden">
-        <div id="timer-exposicao">👀 Olhem para o ecrã: 15s</div>
+        <div id="timer-exposicao">👀 Olhem para o ecrã: 7s</div>
         <h3 id="autor-meme-exposto" style="color: #feb72b; margin-bottom: 10px;">Meme de: -</h3>
         <div class="meme-card" style="border: 2px solid #04d361;">
             <img id="img-meme-exposto" src="" alt="Meme em exibição">
@@ -96,12 +96,67 @@
 <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
 
 <script>
-    // [O restante da lógica de áudio e variáveis permanece o mesmo]
     let audioCtx = null;
     let musicLoopStarted = false;
-    function iniciarContextoAudio() { try { if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } if (audioCtx.state === 'suspended') { audioCtx.resume(); } if (!musicLoopStarted) { musicLoopStarted = true; ligarMusicaAmbienteVirtual(); } } catch(e) {} }
-    function ligarMusicaAmbienteVirtual() { let acordesSunday = [[261.63, 329.63, 392.00, 493.88], [261.63, 311.13, 392.00, 466.16], [293.66, 349.23, 440.00, 523.25], [392.00, 493.88, 587.33, 698.46]]; let passo = 0; setInterval(() => { if (!audioCtx || audioCtx.state === 'suspended') return; try { let notasAtuais = acordesSunday[passo % acordesSunday.length]; let tempoAtual = audioCtx.currentTime; notasAtuais.forEach((frequencia, index) => { let osc = audioCtx.createOscillator(); let g = audioCtx.createGain(); osc.type = 'triangle'; osc.frequency.setValueAtTime(frequencia, tempoAtual + (index * 0.12)); g.gain.setValueAtTime(0.18, tempoAtual + (index * 0.12)); g.gain.exponentialRampToValueAtTime(0.001, tempoAtual + 1.2); osc.connect(g); g.connect(audioCtx.destination); osc.start(tempoAtual + (index * 0.12)); osc.stop(tempoAtual + 1.2); }); passo++; } catch(e){} }, 1500); }
-    function tocarSomNativo(tipo) { try { iniciarContextoAudio(); if (!audioCtx || audioCtx.state === 'suspended') return; let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); let tempoAtual = audioCtx.currentTime; if (tipo === 'clique') { osc.type = 'sine'; osc.frequency.setValueAtTime(450, tempoAtual); osc.frequency.exponentialRampToValueAtTime(150, tempoAtual + 0.08); gain.gain.setValueAtTime(0.5, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.08); osc.start(tempoAtual); osc.stop(tempoAtual + 0.08); } else if (tipo === 'voto') { osc.type = 'triangle'; osc.frequency.setValueAtTime(587.33, tempoAtual); osc.frequency.setValueAtTime(698.46, tempoAtual + 0.07); osc.frequency.setValueAtTime(880.00, tempoAtual + 0.14); gain.gain.setValueAtTime(0.6, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.25); osc.start(tempoAtual); osc.stop(tempoAtual + 0.25); } else if (tipo === 'vitoria') { osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, tempoAtual); osc.frequency.setValueAtTime(659.25, tempoAtual + 0.1); osc.frequency.setValueAtTime(783.99, tempoAtual + 0.2); osc.frequency.setValueAtTime(1046.50, tempoAtual + 0.3); gain.gain.setValueAtTime(0.5, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.45); osc.start(tempoAtual); osc.stop(tempoAtual + 0.45); } } catch(e) {} }
+
+    function iniciarContextoAudio() {
+        try {
+            if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+            if (!musicLoopStarted) { musicLoopStarted = true; ligarMusicaAmbienteVirtual(); }
+        } catch(e) {}
+    }
+
+    function ligarMusicaAmbienteVirtual() {
+        let acordesSunday = [[261.63, 329.63, 392.00, 493.88], [261.63, 311.13, 392.00, 466.16], [293.66, 349.23, 440.00, 523.25], [392.00, 493.88, 587.33, 698.46]];
+        let passo = 0;
+        setInterval(() => {
+            if (!audioCtx || audioCtx.state === 'suspended') return;
+            try {
+                let notasAtuais = acordesSunday[passo % acordesSunday.length];
+                let tempoAtual = audioCtx.currentTime;
+                notasAtuais.forEach((frequencia, index) => {
+                    let osc = audioCtx.createOscillator();
+                    let g = audioCtx.createGain();
+                    osc.type = 'triangle'; 
+                    osc.frequency.setValueAtTime(frequencia, tempoAtual + (index * 0.12)); 
+                    g.gain.setValueAtTime(0.18, tempoAtual + (index * 0.12));
+                    g.gain.exponentialRampToValueAtTime(0.001, tempoAtual + 1.2);
+                    osc.connect(g); g.connect(audioCtx.destination);
+                    osc.start(tempoAtual + (index * 0.12)); osc.stop(tempoAtual + 1.2);
+                });
+                passo++;
+            } catch(e){}
+        }, 1500); 
+    }
+
+    function tocarSomNativo(tipo) {
+        try {
+            iniciarContextoAudio();
+            if (!audioCtx || audioCtx.state === 'suspended') return;
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            let tempoAtual = audioCtx.currentTime;
+            if (tipo === 'clique') {
+                osc.type = 'sine'; osc.frequency.setValueAtTime(450, tempoAtual);
+                osc.frequency.exponentialRampToValueAtTime(150, tempoAtual + 0.08);
+                gain.gain.setValueAtTime(0.5, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.08);
+                osc.start(tempoAtual); osc.stop(tempoAtual + 0.08);
+            } else if (tipo === 'voto') {
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(587.33, tempoAtual);
+                osc.frequency.setValueAtTime(698.46, tempoAtual + 0.07); osc.frequency.setValueAtTime(880.00, tempoAtual + 0.14);
+                gain.gain.setValueAtTime(0.6, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.25);
+                osc.start(tempoAtual); osc.stop(tempoAtual + 0.25);
+            } else if (tipo === 'vitoria') {
+                osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, tempoAtual);
+                osc.frequency.setValueAtTime(659.25, tempoAtual + 0.1); osc.frequency.setValueAtTime(783.99, tempoAtual + 0.2);
+                osc.frequency.setValueAtTime(1046.50, tempoAtual + 0.3); gain.gain.setValueAtTime(0.5, tempoAtual);
+                gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.45);
+                osc.start(tempoAtual); osc.stop(tempoAtual + 0.45);
+            }
+        } catch(e) {}
+    }
 
     let peer = null, conexoes = [], modoJogo = "host", meuNome = "", codigoSala = "", jogadores = [];
     let tempoRestante = 240; 
@@ -110,6 +165,7 @@
     let imagemMemeAtual = new Image();
     let imagemCarregada = false;
     let indiceImagemAtualGlobal = 0; 
+
     let textosMeme = [];
     let textoArrastando = null;
 
@@ -122,34 +178,359 @@
     const telaRanking = document.getElementById('tela-ranking');
     const canvas = document.getElementById('memeCanvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = 400; canvas.height = 360;
 
-    // [Funções auxiliares omitidas para brevidade, mantendo lógica principal intacta]
-    function gerarFundoMemeVirtual(indice) { imagemCarregada = false; indiceImagemAtualGlobal = indice; let urlSelecionada = ["meme33.jpg","meme.jpg","meme17.jpg"][indice % 3]; imagemMemeAtual = new Image(); imagemMemeAtual.onload = () => { imagemCarregada = true; }; imagemMemeAtual.src = urlSelecionada; textosMeme = [{ conteudo: "TEXTO\nSUPERIOR", x: canvas.width / 2, y: 50, tamanho: 30, rotacao: 0 }, { conteudo: "TEXTO\nINFERIOR", x: canvas.width / 2, y: canvas.height - 60, tamanho: 30, rotacao: 0 }]; inicializarInputs(); }
-    function renderLoop() { drawMeme(); requestAnimationFrame(renderLoop); } requestAnimationFrame(renderLoop);
-    function inicializarInputs() { const container = document.getElementById('container-inputs'); container.innerHTML = ""; textosMeme.forEach((t, index) => { const div = document.createElement('div'); div.className = "linha-input"; const txt = document.createElement('textarea'); txt.value = t.conteudo; txt.oninput = (e) => { t.conteudo = e.target.value; }; div.appendChild(txt); container.appendChild(div); }); }
+    canvas.width = 400; 
+    canvas.height = 360;
 
-    // --- LÓGICA DO TEMPO DE EXPOSIÇÃO (ALTERADA PARA 15S) ---
-    function executarSequenciaExposicaoMeme(listaMemes) {
-        let indiceMeme = 0; 
-        let tempoRestanteExposicao = 15; // <--- Alterado para 15
-        let timerExposicaoLoop = null;
+    document.addEventListener('click', iniciarContextoAudio);
+    document.addEventListener('touchstart', iniciarContextoAudio);
+
+    const memeImages = [
+        "meme33.jpg",
+        "meme.jpg",
+        "meme17.jpg",
+        "meme2.jpg",
+        "meme8.jpg",
+        "meme3.jpg",
+        "meme9.jpg",
+        "meme4.jpg",
+        "meme5.jpg",
+        "meme18.jpg",
+        "meme6.jpg",
+        "meme12.jpg",
+        "meme10.jpg",
+        "meme34.jpg",
+        "meme13.jpg",
+        "meme15.jpg",
+        "meme14.jpg",
+        "meme11.jpg",
+        "Meme16.jpg",
+        "meme7.jpg",
+        "meme32.jpg",
+        "meme30.jpg",
+        "meme31.jpg",
+        "meme19.jpg",
+        "meme20.jpg",
+        "meme21.jpg",
+        "meme22.jpg",
+        "meme27.jpg",
+        "meme23.jpg",
+        "nene29.jpg",
+        "mene28.jpg",
+        "meme26.jpg",
+        "meme24.jpg",
+        "meme25.jpg"
+    ];
+    
+    function gerarFundoMemeVirtual(indice) {
+        imagemCarregada = false;
+        indiceImagemAtualGlobal = indice;
+        let urlSelecionada = memeImages[indice % memeImages.length];
         
+        imagemMemeAtual = new Image();
+        imagemMemeAtual.crossOrigin = "anonymous";
+        
+        imagemMemeAtual.onload = () => { 
+            imagemCarregada = true; 
+        };
+        
+        imagemMemeAtual.onerror = () => { 
+            // CORREÇÃO BUG IMAGEM: Se a imagem local falhar ou demorar, define como true 
+            // para não quebrar a execução e deixar o Canvas livre para desenhar o texto.
+            imagemCarregada = true; 
+        };
+
+        imagemMemeAtual.src = urlSelecionada;
+
+        // CORREÇÃO BUG LEGENDAS: Agora os textos limpam e resetam de forma limpa, baseados no tamanho do canvas atualizado
+        textosMeme = [
+            { conteudo: "TEXTO\nSUPERIOR", x: canvas.width / 2, y: 50, tamanho: 30, rotacao: 0 },
+            { conteudo: "TEXTO\nINFERIOR", x: canvas.width / 2, y: canvas.height - 60, tamanho: 30, rotacao: 0 }
+        ];
+        inicializarInputs();
+    }
+
+    function renderLoop() {
+        drawMeme();
+        requestAnimationFrame(renderLoop);
+    }
+    requestAnimationFrame(renderLoop);
+
+    function iniciarTemporizador() {
+        clearInterval(intervaloTimer);
+        tempoRestante = 240; 
+        document.getElementById('btnEnviar').disabled = false;
+        document.getElementById('temporizador').style.color = "#fff";
+        intervaloTimer = setInterval(() => {
+            tempoRestante--;
+            let minutes = Math.floor(tempoRestante / 60);
+            let segundos = tempoRestante % 60;
+            document.getElementById('temporizador').innerText = `⏱️ Tempo Restante: ${minutes.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+            if (tempoRestante <= 20) document.getElementById('temporizador').style.color = "#e53e3e";
+            if (tempoRestante <= 0) { clearInterval(intervaloTimer); if (!jaEnviouMeme) enviarMemeForçado(); }
+        }, 1000);
+    }
+
+    function inicializarInputs() {
+        const container = document.getElementById('container-inputs');
+        container.innerHTML = "";
+        textosMeme.forEach((t, index) => {
+            const div = document.createElement('div'); div.className = "linha-input";
+            
+            const txt = document.createElement('textarea'); txt.value = t.conteudo;
+            txt.oninput = (e) => { t.conteudo = e.target.value; };
+            
+            const btnMenos = document.createElement('button'); btnMenos.className = "btn-size"; btnMenos.innerText = "A-";
+            btnMenos.onclick = () => { t.tamanho = Math.max(12, t.tamanho - 3); };
+            
+            const btnMais = document.createElement('button'); btnMais.className = "btn-size"; btnMais.innerText = "A+";
+            btnMais.onclick = () => { t.tamanho = Math.min(60, t.tamanho + 3); };
+
+            const btnGirarEsq = document.createElement('button'); btnGirarEsq.className = "btn-size"; btnGirarEsq.innerText = "↺";
+            btnGirarEsq.onclick = () => { t.rotacao = (t.rotacao - 15) % 360; };
+
+            const btnGirarDir = document.createElement('button'); btnGirarDir.className = "btn-size"; btnGirarDir.innerText = "↻";
+            btnGirarDir.onclick = () => { t.rotacao = (t.rotacao + 15) % 360; };
+
+            const btnApagar = document.createElement('button'); btnApagar.innerText = "X";
+            btnApagar.style.background = "#e53e3e"; btnApagar.style.color = "white"; btnApagar.style.border = "none"; btnApagar.style.padding = "10px"; btnApagar.style.borderRadius = "6px"; btnApagar.style.fontWeight = "bold";
+            btnApagar.onclick = () => { textosMeme.splice(index, 1); inicializarInputs(); };
+            
+            div.appendChild(txt);
+            div.appendChild(btnMenos);
+            div.appendChild(btnMais);
+            div.appendChild(btnGirarEsq);
+            div.appendChild(btnGirarDir);
+            if(textosMeme.length > 1) div.appendChild(btnApagar);
+            container.appendChild(div);
+        });
+    }
+
+    document.getElementById('btnAdicionarTexto').onclick = () => {
+        textosMeme.push({ conteudo: "NOVA\nLEGENDA", x: canvas.width / 2, y: canvas.height / 2, tamanho: 30, rotacao: 0 });
+        inicializarInputs();
+    };
+
+    function obterPosicao(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clienteX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
+        const clienteY = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
+        if (clienteX === undefined || clienteY === undefined) return {x: 0, y: 0};
+        return { x: ((clienteX - rect.left) / rect.width) * canvas.width, y: ((clienteY - rect.top) / rect.height) * canvas.height };
+    }
+
+    function iniciarArrasto(e) {
+        const pos = obterPosicao(e);
+        textoArrastando = textosMeme.find(t => Math.sqrt(Math.pow(pos.x - t.x, 2) + Math.pow(pos.y - t.y, 2)) < 50);
+    }
+
+    function movendoArrasto(e) {
+        if (!textoArrastando) return;
+        if(e.cancelable) e.preventDefault();
+        const pos = obterPosicao(e);
+        if (pos.x === 0 && pos.y === 0) return;
+        textoArrastando.x = pos.x; textoArrastando.y = pos.y;
+    }
+
+    canvas.addEventListener('mousedown', iniciarArrasto);
+    canvas.addEventListener('mousemove', movendoArrasto);
+    window.addEventListener('mouseup', () => textoArrastando = null);
+    canvas.addEventListener('touchstart', iniciarArrasto, { passive: false });
+    canvas.addEventListener('touchmove', movendoArrasto, { passive: false });
+    window.addEventListener('touchend', () => textoArrastando = null);
+
+    document.getElementById('btnDownload').onclick = () => {
+        tocarSomNativo('clique');
+        const link = document.createElement('a');
+        link.download = 'meme-' + Math.floor(Math.random() * 10000) + '.jpg';
+        link.href = canvas.toDataURL('image/jpeg', 0.8); link.click();
+    };
+
+    document.getElementById('btnCriar').onclick = () => {
+        tocarSomNativo('clique');
+        meuNome = document.getElementById('inputNome').value.trim().replace(/['"]/g, '');
+        if(!meuNome) return alert("Digite seu nome!");
+        codigoSala = "MIM-" + Math.random().toString(36).substring(2, 7).toUpperCase();
+        modoJogo = "host"; peer = new Peer(codigoSala);
+        peer.on('open', () => {
+            jogadores = [{ 
+                id: peer.id, 
+                nome: meuNome, 
+                pontos: 0, 
+                enviou: false, 
+                votou: false, 
+                meme: "", 
+                imgIndice: 0,
+                imagensRestantes: Array.from({length: memeImages.length}, (_, i) => i),
+                imagensVistas: []
+            }];
+            abrirTelaLobby();
+        });
+        peer.on('connection', (conn) => {
+            conexoes.push(conn);
+            conn.on('data', (data) => lidarComDadosHost(data, conn));
+            setTimeout(() => { sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores }); }, 500);
+        });
+    };
+
+    document.getElementById('btnEntrar').onclick = () => {
+        tocarSomNativo('clique');
+        meuNome = document.getElementById('inputNome').value.trim().replace(/['"]/g, '');
+        codigoSala = document.getElementById('inputCodigo').value.trim().toUpperCase();
+        if(!meuNome || !codigoSala) return alert("Preencha os campos!");
+        modoJogo = "cliente"; peer = new Peer();
+        peer.on('open', () => {
+            let conn = peer.connect(codigoSala); conexoes = [conn];
+            conn.on('open', () => {
+                conn.send({ tipo: "entrar", nome: meuNome });
+                abrirTelaLobby();
+            });
+            conn.on('data', (data) => lidarComDadosCliente(data));
+        });
+    };
+
+    function abrirTelaLobby() {
+        telaInicial.classList.add('hidden'); telaLobby.classList.remove('hidden');
+        document.getElementById('lobby-codigo').innerText = codigoSala;
+        if(modoJogo === "host") {
+            document.getElementById('btnIniciarJogo').classList.remove('hidden');
+        } else {
+            document.getElementById('btnIniciarJogo').classList.add('hidden');
+        }
+        atualizarLobbyInterface();
+    }
+
+    function atualizarLobbyInterface() {
+        const listaDiv = document.getElementById('lobby-lista-jogadores');
+        listaDiv.innerHTML = "<strong style='color:#8257e5;'>Jogadores:</strong><br>";
+        jogadores.forEach((j, i) => { listaDiv.innerHTML += `<div style='padding: 5px 0;'>👤 ${j.nome} ${i === 0 ? "👑" : ""}</div>`; });
+    }
+
+    document.getElementById('btnIniciarJogo').onclick = () => { tocarSomNativo('clique'); iniciarNovaRodadaLógica(); };
+
+    function iniciarNovaRodadaLógica() {
+        let indicesEscolhidosNestaRodada = [];
+
+        jogadores.forEach(j => {
+            j.enviou = false;
+            j.votou = false;
+            j.meme = "";
+            
+            if (!j.imagensRestantes || j.imagensRestantes.length === 0) {
+                j.imagensRestantes = Array.from({length: memeImages.length}, (_, i) => i);
+            }
+            if (!j.imagensVistas) j.imagensVistas = [];
+        });
+
+        jogadores.forEach(j => {
+            let opcoesValidas = j.imagensRestantes.filter(idx => !indicesEscolhidosNestaRodada.includes(idx));
+            if (opcoesValidas.length === 0) { opcoesValidas = j.imagensRestantes; }
+            
+            let indiceSorteado = opcoesValidas[Math.floor(Math.random() * opcoesValidas.length)];
+            j.imgIndice = indiceSorteado;
+            j.imagensRestantes = j.imagensRestantes.filter(idx => idx !== indiceSorteado);
+            j.imagensVistas.push(indiceSorteado);
+            indicesEscolhidosNestaRodada.push(indiceSorteado);
+        });
+
+        sincronizarTodosOsClientes({ tipo: "começar_jogo", lista: jogadores });
+    }
+
+    function abrirTelaJogo() {
+        telaLobby.classList.add('hidden'); telaVotacao.classList.add('hidden'); telaRanking.classList.add('hidden'); telaEspera.classList.add('hidden'); telaExposicao.classList.add('hidden'); telaJogo.classList.remove('hidden');
+        atualizarListaInterface();
+    }
+
+    function lidarComDadosHost(data, conn) {
+        if (data.tipo === "entrar") {
+            if(!jogadores.find(p => p.id === conn.peer)) {
+                jogadores.push({ 
+                    id: conn.peer, 
+                    nome: data.nome, 
+                    pontos: 0, 
+                    enviou: false, 
+                    votou: false, 
+                    meme: "", 
+                    imgIndice: 0,
+                    imagensRestantes: Array.from({length: memeImages.length}, (_, i) => i),
+                    imagensVistas: []
+                });
+            }
+            sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores });
+        }
+        if (data.tipo === "submeter_meme") {
+            let j = jogadores.find(p => p.id === conn.peer); if(j) { j.enviou = true; j.meme = data.imagem; }
+            atualizarListaInterface();
+            if (jogadores.every(p => p.enviou)) {
+                clearInterval(intervaloTimer);
+                executarSequenciaExposicaoMeme(jogadores.map(p => ({id: p.id, nome: p.nome, imagem: p.meme})));
+            }
+        }
+        if (data.tipo === "voto") {
+            let ele = jogadores.find(p => p.id === conn.peer);
+            if(ele && !ele.votou) {
+                ele.votou = true;
+                let jVotado = jogadores.find(p => p.id === data.idVotado); if(jVotado) jVotado.pontos += 10;
+            }
+            if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
+        }
+    }
+
+    function lidarComDadosCliente(data) {
+        if (data.tipo === "lista_lobby") { jogadores = data.lista; atualizarLobbyInterface(); }
+        if (data.tipo === "começar_jogo") {
+            jaEnviouMeme = false; 
+            jogadores = data.lista;
+            let meuDados = jogadores.find(p => p.id === peer.id);
+            if(meuDados && meuDados.imgIndice !== undefined) gerarFundoMemeVirtual(meuDados.imgIndice);
+            abrirTelaJogo(); iniciarTemporizador();
+        }
+        if (data.tipo === "mostrar_meme_individual") abrirTelaExposicaoDinamica(data.nomeAutor, data.imagemMeme, data.segundosRestantes);
+        if (data.tipo === "ir_votacao") montarTelaVotacao(data.listaMemes);
+        if (data.tipo === "ir_ranking") montarTelaRanking(data.listaRanking);
+    }
+
+    function sincronizarTodosOsClientes(objeto) {
+        lidarComDadosCliente(objeto);
+        conexoes.forEach(c => { if(c.open) c.send(objeto); });
+    }
+
+    function atualizarListaInterface() {
+        document.getElementById('lista-jogadores').innerText = "Jogadores: " + jogadores.map(j => j.nome + (j.enviou ? " (Pronto)" : "")).join(", ");
+    }
+
+    document.getElementById('btnEnviar').onclick = () => { tocarSomNativo('clique'); enviarMemeManual(); };
+
+    function enviarMemeManual() {
+        if(jaEnviouMeme) return; jaEnviouMeme = true;
+        document.getElementById('btnEnviar').disabled = true;
+        
+        const imgFinal = canvas.toDataURL('image/jpeg', 0.4);
+        
+        telaJogo.classList.add('hidden'); telaEspera.classList.remove('hidden');
+        if (modoJogo === "host") {
+            let j = jogadores.find(p => p.id === peer.id); if(j) { j.enviou = true; j.meme = imgFinal; }
+            atualizarListaInterface();
+            if (jogadores.every(p => p.enviou)) {
+                clearInterval(intervaloTimer);
+                executarSequenciaExposicaoMeme(jogadores.map(p => ({id: p.id, nome: p.nome, imagem: p.meme})));
+            }
+        } else { if (conexoes[0] && conexoes[0].open) { conexoes[0].send({ tipo: "submeter_meme", imagem: imgFinal }); } }
+    }
+
+    function enviarMemeForçado() { enviarMemeManual(); }
+
+    function executarSequenciaExposicaoMeme(listaMemes) {
+        let indiceMeme = 0; let tempoRestanteExposicao = 7; let timerExposicaoLoop = null;
         function apresentarProximoMeme() {
             while(indiceMeme < listaMemes.length && !listaMemes[indiceMeme].imagem) { indiceMeme++; }
             if (indiceMeme >= listaMemes.length) { sincronizarTodosOsClientes({ tipo: "ir_votacao", listaMemes: listaMemes }); return; }
-            
-            let memeAtual = listaMemes[indiceMeme]; 
-            tempoRestanteExposicao = 15; // <--- Alterado para 15
-            
+            let memeAtual = listaMemes[indiceMeme]; tempoRestanteExposicao = 7;
             sincronizarTodosOsClientes({ tipo: "mostrar_meme_individual", nomeAutor: memeAtual.nome, imagemMeme: memeAtual.imagem, segundosRestantes: tempoRestanteExposicao });
-            
             timerExposicaoLoop = setInterval(() => {
                 tempoRestanteExposicao--;
                 if (tempoRestanteExposicao <= 0) {
-                    clearInterval(timerExposicaoLoop); 
-                    indiceMeme++; 
-                    apresentarProximoMeme();
+                    clearInterval(timerExposicaoLoop); indiceMeme++; apresentarProximoMeme();
                 } else {
                     sincronizarTodosOsClientes({ tipo: "mostrar_meme_individual", nomeAutor: memeAtual.nome, imagemMeme: memeAtual.imagem, segundosRestantes: tempoRestanteExposicao });
                 }
@@ -157,7 +538,6 @@
         }
         apresentarProximoMeme();
     }
-    // --------------------------------------------------------
 
     function abrirTelaExposicaoDinamica(nome, imagem, segundos) {
         telaJogo.classList.add('hidden'); telaEspera.classList.add('hidden'); telaVotacao.classList.add('hidden'); telaExposicao.classList.remove('hidden');
@@ -166,9 +546,85 @@
         document.getElementById('timer-exposicao').innerText = `👀 Olhem para o ecrã: ${segundos}s`;
     }
 
-    // [Restante do código de PeerJS, Votação e Ranking...]
-    // (As funções de conexão, enviar meme, etc., permanecem idênticas)
-    function drawMeme() { ctx.fillStyle = "#121214"; ctx.fillRect(0, 0, canvas.width, canvas.height); if (imagemCarregada && imagemMemeAtual.complete) ctx.drawImage(imagemMemeAtual, 0, 0, canvas.width, canvas.height); textosMeme.forEach(t => { ctx.save(); ctx.translate(t.x, t.y); ctx.fillStyle = 'white'; ctx.textAlign = 'center'; ctx.font = `bold ${t.tamanho}px Impact`; ctx.strokeText(t.conteudo, 0, 0); ctx.fillText(t.conteudo, 0, 0); ctx.restore(); }); }
+    function montarTelaVotacao(listaMemes) {
+        telaExposicao.classList.add('hidden'); telaEspera.classList.add('hidden'); telaVotacao.classList.remove('hidden');
+        const galeria = document.getElementById('galeria-memes'); galeria.innerHTML = "";
+        listaMemes.forEach(m => {
+            if(!m.imagem) return;
+            const card = document.createElement('div'); card.className = "meme-card";
+            const img = document.createElement('img'); img.src = m.imagem;
+            const btnVoto = document.createElement('button'); btnVoto.className = "btn btn-vote"; btnVoto.innerText = "👍 Votar (" + m.nome + ")";
+            if(m.id === peer.id) { btnVoto.disabled = true; btnVoto.innerText = "Seu Meme"; btnVoto.style.background = "#323238"; }
+            btnVoto.onclick = () => {
+                tocarSomNativo('voto'); btnVoto.disabled = true;
+                if(modoJogo === "host") {
+                    let ele = jogadores.find(p => p.id === peer.id);
+                    if(ele && !ele.votou) { ele.votou = true; let j = jogadores.find(p => p.id === m.id); if(j) j.pontos += 10; }
+                    if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
+                } else { if (conexoes[0] && conexoes[0].open) { conexoes[0].send({ tipo: "voto", idVotado: m.id }); } }
+                galeria.innerHTML = "<h3>Voto enviado! Aguardando o grupo...</h3>";
+            };
+            card.appendChild(img); card.appendChild(btnVoto); galeria.appendChild(card);
+        });
+    }
+
+    function montarTelaRanking(listaRanking) {
+        tocarSomNativo('vitoria');
+        telaVotacao.classList.add('hidden'); telaRanking.classList.remove('hidden');
+        const podio = document.getElementById('podio-scores'); podio.innerHTML = "";
+        let ordenada = [...listaRanking].sort((a, b) => b.pontos - a.pontos);
+        ordenada.forEach((j, idx) => {
+            const item = document.createElement('div'); item.className = "ranking-item";
+            item.innerHTML = `<span>#${idx+1} ${j.nome}</span> <span>${j.pontos} pts</span>`;
+            podio.appendChild(item);
+        });
+        if(modoJogo === "host") document.getElementById('btnVoltarJogo').classList.remove('hidden');
+        else document.getElementById('btnVoltarJogo').classList.add('hidden');
+    }
+
+    document.getElementById('btnVoltarJogo').onclick = null;
+    document.getElementById('btnVoltarJogo').onclick = () => { tocarSomNativo('clique'); if(modoJogo === "host") iniciarNovaRodadaLógica(); };
+
+    function drawMeme() {
+        ctx.fillStyle = "#121214"; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        if (imagemCarregada && imagemMemeAtual.complete && imagemMemeAtual.naturalWidth > 0) {
+            ctx.drawImage(imagemMemeAtual, 0, 0, canvas.width, canvas.height);
+        } else {
+            ctx.fillStyle = "#202024"; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#7c7c8a"; 
+            ctx.font = "14px sans-serif"; 
+            ctx.textAlign = "center";
+            ctx.fillText("[Carregando Imagem...]", canvas.width / 2, canvas.height / 2);
+        }
+
+        textosMeme.forEach(t => { 
+            ctx.save();
+            ctx.translate(t.x, t.y);
+            ctx.rotate((t.rotacao * Math.PI) / 180);
+            
+            ctx.strokeStyle = 'black'; 
+            ctx.fillStyle = 'white'; 
+            ctx.textAlign = 'center'; 
+            ctx.textBaseline = 'middle';
+            ctx.font = `bold ${t.tamanho}px Impact, Arial Black, sans-serif`;
+            ctx.lineWidth = t.tamanho / 4; 
+
+            let linhas = t.conteudo.toUpperCase().split('\n');
+            let alturaLinha = t.tamanho * 1.2;
+            let offsetTotal = ((linhas.length - 1) * alturaLinha) / 2;
+
+            linhas.forEach((linha, i) => {
+                let posY = (i * alturaLinha) - offsetTotal;
+                ctx.strokeText(linha, 0, posY); 
+                ctx.fillText(linha, 0, posY); 
+            });
+            
+            ctx.restore();
+        });
+    }
 </script>
 </body>
 </html>
