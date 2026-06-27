@@ -482,4 +482,14 @@
             ctx.fillText("Carregando imagem de fundo...", canvas.width/2, canvas.height/2);
         }
         const fSize = Math.floor(canvas.width * 0.082);
-        ctx.font = `bold ${fSize}px Impact, Arial Black
+        ctx.font = `bold ${fSize}px Impact, Arial Black, sans-serif`; 
+        ctx.fillStyle = 'white'; ctx.strokeStyle = 'black'; ctx.lineWidth = fSize / 4; 
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        textosMeme.forEach(t => { 
+            ctx.strokeText(t.conteudo.toUpperCase(), t.x, t.y); 
+            ctx.fillText(t.conteudo.toUpperCase(), t.x, t.y); 
+        });
+    }
+</script>
+</body>
+</html>
