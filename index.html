@@ -231,10 +231,25 @@
         let urlSelecionada = memeImages[indice % memeImages.length];
         
         imagemMemeAtual = new Image();
-        imagemMemeAtual.src = urlSelecionada;
-        imagemMemeAtual.onload = () => { if(imagemMemeAtual.naturalWidth > 0) imagemCarregada = true; };
-        imagemMemeAtual.onerror = () => { solicitarTrocaPorErroDeCarregamento(); };
+        
+        // CORREÇÃO CRUCIAL: Definir crossOrigin e Handlers ANTES do .src para evitar bugs de cache
+        imagemMemeAtual.crossOrigin = "anonymous";
+        
+        imagemMemeAtual.onload = () => { 
+            if(imagemMemeAtual.naturalWidth > 0) {
+                imagemCarregada = true; 
+            }
+        };
+        
+        imagemMemeAtual.onerror = (e) => { 
+            console.error("Erro ao carregar link: " + urlSelecionada, e);
+            solicitarTrocaPorErroDeCarregamento(); 
+        };
 
+        // O SRC sempre vem por último!
+        imagemMemeAtual.src = urlSelecionada;
+
+        // Correção de digitação de propriedade (de rotations para rotacao)
         textosMeme = [
             { conteudo: "TEXTO\nSUPERIOR", x: canvas.width / 2, y: 50, tamanho: 30, rotacao: 0 },
             { conteudo: "TEXTO\nINFERIOR", x: canvas.width / 2, y: canvas.height - 60, tamanho: 30, rotacao: 0 }
@@ -317,7 +332,7 @@
         inicializarInputs();
     };
 
-    function obterPosicao(e) {
+    function obtenerPosicao(e) {
         const rect = canvas.getBoundingClientRect();
         const clienteX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
         const clienteY = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
@@ -538,7 +553,7 @@
 
     function enviarMemeForçado() { enviarMemeManual(); }
 
-    function ejecutarSequenciaExposicaoMeme(listaMemes) {
+    function executarSequenciaExposicaoMeme(listaMemes) {
         let indiceMeme = 0; let tempoRestanteExposicao = 7; let timerExposicaoLoop = null;
         function apresentarProximoMeme() {
             while(indiceMeme < listaMemes.length && !listaMemes[indiceMeme].imagem) { indiceMeme++; }
