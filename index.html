@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Make It Meme - Imagens Corrigidas</title>
+    <title>Make It Meme - Sistema de Votação Blindado</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121214; color: #fff; text-align: center; padding: 15px; margin: 0; -webkit-user-select: none; user-select: none; }
         .container { max-width: 500px; margin: 0 auto; background: #202024; padding: 20px; border-radius: 12px; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -79,7 +79,7 @@
     <div id="tela-ranking" class="hidden">
         <h2>🏆 Pontuação Geral 🏆</h2>
         <div id="podio-scores"></div>
-        <button class="btn" id="btnVoltarJogo" style="margin-top:20px; background: #8257e5;">Próxima Rodada</button>
+        <button class="btn hidden" id="btnVoltarJogo" style="margin-top:20px; background: #8257e5;">Próxima Rodada</button>
     </div>
 </div>
 
@@ -98,22 +98,40 @@
     }
 
     function ligarMusicaAmbienteVirtual() {
-        let notasLobby = [261.63, 329.63, 392.00, 523.25];
-        let notaAtualIdx = 0;
+        let acordesSunday = [
+            [261.63, 329.63, 392.00, 493.88], 
+            [261.63, 311.13, 392.00, 466.16], 
+            [293.66, 349.23, 440.00, 523.25], 
+            [392.00, 493.88, 587.33, 698.46]  
+        ];
+        let passo = 0;
+        
         setInterval(() => {
             if (!audioCtx || audioCtx.state === 'suspended') return;
             try {
-                let osc = audioCtx.createOscillator();
-                let g = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(notasLobby[notaAtualIdx], audioCtx.currentTime);
-                g.gain.setValueAtTime(0.6, audioCtx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.8);
-                osc.connect(g); g.connect(audioCtx.destination);
-                osc.start(); osc.stop(audioCtx.currentTime + 1.8);
-                notaAtualIdx = (notaAtualIdx + 1) % notasLobby.length;
+                let notasAtuais = acordesSunday[passo % acordesSunday.length];
+                let tempoAtual = audioCtx.currentTime;
+                
+                notasAtuais.forEach((frequencia, index) => {
+                    let osc = audioCtx.createOscillator();
+                    let g = audioCtx.createGain();
+                    
+                    osc.type = 'triangle'; 
+                    osc.frequency.setValueAtTime(frequencia, tempoAtual + (index * 0.12)); 
+                    
+                    g.gain.setValueAtTime(0.2, tempoAtual + (index * 0.12));
+                    g.gain.exponentialRampToValueAtTime(0.001, tempoAtual + 1.2);
+                    
+                    osc.connect(g);
+                    g.connect(audioCtx.destination);
+                    
+                    osc.start(tempoAtual + (index * 0.12));
+                    osc.stop(tempoAtual + 1.2);
+                });
+                
+                passo++;
             } catch(e){}
-        }, 2000);
+        }, 1500); 
     }
 
     function tocarSomNativo(tipo) {
@@ -176,7 +194,6 @@
         btn.addEventListener('click', () => { tocarSomNativo('clique'); });
     });
 
-    // BANCO DE IMAGENS ATUALIZADO COM LINKS 100% COMPATÍVEIS COM CORS (UNSPLASH E PLACEHOLDERS DE MEME)
     const memeImages = [
         "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=500&q=80",
         "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=500&q=80",
@@ -194,12 +211,8 @@
         imagemMemeAtual.crossOrigin = "anonymous"; 
         imagemMemeAtual.src = urlSelecionada;
         
-        imagemMemeAtual.onload = () => {
-            imagemCarregada = true;
-        };
-        imagemMemeAtual.onerror = () => {
-            imagemCarregada = true;
-        };
+        imagemMemeAtual.onload = () => { imagemCarregada = true; };
+        imagemMemeAtual.onerror = () => { imagemCarregada = true; };
 
         textosMeme = [
             { conteudo: "TEXTO SUPERIOR", x: canvas.width / 2, y: 40 },
@@ -209,7 +222,6 @@
         inicializarInputs();
     }
 
-    // ATUALIZAÇÃO CONTÍNUA DO CANVAS PARA EVITAR TELAS PRETAS
     function renderLoop() {
         drawMeme();
         requestAnimationFrame(renderLoop);
@@ -299,7 +311,7 @@
         peer.on('connection', (conn) => {
             conexoes.push(conn);
             conn.on('data', (data) => lidarComDadosHost(data, conn));
-            setTimeout(() => { sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores }); }, 500);
+            setTimeout(() => { sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jugadores }); }, 500);
         });
     };
 
@@ -340,20 +352,20 @@
 
     document.getElementById('btnIniciarJogo').onclick = () => {
         tocarSomNativo('clique');
-        
+        iniciarNovaRodadaLógica();
+    };
+
+    function iniciarNovaRodadaLógica() {
         let indicesDisponiveis = [];
         for(let i = 0; i < memeImages.length; i++) { indicesDisponiveis.push(i); }
-        
         jogadores.forEach((j) => {
             j.enviou = false; j.votou = false; j.meme = "";
-            if(indicesDisponiveis.length === 0) {
-                for(let i = 0; i < memeImages.length; i++) { indicesDisponiveis.push(i); }
-            }
+            if(indicesDisponiveis.length === 0) { for(let i = 0; i < memeImages.length; i++) { indicesDisponiveis.push(i); } }
             let randomPos = Math.floor(Math.random() * indicesDisponiveis.length);
             j.imgIndice = indicesDisponiveis.splice(randomPos, 1)[0];
         });
         sincronizarTodosOsClientes({ tipo: "começar_jogo", lista: jogadores });
-    };
+    }
 
     function abrirTelaJogo() {
         telaLobby.classList.add('hidden'); telaVotacao.classList.add('hidden'); telaRanking.classList.add('hidden'); telaJogo.classList.remove('hidden');
@@ -380,7 +392,11 @@
         if (data.tipo === "voto") {
             let j = jogadores.find(p => p.id === data.idVotado); if(j) j.pontos += 10;
             let ele = jogadores.find(p => p.id === conn.peer); if(ele) ele.votou = true;
-            if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jugadores });
+            
+            // CORREÇÃO CRÍTICA: Verifica corretamente se todos os jogadores de fato completaram o voto
+            if (jogadores.every(p => p.votou)) {
+                sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
+            }
         }
     }
 
@@ -437,7 +453,7 @@
                 if(modoJogo === "host") {
                     let j = jogadores.find(p => p.id === m.id); if(j) j.pontos += 10;
                     let ele = jogadores.find(p => p.id === peer.id); if(ele) ele.votou = true;
-                    if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jugadores });
+                    if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
                 } else { conexoes[0].send({ tipo: "voto", idVotado: m.id }); }
                 galeria.innerHTML = "<h3>Voto enviado! Aguardando o resto do grupo...</h3>";
             };
@@ -455,20 +471,19 @@
             item.innerHTML = `<span>#${idx+1} ${j.nome}</span> <span>${j.pontos} pts</span>`;
             podio.appendChild(item);
         });
+        
+        // Exibe o botão de Próxima Rodada apenas para o administrador da sala
+        if(modoJogo === "host") {
+            document.getElementById('btnVoltarJogo').classList.remove('hidden');
+        } else {
+            document.getElementById('btnVoltarJogo').classList.add('hidden');
+        }
     }
 
     document.getElementById('btnVoltarJogo').onclick = () => {
         tocarSomNativo('clique');
         if(modoJogo === "host") {
-            let indicesDisponiveis = [];
-            for(let i = 0; i < memeImages.length; i++) { indicesDisponiveis.push(i); }
-            jogadores.forEach((j) => {
-                j.enviou = false; j.votou = false; j.meme = "";
-                if(indicesDisponiveis.length === 0) { for(let i = 0; i < memeImages.length; i++) { indicesDisponiveis.push(i); } }
-                let randomPos = Math.floor(Math.random() * indicesDisponiveis.length);
-                j.imgIndice = indicesDisponiveis.splice(randomPos, 1)[0];
-            });
-            sincronizarTodosOsClientes({ tipo: "começar_jogo", lista: jogadores });
+            iniciarNovaRodadaLógica();
         }
     };
 
@@ -479,7 +494,7 @@
         } else {
             ctx.fillStyle = "#323238"; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#fff"; ctx.font = "16px sans-serif"; ctx.textAlign = "center";
-            ctx.fillText("Carregando imagem de fundo...", canvas.width/2, canvas.height/2);
+            ctx.fillText("Carregando imagem...", canvas.width/2, canvas.height/2);
         }
         const fSize = Math.floor(canvas.width * 0.082);
         ctx.font = `bold ${fSize}px Impact, Arial Black, sans-serif`; 
