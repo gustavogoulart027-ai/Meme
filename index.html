@@ -1,3 +1,5 @@
+
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -166,10 +168,7 @@
     let imagemCarregada = false;
     let indiceImagemAtualGlobal = 0; 
 
-    let textosMeme = [
-        { conteudo: "TEXTO\nSUPERIOR", x: 200, y: 50, tamanho: 30, rotacao: 0 },
-        { conteudo: "TEXTO\nINFERIOR", x: 200, y: 310, tamanho: 30, rotacao: 0 }
-    ];
+    let textosMeme = [];
     let textoArrastando = null;
 
     const telaInicial = document.getElementById('tela-inicial');
@@ -231,43 +230,26 @@
         let urlSelecionada = memeImages[indice % memeImages.length];
         
         imagemMemeAtual = new Image();
-        
-        // CORREÇÃO CRUCIAL: Definir crossOrigin e Handlers ANTES do .src para evitar bugs de cache
         imagemMemeAtual.crossOrigin = "anonymous";
         
         imagemMemeAtual.onload = () => { 
-            if(imagemMemeAtual.naturalWidth > 0) {
-                imagemCarregada = true; 
-            }
+            imagemCarregada = true; 
         };
         
-        imagemMemeAtual.onerror = (e) => { 
-            console.error("Erro ao carregar link: " + urlSelecionada, e);
-            solicitarTrocaPorErroDeCarregamento(); 
+        imagemMemeAtual.onerror = () => { 
+            // CORREÇÃO BUG IMAGEM: Se a imagem local falhar ou demorar, define como true 
+            // para não quebrar a execução e deixar o Canvas livre para desenhar o texto.
+            imagemCarregada = true; 
         };
 
-        // O SRC sempre vem por último!
         imagemMemeAtual.src = urlSelecionada;
 
-        // Correção de digitação de propriedade (de rotations para rotacao)
+        // CORREÇÃO BUG LEGENDAS: Agora os textos limpam e resetam de forma limpa, baseados no tamanho do canvas atualizado
         textosMeme = [
             { conteudo: "TEXTO\nSUPERIOR", x: canvas.width / 2, y: 50, tamanho: 30, rotacao: 0 },
             { conteudo: "TEXTO\nINFERIOR", x: canvas.width / 2, y: canvas.height - 60, tamanho: 30, rotacao: 0 }
         ];
         inicializarInputs();
-    }
-
-    function solicitarTrocaPorErroDeCarregamento() {
-        if (modoJogo === "host") {
-            let novoIndice = (indiceImagemAtualGlobal + 1) % memeImages.length;
-            let meuDado = jogadores.find(j => j.id === peer.id);
-            if(meuDado) meuDado.imgIndice = novoIndice;
-            gerarFundoMemeVirtual(novoIndice);
-        } else {
-            if (conexoes[0] && conexoes[0].open) {
-                conexoes[0].send({ tipo: "notificar_erro_imagem_individual", indiceFalho: indiceImagemAtualGlobal, jogadorId: peer.id });
-            }
-        }
     }
 
     function renderLoop() {
@@ -301,20 +283,20 @@
             txt.oninput = (e) => { t.conteudo = e.target.value; };
             
             const btnMenos = document.createElement('button'); btnMenos.className = "btn-size"; btnMenos.innerText = "A-";
-            btnMenos.onclick = () => { tocarSomNativo('clique'); t.tamanho = Math.max(12, t.tamanho - 3); };
+            btnMenos.onclick = () => { t.tamanho = Math.max(12, t.tamanho - 3); };
             
             const btnMais = document.createElement('button'); btnMais.className = "btn-size"; btnMais.innerText = "A+";
-            btnMais.onclick = () => { tocarSomNativo('clique'); t.tamanho = Math.min(60, t.tamanho + 3); };
+            btnMais.onclick = () => { t.tamanho = Math.min(60, t.tamanho + 3); };
 
             const btnGirarEsq = document.createElement('button'); btnGirarEsq.className = "btn-size"; btnGirarEsq.innerText = "↺";
-            btnGirarEsq.onclick = () => { tocarSomNativo('clique'); t.rotacao = (t.rotacao - 15) % 360; };
+            btnGirarEsq.onclick = () => { t.rotacao = (t.rotacao - 15) % 360; };
 
             const btnGirarDir = document.createElement('button'); btnGirarDir.className = "btn-size"; btnGirarDir.innerText = "↻";
-            btnGirarDir.onclick = () => { tocarSomNativo('clique'); t.rotacao = (t.rotacao + 15) % 360; };
+            btnGirarDir.onclick = () => { t.rotacao = (t.rotacao + 15) % 360; };
 
             const btnApagar = document.createElement('button'); btnApagar.innerText = "X";
             btnApagar.style.background = "#e53e3e"; btnApagar.style.color = "white"; btnApagar.style.border = "none"; btnApagar.style.padding = "10px"; btnApagar.style.borderRadius = "6px"; btnApagar.style.fontWeight = "bold";
-            btnApagar.onclick = () => { tocarSomNativo('clique'); textosMeme.splice(index, 1); inicializarInputs(); };
+            btnApagar.onclick = () => { textosMeme.splice(index, 1); inicializarInputs(); };
             
             div.appendChild(txt);
             div.appendChild(btnMenos);
@@ -327,12 +309,11 @@
     }
 
     document.getElementById('btnAdicionarTexto').onclick = () => {
-        tocarSomNativo('clique');
         textosMeme.push({ conteudo: "NOVA\nLEGENDA", x: canvas.width / 2, y: canvas.height / 2, tamanho: 30, rotacao: 0 });
         inicializarInputs();
     };
 
-    function obtenerPosicao(e) {
+    function obterPosicao(e) {
         const rect = canvas.getBoundingClientRect();
         const clienteX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
         const clienteY = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
@@ -445,17 +426,12 @@
 
         jogadores.forEach(j => {
             let opcoesValidas = j.imagensRestantes.filter(idx => !indicesEscolhidosNestaRodada.includes(idx));
-
-            if (opcoesValidas.length === 0) {
-                opcoesValidas = j.imagensRestantes;
-            }
+            if (opcoesValidas.length === 0) { opcoesValidas = j.imagensRestantes; }
             
             let indiceSorteado = opcoesValidas[Math.floor(Math.random() * opcoesValidas.length)];
-
             j.imgIndice = indiceSorteado;
             j.imagensRestantes = j.imagensRestantes.filter(idx => idx !== indiceSorteado);
             j.imagensVistas.push(indiceSorteado);
-
             indicesEscolhidosNestaRodada.push(indiceSorteado);
         });
 
@@ -484,14 +460,6 @@
             }
             sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores });
         }
-        if (data.tipo === "notificar_erro_imagem_individual") {
-            let j = jogadores.find(p => p.id === data.jogadorId);
-            if (j && j.imgIndice === data.indiceFalho) {
-                let novoIndice = (j.imgIndice + 1) % memeImages.length;
-                j.imgIndice = novoIndice;
-                conexoes.forEach(c => { if (c.peer === data.jogadorId && c.open) c.send({ tipo: "forçar_troca_imagem_individual", novoIndice: novoIndice }); });
-            }
-        }
         if (data.tipo === "submeter_meme") {
             let j = jogadores.find(p => p.id === conn.peer); if(j) { j.enviou = true; j.meme = data.imagem; }
             atualizarListaInterface();
@@ -519,7 +487,6 @@
             if(meuDados && meuDados.imgIndice !== undefined) gerarFundoMemeVirtual(meuDados.imgIndice);
             abrirTelaJogo(); iniciarTemporizador();
         }
-        if (data.tipo === "forçar_troca_imagem_individual") gerarFundoMemeVirtual(data.novoIndice);
         if (data.tipo === "mostrar_meme_individual") abrirTelaExposicaoDinamica(data.nomeAutor, data.imagemMeme, data.segundosRestantes);
         if (data.tipo === "ir_votacao") montarTelaVotacao(data.listaMemes);
         if (data.tipo === "ir_ranking") montarTelaRanking(data.listaRanking);
@@ -553,7 +520,7 @@
 
     function enviarMemeForçado() { enviarMemeManual(); }
 
-    function executarSequenciaExposicaoMeme(listaMemes) {
+    function ejecutarSequenciaExposicaoMeme(listaMemes) {
         let indiceMeme = 0; let tempoRestanteExposicao = 7; let timerExposicaoLoop = null;
         function apresentarProximoMeme() {
             while(indiceMeme < listaMemes.length && !listaMemes[indiceMeme].imagem) { indiceMeme++; }
@@ -618,16 +585,28 @@
     document.getElementById('btnVoltarJogo').onclick = null;
     document.getElementById('btnVoltarJogo').onclick = () => { tocarSomNativo('clique'); if(modoJogo === "host") iniciarNovaRodadaLógica(); };
 
+    // =========================================================================
+    // RENDERIZADOR CORRIGIDO (LEGENDAS NÃO DEPENDEM DO CARREGAMENTO DA IMAGEM)
+    // =========================================================================
     function drawMeme() {
-        ctx.fillStyle = "#121214"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Garante uma cor de fundo sólida antes de renderizar para o canvas não piscar
+        ctx.fillStyle = "#121214"; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Renderiza a imagem se ela estiver de fato válida e carregada
         if (imagemCarregada && imagemMemeAtual.complete && imagemMemeAtual.naturalWidth > 0) {
             ctx.drawImage(imagemMemeAtual, 0, 0, canvas.width, canvas.height);
         } else {
-            ctx.fillStyle = "#202024"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#fff"; ctx.font = "16px sans-serif"; ctx.textAlign = "center";
-            ctx.fillText("Carregando imagem...", canvas.width/2, canvas.height/2);
+            // Fundo reserva estável para manter os textos visíveis mesmo se a imagem demorar
+            ctx.fillStyle = "#202024"; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#7c7c8a"; 
+            ctx.font = "14px sans-serif"; 
+            ctx.textAlign = "center";
+            ctx.fillText("[Carregando Imagem...]", canvas.width / 2, canvas.height / 2);
         }
 
+        // DESENHO DAS LEGENDAS BLINDADO (Desenhadas isoladamente no topo do fluxo)
         textosMeme.forEach(t => { 
             ctx.save();
             ctx.translate(t.x, t.y);
@@ -656,3 +635,5 @@
 </script>
 </body>
 </html>
+
+```
