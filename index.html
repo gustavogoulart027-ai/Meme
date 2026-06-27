@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Make It Meme - Versão Premium Ultra Estável</title>
+    <title>Make It Meme - Versão Premium Ultra Sincronizada</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121214; color: #fff; text-align: center; padding: 15px; margin: 0; -webkit-user-select: none; user-select: none; }
         .container { max-width: 500px; margin: 0 auto; background: #202024; padding: 20px; border-radius: 12px; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -184,6 +184,8 @@
     let jaEnviouMeme = false;
     let imagemMemeAtual = new Image();
     let imagemCarregada = false;
+    let indiceImagemAtualGlobal = 0; 
+    let imagensExcluidasNaRodada = []; 
 
     let textosMeme = [
         { conteudo: "TEXTO SUPERIOR", x: 200, y: 40 },
@@ -222,13 +224,21 @@
     
     function gerarFundoMemeVirtual(indice) {
         imagemCarregada = false;
+        indiceImagemAtualGlobal = indice;
         let urlSelecionada = memeImages[indice % memeImages.length];
         
         imagemMemeAtual = new Image();
         imagemMemeAtual.src = urlSelecionada;
         
-        imagemMemeAtual.onload = () => { if(imagemMemeAtual.naturalWidth > 0) imagemCarregada = true; };
-        imagemMemeAtual.onerror = () => { imagemCarregada = true; };
+        imagemMemeAtual.onload = () => { 
+            if(imagemMemeAtual.naturalWidth > 0) {
+                imagemCarregada = true; 
+            }
+        };
+
+        imagemMemeAtual.onerror = () => { 
+            solicitarTrocaPorErroDeCarregamento();
+        };
 
         textosMeme = [
             { conteudo: "TEXTO SUPERIOR", x: canvas.width / 2, y: 40 },
@@ -236,6 +246,36 @@
         ];
         
         inicializarInputs();
+    }
+
+    function solicitarTrocaPorErroDeCarregamento() {
+        if (!imagensExcluidasNaRodada.includes(indiceImagemAtualGlobal)) {
+            imagensExcluidasNaRodada.push(indiceImagemAtualGlobal);
+        }
+
+        if (modoJogo === "host") {
+            let indicesValidos = [];
+            for (let i = 0; i < memeImages.length; i++) {
+                if (!imagensExcluidasNaRodada.includes(i)) indicesValidos.push(i);
+            }
+
+            // Fallback absoluto caso absolutamente nenhuma imagem do repositório carregue
+            if (indicesValidos.length === 0) {
+                imagemCarregada = true; 
+                return; 
+            }
+
+            let novoIndice = indicesValidos[Math.floor(Math.random() * indicesValidos.length)];
+            jogadores.forEach(j => j.imgIndice = novoIndice);
+            sincronizarTodosOsClientes({ 
+                tipo: "forçar_troca_imagem", 
+                novoIndice: novoIndice, 
+                listaAtualizada: jogadores,
+                blacklist: imagensExcluidasNaRodada 
+            });
+        } else {
+            conexoes[0].send({ tipo: "notificar_erro_imagem", indiceFalho: indiceImagemAtualGlobal, blacklistCliente: imagensExcluidasNaRodada });
+        }
     }
 
     function renderLoop() {
@@ -251,9 +291,9 @@
         document.getElementById('temporizador').style.color = "#fff";
         intervaloTimer = setInterval(() => {
             tempoRestante--;
-            let minutos = Math.floor(tempoRestante / 60);
+            let minutes = Math.floor(tempoRestante / 60);
             let segundos = tempoRestante % 60;
-            document.getElementById('temporizador').innerText = `⏱️ Tempo Restante: ${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+            document.getElementById('temporizador').innerText = `⏱️ Tempo Restante: ${minutes.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
             if (tempoRestante <= 15) document.getElementById('temporizador').style.color = "#e53e3e";
             if (tempoRestante <= 0) { clearInterval(intervaloTimer); if (!jaEnviouMeme) enviarMemeForçado(); }
         }, 1000);
@@ -369,17 +409,22 @@
 
     document.getElementById('btnIniciarJogo').onclick = () => {
         tocarSomNativo('clique');
+        imagensExcluidasNaRodada = []; 
         iniciarNovaRodadaLógica();
     };
 
     function iniciarNovaRodadaLógica() {
         let indicesDisponiveis = [];
-        for(let i = 0; i < memeImages.length; i++) { indicesDisponiveis.push(i); }
+        for(let i = 0; i < memeImages.length; i++) {
+            if(!imagensExcluidasNaRodada.includes(i)) indicesDisponiveis.push(i);
+        }
+        if(indicesDisponiveis.length === 0) indicesDisponiveis = [0];
+        
+        let indiceSorteadoGeral = indicesDisponiveis[Math.floor(Math.random() * indicesDisponiveis.length)];
+        
         jogadores.forEach((j) => {
             j.enviou = false; j.votou = false; j.meme = "";
-            if(indicesDisponiveis.length === 0) { for(let i = 0; i < memeImages.length; i++) { indicesDisponiveis.push(i); } }
-            let randomPos = Math.floor(Math.random() * indicesDisponiveis.length);
-            j.imgIndice = indicesDisponiveis.splice(randomPos, 1)[0];
+            j.imgIndice = indiceSorteadoGeral; 
         });
         sincronizarTodosOsClientes({ tipo: "começar_jogo", lista: jogadores });
     }
@@ -400,6 +445,27 @@
             }
             sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores });
         }
+        if (data.tipo === "notificar_erro_imagem") {
+            data.blacklistCliente.forEach(b => {
+                if(!imagensExcluidasNaRodada.includes(b)) imagensExcluidasNaRodada.push(b);
+            });
+            if(data.indiceFalho === indiceImagemAtualGlobal) {
+                let indicesValidos = [];
+                for (let i = 0; i < memeImages.length; i++) {
+                    if (!imagensExcluidasNaRodada.includes(i)) indicesValidos.push(i);
+                }
+                if (indicesValidos.length > 0) {
+                    let novoIndice = indicesValidos[Math.floor(Math.random() * indicesValidos.length)];
+                    jogadores.forEach(j => j.imgIndice = novoIndice);
+                    sincronizarTodosOsClientes({ 
+                        tipo: "forçar_troca_imagem", 
+                        novoIndice: novoIndice, 
+                        listaAtualizada: jogadores,
+                        blacklist: imagensExcluidasNaRodada 
+                    });
+                }
+            }
+        }
         if (data.tipo === "submeter_meme") {
             let j = jogadores.find(p => p.id === conn.peer); if(j) { j.enviou = true; j.meme = data.imagem; }
             atualizarListaInterface();
@@ -411,7 +477,6 @@
         }
         if (data.tipo === "voto") {
             let ele = jogadores.find(p => p.id === conn.peer);
-            // CORREÇÃO: Evita somar múltiplos cliques de voto redundantes vindo da mesma pessoa
             if(ele && !ele.votou) {
                 ele.votou = true;
                 let jVotado = jogadores.find(p => p.id === data.idVotado); 
@@ -430,6 +495,11 @@
             let meuDados = jogadores.find(p => p.id === peer.id);
             if(meuDados && meuDados.imgIndice !== undefined) gerarFundoMemeVirtual(meuDados.imgIndice);
             abrirTelaJogo(); iniciarTemporizador();
+        }
+        if (data.tipo === "forçar_troca_imagem") {
+            jogadores = data.listaAtualizada;
+            imagensExcluidasNaRodada = data.blacklist;
+            gerarFundoMemeVirtual(data.novoIndice);
         }
         if (data.tipo === "mostrar_meme_individual") {
             abrirTelaExposicaoDinamica(data.nomeAutor, data.imagemMeme, data.segundosRestantes);
@@ -475,7 +545,6 @@
         let timerExposicaoLoop = null;
 
         function apresentarProximoMeme() {
-            // CORREÇÃO CRÍTICA: Filtra memes vazios caso algum jogador saia ou caia na transição
             while(indiceMeme < listaMemes.length && !listaMemes[indiceMeme].imagem) {
                 indiceMeme++;
             }
@@ -575,19 +644,22 @@
     document.getElementById('btnVoltarJogo').onclick = () => {
         tocarSomNativo('clique');
         if(modoJogo === "host") {
+            imagensExcluidasNaRodada = []; 
             iniciarNovaRodadaLógica();
         }
     };
 
     function drawMeme() {
         ctx.fillStyle = "#121214"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
         if (imagemCarregada && imagemMemeAtual.complete && imagemMemeAtual.naturalWidth > 0) {
             ctx.drawImage(imagemMemeAtual, 0, 0, canvas.width, canvas.height);
         } else {
-            ctx.fillStyle = "#323238"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#202024"; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#fff"; ctx.font = "16px sans-serif"; ctx.textAlign = "center";
-            ctx.fillText("Carregando imagem...", canvas.width/2, canvas.height/2);
+            ctx.fillText("Sincronizando imagem...", canvas.width/2, canvas.height/2);
         }
+
         const fSize = Math.floor(canvas.width * 0.075);
         ctx.font = `bold ${fSize}px Impact, Arial Black, sans-serif`; 
         ctx.fillStyle = 'white'; ctx.strokeStyle = 'black'; ctx.lineWidth = fSize / 4; 
