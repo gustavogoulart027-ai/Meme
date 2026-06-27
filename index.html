@@ -218,7 +218,10 @@
         
         imagemMemeAtual = new Image();
         imagemMemeAtual.crossOrigin = "anonymous"; 
-        imagemMemeAtual.src = urlSelecionada;
+        
+        // Proxy adicionado aqui para garantir que o Postimages e o GitHub Pages conversem sem erros de segurança
+        let proxy = "https://images.weserv.nl/?url=";
+        imagemMemeAtual.src = proxy + urlSelecionada.replace("https://", "");
         
         imagemMemeAtual.onload = () => {
             imagemCarregada = true;
@@ -398,7 +401,7 @@
         if (data.tipo === "voto") {
             let j = jogadores.find(p => p.id === data.idVotado); if(j) j.pontos += 10;
             let ele = jogadores.find(p => p.id === conn.peer); if(ele) ele.votou = true;
-            if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jugadores });
+            if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
         }
     }
 
