@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Make It Meme - Sistema de Votação Blindado</title>
+    <title>Make It Meme - Versão GitHub Local</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121214; color: #fff; text-align: center; padding: 15px; margin: 0; -webkit-user-select: none; user-select: none; }
         .container { max-width: 500px; margin: 0 auto; background: #202024; padding: 20px; border-radius: 12px; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -194,13 +194,15 @@
         btn.addEventListener('click', () => { tocarSomNativo('clique'); });
     });
 
+    // LISTA CONFIGURADA PARA LER ARQUIVOS DO TEU PRÓPRIO REPOSITÓRIO GITHUB
+    // Se mudares os nomes dos ficheiros no GitHub, basta alterá-los aqui nesta lista!
     const memeImages = [
-        "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=500&q=80",
-        "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=500&q=80",
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80",
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=500&q=80",
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=500&q=80",
-        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=500&q=80"
+        "1782522638876.jpeg",
+        "meme1.jpg",
+        "meme2.jpg",
+        "meme3.jpg",
+        "meme4.jpg",
+        "meme5.jpg"
     ];
     
     function gerarFundoMemeVirtual(indice) {
@@ -208,11 +210,14 @@
         let urlSelecionada = memeImages[indice % memeImages.length];
         
         imagemMemeAtual = new Image();
-        imagemMemeAtual.crossOrigin = "anonymous"; 
+        // Não usamos mais "crossOrigin = anonymous" para arquivos locais do próprio repositório (evita bugs)
         imagemMemeAtual.src = urlSelecionada;
         
         imagemMemeAtual.onload = () => { imagemCarregada = true; };
-        imagemMemeAtual.onerror = () => { imagemCarregada = true; };
+        imagemMemeAtual.onerror = () => { 
+            // Fallback: Se o arquivo local falhar (erro de nome), ativa o canvas em branco em vez de quebrar o jogo
+            imagemCarregada = true; 
+        };
 
         textosMeme = [
             { conteudo: "TEXTO SUPERIOR", x: canvas.width / 2, y: 40 },
@@ -311,7 +316,7 @@
         peer.on('connection', (conn) => {
             conexoes.push(conn);
             conn.on('data', (data) => lidarComDadosHost(data, conn));
-            setTimeout(() => { sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jugadores }); }, 500);
+            setTimeout(() => { sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores }); }, 500);
         });
     };
 
@@ -393,7 +398,6 @@
             let j = jogadores.find(p => p.id === data.idVotado); if(j) j.pontos += 10;
             let ele = jogadores.find(p => p.id === conn.peer); if(ele) ele.votou = true;
             
-            // CORREÇÃO CRÍTICA: Verifica corretamente se todos os jogadores de fato completaram o voto
             if (jogadores.every(p => p.votou)) {
                 sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
             }
@@ -451,60 +455,4 @@
             btnVoto.onclick = () => {
                 tocarSomNativo('voto');
                 if(modoJogo === "host") {
-                    let j = jogadores.find(p => p.id === m.id); if(j) j.pontos += 10;
-                    let ele = jogadores.find(p => p.id === peer.id); if(ele) ele.votou = true;
-                    if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
-                } else { conexoes[0].send({ tipo: "voto", idVotado: m.id }); }
-                galeria.innerHTML = "<h3>Voto enviado! Aguardando o resto do grupo...</h3>";
-            };
-            card.appendChild(img); card.appendChild(btnVoto); galeria.appendChild(card);
-        });
-    }
-
-    function montarTelaRanking(listaRanking) {
-        tocarSomNativo('vitoria');
-        telaVotacao.classList.add('hidden'); telaRanking.classList.remove('hidden');
-        const podio = document.getElementById('podio-scores'); podio.innerHTML = "";
-        let ordenada = [...listaRanking].sort((a, b) => b.pontos - a.pontos);
-        ordenada.forEach((j, idx) => {
-            const item = document.createElement('div'); item.className = "ranking-item";
-            item.innerHTML = `<span>#${idx+1} ${j.nome}</span> <span>${j.pontos} pts</span>`;
-            podio.appendChild(item);
-        });
-        
-        // Exibe o botão de Próxima Rodada apenas para o administrador da sala
-        if(modoJogo === "host") {
-            document.getElementById('btnVoltarJogo').classList.remove('hidden');
-        } else {
-            document.getElementById('btnVoltarJogo').classList.add('hidden');
-        }
-    }
-
-    document.getElementById('btnVoltarJogo').onclick = () => {
-        tocarSomNativo('clique');
-        if(modoJogo === "host") {
-            iniciarNovaRodadaLógica();
-        }
-    };
-
-    function drawMeme() {
-        ctx.fillStyle = "#121214"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-        if (imagemCarregada && imagemMemeAtual.complete) {
-            ctx.drawImage(imagemMemeAtual, 0, 0, canvas.width, canvas.height);
-        } else {
-            ctx.fillStyle = "#323238"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#fff"; ctx.font = "16px sans-serif"; ctx.textAlign = "center";
-            ctx.fillText("Carregando imagem...", canvas.width/2, canvas.height/2);
-        }
-        const fSize = Math.floor(canvas.width * 0.082);
-        ctx.font = `bold ${fSize}px Impact, Arial Black, sans-serif`; 
-        ctx.fillStyle = 'white'; ctx.strokeStyle = 'black'; ctx.lineWidth = fSize / 4; 
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        textosMeme.forEach(t => { 
-            ctx.strokeText(t.conteudo.toUpperCase(), t.x, t.y); 
-            ctx.fillText(t.conteudo.toUpperCase(), t.x, t.y); 
-        });
-    }
-</script>
-</body>
-</html>
+                    let j =
