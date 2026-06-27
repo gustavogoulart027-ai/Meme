@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Make It Meme - Versão Final Ultra Estável</title>
+    <title>Make It Meme - Versão Premium Ultra Estável</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121214; color: #fff; text-align: center; padding: 15px; margin: 0; -webkit-user-select: none; user-select: none; }
         .container { max-width: 500px; margin: 0 auto; background: #202024; padding: 20px; border-radius: 12px; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -24,7 +24,11 @@
         .ranking-item:first-child { background: #feb72b; color: #000; }
         #status-envio { color: #fbbf24; font-weight: bold; margin-top: 10px; }
         .lista-textos { text-align: left; background: #121214; padding: 10px; border-radius: 6px; margin: 10px 0; border: 1px solid #323238; }
-        #temporizador { font-size: 22px; font-weight: bold; color: #e53e3e; background: #29292e; padding: 10px; border-radius: 8px; border: 1px solid #e53e3e; margin-bottom: 15px; }
+        #temporizador, #timer-exposicao { font-size: 22px; font-weight: bold; color: #e53e3e; background: #29292e; padding: 10px; border-radius: 8px; border: 1px solid #e53e3e; margin-bottom: 15px; }
+        #timer-exposicao { color: #04d361; border-color: #04d361; }
+        .tela-espera-conteudo { padding: 40px 20px; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #8257e5; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -52,24 +56,34 @@
 
     <div id="tela-jogo" class="hidden">
         <h3 id="info-sala" style="color: #8257e5;">Sala: -</h3>
-        
         <div id="temporizador">⏱️ Tempo Restante: 02:00</div>
-        
         <div id="lista-jogadores" style="color:#a8a8b3; margin-bottom: 15px; font-size: 14px;"></div>
-
         <div class="lista-textos">
             <span style="font-size: 14px; color:#a8a8b3;">Toque e arraste as frases diretamente na imagem!</span>
             <div id="container-inputs"></div>
             <button class="btn btn-sub" id="btnAdicionarTexto">+ Legenda</button>
         </div>
-        
         <div id="canvas-container">
             <canvas id="memeCanvas"></canvas>
         </div>
-        
         <button class="btn btn-download" id="btnDownload">📥 Descarregar Meme (Galeria)</button>
         <button class="btn" id="btnEnviar" style="background:#04d361; margin-top: 15px;">🚀 Enviar Meu Meme</button>
-        <p id="status-envio"></p>
+    </div>
+
+    <div id="tela-espera" class="hidden">
+        <div class="tela-espera-conteudo">
+            <h2 style="color: #fbbf24;">Meme Enviado com Sucesso!</h2>
+            <div class="loader"></div>
+            <p style="color: #a8a8b3;" id="texto-espera-dinamico">Aguardando que os restantes jogadores terminem as suas criações...</p>
+        </div>
+    </div>
+
+    <div id="tela-exposicao" class="hidden">
+        <div id="timer-exposicao">👀 Olhem para o ecrã: 7s</div>
+        <h3 id="autor-meme-exposto" style="color: #feb72b; margin-bottom: 10px;">Meme de: -</h3>
+        <div class="meme-card" style="border: 2px solid #04d361;">
+            <img id="img-meme-exposto" src="" alt="Meme em exibição">
+        </div>
     </div>
 
     <div id="tela-votacao" class="hidden">
@@ -180,6 +194,8 @@
     const telaInicial = document.getElementById('tela-inicial');
     const telaLobby = document.getElementById('tela-lobby');
     const telaJogo = document.getElementById('tela-jogo');
+    const telaEspera = document.getElementById('tela-espera');
+    const telaExposicao = document.getElementById('tela-exposicao');
     const telaVotacao = document.getElementById('tela-votacao');
     const telaRanking = document.getElementById('tela-ranking');
     const canvas = document.getElementById('memeCanvas');
@@ -195,7 +211,6 @@
         btn.addEventListener('click', () => { tocarSomNativo('clique'); });
     });
 
-    // ARQUIVOS DO TEU PRÓPRIO REPOSITÓRIO GITHUB
     const memeImages = [
         "1782522638876.jpeg",
         "meme1.jpg",
@@ -370,15 +385,13 @@
     }
 
     function abrirTelaJogo() {
-        telaLobby.classList.add('hidden'); telaVotacao.classList.add('hidden'); telaRanking.classList.add('hidden'); telaJogo.classList.remove('hidden');
+        telaLobby.classList.add('hidden'); telaVotacao.classList.add('hidden'); telaRanking.classList.add('hidden'); telaEspera.classList.add('hidden'); telaExposicao.classList.add('hidden'); telaJogo.classList.remove('hidden');
         document.getElementById('info-sala').innerText = "Sala: " + codigoSala;
-        document.getElementById('status-envio').innerText = "";
         atualizarListaInterface();
     }
 
     function lidarComDadosHost(data, conn) {
         if (data.tipo === "entrar") {
-            // CORREÇÃO CRÍTICA: Evita duplicar jogadores repetidos por falha ou oscilação de rede
             if(!jogadores.find(p => p.id === conn.peer)) {
                 jogadores.push({ id: conn.peer, nome: data.nome, pontos: 0, enviou: false, votou: false, meme: "", imgIndice: 0 });
             } else {
@@ -390,14 +403,20 @@
         if (data.tipo === "submeter_meme") {
             let j = jogadores.find(p => p.id === conn.peer); if(j) { j.enviou = true; j.meme = data.imagem; }
             atualizarListaInterface();
+            
             if (jogadores.every(p => p.enviou)) {
                 clearInterval(intervaloTimer);
-                sincronizarTodosOsClientes({ tipo: "ir_votacao", listaMemes: jogadores.map(p => ({id: p.id, nome: p.nome, imagem: p.meme})) });
+                executarSequenciaExposicaoMeme(jogadores.map(p => ({id: p.id, nome: p.nome, imagem: p.meme})));
             }
         }
         if (data.tipo === "voto") {
-            let j = jogadores.find(p => p.id === data.idVotado); if(j) j.pontos += 10;
-            let ele = jogadores.find(p => p.id === conn.peer); if(ele) ele.votou = true;
+            let ele = jogadores.find(p => p.id === conn.peer);
+            // CORREÇÃO: Evita somar múltiplos cliques de voto redundantes vindo da mesma pessoa
+            if(ele && !ele.votou) {
+                ele.votou = true;
+                let jVotado = jogadores.find(p => p.id === data.idVotado); 
+                if(jVotado) jVotado.pontos += 10;
+            }
             if (jogadores.every(p => p.votou)) {
                 sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
             }
@@ -412,7 +431,10 @@
             if(meuDados && meuDados.imgIndice !== undefined) gerarFundoMemeVirtual(meuDados.imgIndice);
             abrirTelaJogo(); iniciarTemporizador();
         }
-        if (data.tipo === "ir_votacao") { clearInterval(intervaloTimer); montarTelaVotacao(data.listaMemes); }
+        if (data.tipo === "mostrar_meme_individual") {
+            abrirTelaExposicaoDinamica(data.nomeAutor, data.imagemMeme, data.segundosRestantes);
+        }
+        if (data.tipo === "ir_votacao") { montarTelaVotacao(data.listaMemes); }
         if (data.tipo === "ir_ranking") montarTelaRanking(data.listaRanking);
     }
 
@@ -429,23 +451,85 @@
 
     function enviarMemeManual() {
         if(jaEnviouMeme) return; jaEnviouMeme = true;
-        document.getElementById('btnEnviar').disabled = true; // Desativa duplo clique para não quebrar a contagem
+        document.getElementById('btnEnviar').disabled = true;
         const imgFinal = canvas.toDataURL('image/jpeg', 0.4);
-        document.getElementById('status-envio').innerText = "Meme enviado! Aguardando o grupo...";
+        
+        telaJogo.classList.add('hidden');
+        telaEspera.classList.remove('hidden');
+        
         if (modoJogo === "host") {
             let j = jogadores.find(p => p.id === peer.id); if(j) { j.enviou = true; j.meme = imgFinal; }
             atualizarListaInterface();
             if (jogadores.every(p => p.enviou)) {
                 clearInterval(intervaloTimer);
-                sincronizarTodosOsClientes({ tipo: "ir_votacao", listaMemes: jogadores.map(p => ({id: p.id, nome: p.nome, imagem: p.meme})) });
+                executarSequenciaExposicaoMeme(jogadores.map(p => ({id: p.id, nome: p.nome, imagem: p.meme})));
             }
         } else { conexoes[0].send({ tipo: "submeter_meme", imagem: imgFinal }); }
     }
 
-    function enviarMemeForçado() { document.getElementById('temporizador').innerText = "⏱️ Tempo Esgotado!"; enviarMemeManual(); }
+    function enviarMemeForçado() { enviarMemeManual(); }
+
+    function executarSequenciaExposicaoMeme(listaMemes) {
+        let indiceMeme = 0;
+        let tempoRestanteExposicao = 7;
+        let timerExposicaoLoop = null;
+
+        function apresentarProximoMeme() {
+            // CORREÇÃO CRÍTICA: Filtra memes vazios caso algum jogador saia ou caia na transição
+            while(indiceMeme < listaMemes.length && !listaMemes[indiceMeme].imagem) {
+                indiceMeme++;
+            }
+
+            if (indiceMeme >= listaMemes.length) {
+                sincronizarTodosOsClientes({ tipo: "ir_votacao", listaMemes: listaMemes });
+                return;
+            }
+
+            let memeAtual = listaMemes[indiceMeme];
+            tempoRestanteExposicao = 7;
+
+            sincronizarTodosOsClientes({
+                tipo: "mostrar_meme_individual",
+                nomeAutor: memeAtual.nome,
+                imagemMeme: memeAtual.imagem,
+                segundosRestantes: tempoRestanteExposicao
+            });
+
+            timerExposicaoLoop = setInterval(() => {
+                tempoRestanteExposicao--;
+                if (tempoRestanteExposicao <= 0) {
+                    clearInterval(timerExposicaoLoop);
+                    indiceMeme++;
+                    apresentarProximoMeme();
+                } else {
+                    sincronizarTodosOsClientes({
+                        tipo: "mostrar_meme_individual",
+                        nomeAutor: memeAtual.nome,
+                        imagemMeme: memeAtual.imagem,
+                        segundosRestantes: tempoRestanteExposicao
+                    });
+                }
+            }, 1000);
+        }
+
+        apresentarProximoMeme();
+    }
+
+    function abrirTelaExposicaoDinamica(nome, imagem, segundos) {
+        telaJogo.classList.add('hidden');
+        telaEspera.classList.add('hidden');
+        telaVotacao.classList.add('hidden');
+        telaExposicao.classList.remove('hidden');
+
+        document.getElementById('autor-meme-exposto').innerText = "Meme de: " + nome;
+        document.getElementById('img-meme-exposto').src = imagem;
+        document.getElementById('timer-exposicao').innerText = `👀 Olhem para o ecrã: ${segundos}s`;
+    }
 
     function montarTelaVotacao(listaMemes) {
-        telaJogo.classList.add('hidden'); telaVotacao.classList.remove('hidden');
+        telaExposicao.classList.add('hidden'); 
+        telaEspera.classList.add('hidden');
+        telaVotacao.classList.remove('hidden');
         const galeria = document.getElementById('galeria-memes'); galeria.innerHTML = "";
         listaMemes.forEach(m => {
             if(!m.imagem) return;
@@ -455,10 +539,13 @@
             if(m.id === peer.id) { btnVoto.disabled = true; btnVoto.innerText = "Seu Meme"; btnVoto.style.background = "#323238"; }
             btnVoto.onclick = () => {
                 tocarSomNativo('voto');
-                btnVoto.disabled = true; // Proteção contra múltiplos cliques rápidos no mesmo voto
+                btnVoto.disabled = true;
                 if(modoJogo === "host") {
-                    let j = jogadores.find(p => p.id === m.id); if(j) j.pontos += 10;
-                    let ele = jogadores.find(p => p.id === peer.id); if(ele) ele.votou = true;
+                    let ele = jogadores.find(p => p.id === peer.id);
+                    if(ele && !ele.votou) {
+                        ele.votou = true;
+                        let j = jogadores.find(p => p.id === m.id); if(j) j.pontos += 10;
+                    }
                     if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
                 } else { conexoes[0].send({ tipo: "voto", idVotado: m.id }); }
                 galeria.innerHTML = "<h3>Voto enviado! Aguardando o resto do grupo...</h3>";
@@ -501,7 +588,7 @@
             ctx.fillStyle = "#fff"; ctx.font = "16px sans-serif"; ctx.textAlign = "center";
             ctx.fillText("Carregando imagem...", canvas.width/2, canvas.height/2);
         }
-        const fSize = Math.floor(canvas.width * 0.082);
+        const fSize = Math.floor(canvas.width * 0.075);
         ctx.font = `bold ${fSize}px Impact, Arial Black, sans-serif`; 
         ctx.fillStyle = 'white'; ctx.strokeStyle = 'black'; ctx.lineWidth = fSize / 4; 
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
