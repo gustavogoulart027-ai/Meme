@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -571,7 +570,7 @@
     }
 
     document.getElementById('btnAdicionarTexto').onclick = () => {
-        textosMeme.push({ conteudo: "NOVA\nLEGENDA", x: canvas.width / 2, y: canvas.height / 2,摊tamanho: 30, rotacao: 0 });
+        textosMeme.push({ conteudo: "NOVA\nLEGENDA", x: canvas.width / 2, y: canvas.height / 2, tamanho: 30, rotacao: 0 });
         inicializarInputs();
     };
 
@@ -610,7 +609,7 @@
         link.href = canvas.toDataURL('image/jpeg', 0.8); link.click();
     };
 
-    // FIX CRÍTICO: Deixa o PeerJS gerar o ID automático para não dar erro de servidor e formata depois
+    // FIX DEFINITIVO: Cria uma ID alfanumérica limpa e direta na rede do PeerJS
     document.getElementById('btnCriar').onclick = () => {
         tocarSomNativo('clique');
         meuNome = document.getElementById('inputNome').value.trim().replace(/['"{}()\[\]]/g, '');
@@ -620,13 +619,13 @@
         if(peer) { try{ peer.destroy(); }catch(e){} }
         
         modoJogo = "host"; 
-        peer = new Peer(); // Servidor atribui ID único seguro sem falhas
+        codigoSala = "MIM-" + Math.random().toString(36).substring(2, 7).toUpperCase();
+        
+        // Passamos a nossa ID diretamente no construtor principal
+        peer = new Peer(codigoSala); 
         
         peer.on('open', (id) => {
-            // Pegamos o ID gerado e transformamos no nosso visual padrão reduzido
-            codigoSala = "MIM-" + id.substring(0, 5).toUpperCase();
-            document.getElementById('lobby-codigo').innerText = codigoSala;
-            
+            document.getElementById('lobby-codigo').innerText = id;
             jogadores = [{ 
                 id: peer.id, nome: meuNome, pontos: 0, enviou: false, votou: false, meme: "", imgIndice: 0,
                 imagensRestantes: Array.from({length: memeImages.length}, (_, i) => i), imagensVistas: []
@@ -643,8 +642,9 @@
         });
 
         peer.on('error', (err) => {
-            alert("Erro ao criar servidor. Tente novamente.");
-            document.getElementById('lobby-codigo').innerText = "ERRO";
+            console.error(err);
+            alert("Código de sala já ocupado ou instabilidade na rede. Clique em Criar novamente para tentar outro código.");
+            document.getElementById('lobby-codigo').innerText = "ERRO - TENTE DE NOVO";
         });
     };
 
@@ -659,10 +659,7 @@
         peer = new Peer();
         
         peer.on('open', () => {
-            // Como usamos IDs gerados dinamicamente no Host, passamos o código de busca direto
-            let destino = codigoDigitado.replace("MIM-", "").toLowerCase();
-            
-            // Procuramos conexões correspondentes na rede PeerJS pública
+            // Conecta diretamente na ID exata gerada pelo Host
             let conn = peer.connect(codigoDigitado); 
             conexoes = [conn];
             
@@ -676,7 +673,8 @@
         });
         
         peer.on('error', (err) => {
-            alert("Não foi possível conectar a esta sala. Verifique o código.");
+            console.error(err);
+            alert("Não foi possível conectar. Verifique se o código está correto e tente de novo.");
         });
     };
 
@@ -983,5 +981,3 @@
 </script>
 </body>
 </html>
-
-```
