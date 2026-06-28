@@ -5,16 +5,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Make It Meme - Cyber Edition</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+    <title>Make It Meme - Cyber Black Edition</title>
     
     <style>
-        /* Estética Geral Avançada (Nível Extremo) */
+        /* Estética Geral Avançada (Tema Preto Profundo) */
         body { 
             font-family: 'Segoe UI', -apple-system, sans-serif; 
-            background: radial-gradient(circle at center, #0e0a16 0%, #050507 100%); 
+            background: #050507; 
             color: #fff; 
             text-align: center; 
             padding: 15px; 
@@ -24,128 +21,135 @@
             min-height: 100vh;
         }
         
-        /* Fontes de Letreiro estilo Memes Premium */
-        h1, h2, h3, .font-memes, #lobby-codigo, #temporizador, #timer-exposicao, .ranking-item span, .sabotagem-alerta h2 { 
-            font-family: 'Permanent Marker', 'Sedgwick Ave Display', cursive;
-            color: #fffae0; /* Amarelo Claro */
-            text-shadow: 3px 3px 0px #8257e5, -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000, 1px 1px 0px #000;
-            letter-spacing: 3px;
+        /* Tipografia de Letreiro Padrão Sem Fontes Artísticas */
+        h1, h2, h3, #lobby-codigo, #temporizador, #timer-exposicao, .ranking-item span, .sabotagem-alerta h2 { 
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
+        /* Título Principal com Efeito RGB */
         h1 { 
             font-size: 42px; 
             margin-top: 10px;
             margin-bottom: 25px; 
-            animation: glitchNeon 2s infinite alternate;
+            background: linear-gradient(to right, #ff0000, #00ff00, #0000ff, #ff00ff, #ff0000);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rgbText 4s linear infinite;
         }
 
-        @keyframes glitchNeon {
-            0% { text-shadow: 3px 3px 0px #8257e5, 0 0 10px rgba(130,87,229,0.6); }
-            100% { text-shadow: 3px 3px 0px #feb72b, 0 0 20px rgba(254,183,43,0.8); }
+        @keyframes rgbText {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
         }
 
-        /* Container Ultra Detalhado com Borda Neon Pulsante */
+        /* Container Black com Borda Neon Transição RGB */
         .container { 
             max-width: 520px; 
             margin: 20px auto; 
-            background: rgba(11, 11, 14, 0.95); 
+            background: #0d0d11; 
             padding: 30px 25px; 
-            border-radius: 28px; 
+            border-radius: 24px; 
             box-sizing: border-box; 
-            box-shadow: 0 0 40px rgba(130, 87, 229, 0.15), inset 0 0 15px rgba(130, 87, 229, 0.1); 
-            border: 3px solid #8257e5;
+            border: 3px solid #ff0000;
             position: relative;
-            animation: borderGlow 4s infinite alternate;
+            animation: rgbBorda 6s linear infinite;
         }
 
-        @keyframes borderGlow {
-            0% { border-color: #8257e5; box-shadow: 0 0 30px rgba(130, 87, 229, 0.2); }
-            100% { border-color: #a855f7; box-shadow: 0 0 45px rgba(168, 85, 247, 0.4); }
+        @keyframes rgbBorda {
+            0% { border-color: #ff0000; box-shadow: 0 0 25px rgba(255, 0, 0, 0.4); }
+            20% { border-color: #00ff00; box-shadow: 0 0 25px rgba(0, 255, 0, 0.4); }
+            40% { border-color: #0000ff; box-shadow: 0 0 25px rgba(0, 0, 255, 0.4); }
+            60% { border-color: #ffff00; box-shadow: 0 0 25px rgba(255, 255, 0, 0.4); }
+            80% { border-color: #ff00ff; box-shadow: 0 0 25px rgba(255, 0, 255, 0.4); }
+            100% { border-color: #ff0000; box-shadow: 0 0 25px rgba(255, 0, 0, 0.4); }
         }
         
         .hidden { display: none !important; }
         
-        /* Botões Hidráulicos Premium (Formato Pílula Avançado) */
+        /* Botões Hidráulicos Premium estilo Chumbo/Preto */
         .btn { 
-            font-family: 'Permanent Marker', sans-serif;
-            background: linear-gradient(135deg, #8257e5 0%, #633bbc 100%); 
-            color: #fffae0; 
-            border: 2px solid #fffae0; 
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            background: linear-gradient(135deg, #1f1f25 0%, #111114 100%); 
+            color: #fff; 
+            border: 2px solid #333; 
             padding: 16px 24px; 
-            border-radius: 50px; 
+            border-radius: 12px; 
             cursor: pointer; 
             font-size: 20px; 
             margin: 14px 0; 
             width: 100%; 
             display: block; 
             box-sizing: border-box; 
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transition: all 0.2s ease; 
             text-transform: uppercase;
-            box-shadow: 0 6px 0px #3b1d82, 0 8px 20px rgba(0,0,0,0.5);
-            text-shadow: 1px 1px 0px #000;
+            box-shadow: 0 5px 0px #000, 0 8px 15px rgba(0,0,0,0.6);
         }
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 0px #3b1d82, 0 12px 24px rgba(130, 87, 229, 0.3);
+            border-color: #666;
+            box-shadow: 0 7px 0px #000, 0 10px 20px rgba(255, 255, 255, 0.05);
         }
         .btn:active { 
-            transform: translateY(6px); 
+            transform: translateY(5px); 
             box-shadow: 0 0px 0px transparent, 0 2px 5px rgba(0,0,0,0.8);
         }
         .btn:disabled { 
-            background: #1a1a24 !important; 
-            color: #4a4a5a !important; 
-            border-color: #2a2a35 !important;
+            background: #111 !important; 
+            color: #444 !important; 
+            border-color: #222 !important;
             cursor: not-allowed; 
             transform: none !important; 
             box-shadow: none !important; 
         }
         
-        /* Variações Elegantes de Botões */
+        /* Botões Especiais */
         .btn-vote { 
-            background: linear-gradient(135deg, #fffae0 0%, #e6dfb8 100%); 
-            color: #050507; 
-            border: 2px solid #8257e5;
-            box-shadow: 0 6px 0px #969176, 0 8px 15px rgba(0,0,0,0.4);
-            text-shadow: none;
+            background: linear-gradient(135deg, #ffffff 0%, #dddddd 100%); 
+            color: #000; 
+            border: 2px solid #000;
+            box-shadow: 0 5px 0px #888, 0 8px 15px rgba(0,0,0,0.4);
         }
-        .btn-vote:hover { box-shadow: 0 8px 0px #969176, 0 12px 20px rgba(255, 250, 224, 0.2); }
+        .btn-vote:hover { border-color: #000; box-shadow: 0 7px 0px #888, 0 10px 15px rgba(255,255,255,0.1); }
         .btn-sub { 
-            background: #14141c; 
+            background: #16161c; 
             padding: 10px; 
             font-size: 15px; 
             margin: 6px 0; 
-            border: 2px solid #8257e5; 
-            border-radius: 14px;
+            border: 2px solid #333; 
+            border-radius: 8px;
             box-shadow: none;
         }
-        .btn-sub:hover { background: #1c1c28; border-color: #fffae0; }
+        .btn-sub:hover { background: #222; border-color: #fff; }
         .btn-download { 
-            background: #050507; 
-            color: #fffae0; 
-            border: 2px solid #8257e5; 
+            background: #000; 
+            color: #fff; 
+            border: 2px solid #444; 
             margin-top: 5px; 
-            box-shadow: 0 5px 0px #4f46e5;
+            box-shadow: 0 5px 0px #222;
         }
         .btn-size { 
             font-family: sans-serif;
-            background: #14141c; 
-            color: #fffae0; 
-            border: 1px solid #8257e5; 
+            background: #16161c; 
+            color: #fff; 
+            border: 1px solid #333; 
             padding: 6px 12px; 
-            border-radius: 8px; 
+            border-radius: 6px; 
             font-weight: bold; 
             cursor: pointer; 
             font-size: 14px; 
             transition: 0.1s;
         }
-        .btn-size:active { background: #8257e5; }
+        .btn-size:active { background: #444; }
         
-        /* Painel Especial de Sabotagem (Extremo) */
+        /* Painel Especial de Sabotagem */
         .painel-sabotagem {
-            background: linear-gradient(135deg, #200b14 0%, #0c050a 100%);
+            background: #14070a;
             border: 2px dashed #ef4444;
-            border-radius: 18px;
+            border-radius: 12px;
             padding: 15px;
             margin: 15px 0;
             box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
@@ -153,19 +157,22 @@
         .select-sabotagem {
             width: 100%;
             padding: 12px;
-            background: #050507;
+            background: #000;
             color: #ef4444;
             border: 2px solid #ef4444;
-            border-radius: 12px;
-            font-family: 'Permanent Marker', sans-serif;
+            border-radius: 8px;
+            font-family: 'Impact', sans-serif;
             font-size: 16px;
             margin-top: 10px;
             outline: none;
         }
         .sabotagem-alerta {
             background: #ef4444 !important;
-            border: 3px solid #fffae0 !important;
+            border: 3px solid #fff !important;
             animation: pulseAlerta 1s infinite alternate;
+        }
+        .sabotagem-alerta h1 {
+            -webkit-text-fill-color: #fff !important;
         }
         @keyframes pulseAlerta {
             0% { box-shadow: 0 0 10px #ef4444; }
@@ -176,10 +183,10 @@
         input[type="text"], textarea { 
             padding: 16px; 
             width: 100%; 
-            border-radius: 18px; 
-            border: 2px solid #8257e5; 
+            border-radius: 12px; 
+            border: 2px solid #333; 
             margin: 12px 0; 
-            background: #050507; 
+            background: #000; 
             color: #fff; 
             font-size: 16px; 
             box-sizing: border-box; 
@@ -190,33 +197,33 @@
             box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
         }
         input[type="text"]:focus, textarea:focus { 
-            border-color: #fffae0; 
+            border-color: #fff; 
             outline: none; 
-            box-shadow: 0 0 15px rgba(255, 250, 224, 0.25), inset 0 2px 8px rgba(0,0,0,0.6);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), inset 0 2px 8px rgba(0,0,0,0.6);
         }
         textarea { resize: none; height: 60px; }
         
         /* Molduras de Amostra e Canvas */
         #canvas-container { position: relative; display: inline-block; max-width: 100%; margin-top: 15px; }
-        canvas { max-width: 100%; border-radius: 20px; border: 4px solid #8257e5; background: #050507; touch-action: none; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
+        canvas { max-width: 100%; border-radius: 14px; border: 4px solid #222; background: #000; touch-action: none; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
         
         .galeria { display: flex; flex-direction: column; gap: 22px; margin-top: 20px; }
-        .meme-card { background: #0b0b0e; padding: 18px; border-radius: 24px; border: 2px solid #8257e5; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.8); }
-        .meme-card img { width: 100%; border-radius: 16px; display: block; background: #050507; min-height: 200px; object-fit: contain; }
+        .meme-card { background: #111; padding: 18px; border-radius: 16px; border: 2px solid #333; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.8); }
+        .meme-card img { width: 100%; border-radius: 10px; display: block; background: #000; min-height: 200px; object-fit: contain; }
         
         /* Ranking e Podio Premium */
-        .ranking-item { background: #121217; padding: 18px; margin: 12px 0; border-radius: 16px; display: flex; justify-content: space-between; font-size: 22px; border: 1px solid #222; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .ranking-item:first-child { background: linear-gradient(135deg, #fffae0 0%, #f3eaaf 100%); border: 3px solid #8257e5; box-shadow: 0 0 25px rgba(130, 87, 229, 0.5); }
-        .ranking-item:first-child span { color: #050507; text-shadow: none; font-weight: bold; }
+        .ranking-item { background: #111; padding: 18px; margin: 12px 0; border-radius: 12px; display: flex; justify-content: space-between; font-size: 22px; border: 1px solid #222; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .ranking-item:first-child { background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%); border: 3px solid #000; box-shadow: 0 0 25px rgba(255, 255, 255, 0.2); }
+        .ranking-item:first-child span { color: #000; text-shadow: none; font-weight: bold; }
         
-        .lista-textos { text-align: left; background: #050507; padding: 14px; border-radius: 18px; margin: 12px 0; border: 1px solid #1c1c24; }
+        .lista-textos { text-align: left; background: #000; padding: 14px; border-radius: 12px; margin: 12px 0; border: 1px solid #222; }
         .linha-input { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
         
         /* Placas de Tempo Customizadas */
-        #temporizador, #timer-exposicao { font-size: 22px; background: #121217; padding: 14px; border-radius: 50px; border: 2px solid #8257e5; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        #timer-exposicao { border-color: #fffae0; box-shadow: 0 0 20px rgba(255, 250, 224, 0.2); }
+        #temporizador, #timer-exposicao { font-size: 22px; background: #111; padding: 14px; border-radius: 12px; border: 2px solid #333; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        #timer-exposicao { border-color: #fff; box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); }
         
-        .loader { border: 4px solid #1c1c24; border-top: 4px solid #fffae0; border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin: 25px auto; }
+        .loader { border: 4px solid #222; border-top: 4px solid #fff; border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin: 25px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
@@ -228,12 +235,12 @@
         <input type="text" id="inputNome" placeholder="Seu Nome / Apelido"><br>
         <button class="btn" id="btnCriar">Criar Nova Sala</button>
         <input type="text" id="inputCodigo" placeholder="Código da Sala"><br>
-        <button class="btn" id="btnEntrar" style="background: #14141c; color: #555; border: 2px solid #222; box-shadow: none;">Entrar na Sala</button>
+        <button class="btn" id="btnEntrar" style="background: #111; color: #666; border: 2px solid #222; box-shadow: none;">Entrar na Sala</button>
     </div>
 
     <div id="tela-lobby" class="hidden">
-        <div style="background: #050507; padding: 15px; border-radius: 16px; border: 2px dashed #8257e5; margin-bottom: 20px;">
-            <h1 id="lobby-codigo" style="margin: 0; letter-spacing: 4px;">-</h1>
+        <div style="background: #000; padding: 15px; border-radius: 12px; border: 2px dashed #444; margin-bottom: 20px;">
+            <h1 id="lobby-codigo" style="margin: 0; letter-spacing: 4px; background: none; -webkit-text-fill-color: initial; color: #fff;">-</h1>
         </div>
         
         <div id="painel-campeao-sabotagem" class="painel-sabotagem hidden">
@@ -243,14 +250,14 @@
             </select>
         </div>
 
-        <div id="lobby-lista-jogadores" style="text-align: left; margin-bottom: 20px; font-size: 17px; color: #fffae0;"></div>
-        <button class="btn hidden" id="btnIniciarJogo" style="background: #fffae0; color: #050507; border-color: #8257e5;">🚀 Iniciar Jogo</button>
+        <div id="lobby-lista-jogadores" style="text-align: left; margin-bottom: 20px; font-size: 17px; color: #fff;"></div>
+        <button class="btn hidden" id="btnIniciarJogo" style="background: #fff; color: #000; border-color: #000;">🚀 Iniciar Jogo</button>
     </div>
 
     <div id="tela-jogo" class="hidden">
         <div id="temporizador">⏱️ Tempo: 04:00</div>
         <div id="alerta-sabotado" style="color: #ef4444; font-weight: bold; margin-bottom: 10px;" class="hidden">⚠️ VOCÊ FOI SABOTADO! TEMPO REDUZIDO PARA 2 MINUTOS! ⚠️</div>
-        <div id="lista-jogadores" style="color:#8257e5; margin-bottom: 15px; font-size: 14px; font-weight: bold;"></div>
+        <div id="lista-jogadores" style="color:#aaa; margin-bottom: 15px; font-size: 14px; font-weight: bold;"></div>
         <div class="lista-textos">
             <div id="container-inputs"></div>
             <button class="btn btn-sub" id="btnAdicionarTexto">+ Legenda</button>
@@ -265,7 +272,7 @@
     <div id="tela-espera" class="hidden">
         <div style="padding: 40px 20px;">
             <h2>Meme Enviado!</h2>
-            <p style="color: #8257e5; font-weight: bold;">Aguardando os outros memeiros...</p>
+            <p style="color: #888; font-weight: bold;">Aguardando os outros memeiros...</p>
             <div class="loader"></div>
         </div>
     </div>
@@ -295,6 +302,7 @@
 <script>
     let audioCtx = null;
     let musicLoopStarted = false;
+    let textosMeme = []; // Inicializado no topo para evitar quebras de undefined no loop
 
     function iniciarContextoAudio() {
         try {
@@ -312,13 +320,12 @@
             try {
                 let notasAtuais = acordesSunday[passo % acordesSunday.length];
                 let tempoAtual = audioCtx.currentTime;
-                textosMeme = textosMeme || []; 
                 notasAtuais.forEach((frequencia, index) => {
                     let osc = audioCtx.createOscillator();
                     let g = audioCtx.createGain();
                     osc.type = 'triangle'; 
                     osc.frequency.setValueAtTime(frequencia, tempoAtual + (index * 0.12)); 
-                    g.gain.setValueAtTime(0.12, tempoAtual + (index * 0.12));
+                    g.gain.setValueAtTime(0.08, tempoAtual + (index * 0.12));
                     g.gain.exponentialRampToValueAtTime(0.001, tempoAtual + 1.2);
                     osc.connect(g); g.connect(audioCtx.destination);
                     osc.start(tempoAtual + (index * 0.12)); osc.stop(tempoAtual + 1.2);
@@ -363,11 +370,9 @@
     let imagemMemeAtual = new Image();
     let imagemCarregada = false;
     let indiceImagemAtualGlobal = 0; 
-    let textosMeme = [];
     let textoArrastando = null;
     let timerExposicaoLoop = null; 
     
-    // Controle de Sabotagem
     let idCampeaoAnterior = ""; 
     let idSabotadoAtual = "";
 
@@ -429,19 +434,18 @@
     function iniciarTemporizador() {
         clearInterval(intervaloTimer);
         
-        // Aplica o debuff de tempo caso o jogador esteja sabotado
         if(idSabotadoAtual === peer.id) {
-            tempoRestante = 120; // 2 minutos cravados
+            tempoRestante = 120; 
             document.getElementById('alerta-sabotado').classList.remove('hidden');
             document.querySelector('.container').classList.add('sabotagem-alerta');
         } else {
-            tempoRestante = 240; // 4 minutos normais
+            tempoRestante = 240; 
             document.getElementById('alerta-sabotado').classList.add('hidden');
             document.querySelector('.container').classList.remove('sabotagem-alerta');
         }
 
         document.getElementById('btnEnviar').disabled = false;
-        document.getElementById('temporizador').style.color = "#fffae0";
+        document.getElementById('temporizador').style.color = "#fff";
         
         intervaloTimer = setInterval(() => {
             tempoRestante--;
@@ -489,7 +493,7 @@
     }
 
     document.getElementById('btnAdicionarTexto').onclick = () => {
-        textosMeme.push({ conteudo: "NOVA\nLEGENDA", x: canvas.width / 2, y: canvas.height / 2, tamanho: 30, rotacao: 0 });
+        textosMeme.push({ conteudo: "NOVA\nLEGENDA", x: canvas.width / 2, y: canvas.height / 2, size: 30, tamanho: 30, rotacao: 0 });
         inicializarInputs();
     };
 
@@ -530,7 +534,7 @@
 
     document.getElementById('btnCriar').onclick = () => {
         tocarSomNativo('clique');
-        meuNome = document.getElementById('inputNome').value.trim().replace(/['"]/g, '');
+        meuNome = document.getElementById('inputNome').value.trim().replace(/['"{}()\[\]]/g, '');
         if(!meuNome) return alert("Digite seu nome!");
         codigoSala = "MIM-" + Math.random().toString(36).substring(2, 7).toUpperCase();
         modoJogo = "host"; peer = new Peer(codigoSala);
@@ -550,7 +554,7 @@
 
     document.getElementById('btnEntrar').onclick = () => {
         tocarSomNativo('clique');
-        meuNome = document.getElementById('inputNome').value.trim().replace(/['"]/g, '');
+        meuNome = document.getElementById('inputNome').value.trim().replace(/['"{}()\[\]]/g, '');
         codigoSala = document.getElementById('inputCodigo').value.trim().toUpperCase();
         if(!meuNome || !codigoSala) return alert("Preencha os campos!");
         modoJogo = "cliente"; peer = new Peer();
@@ -578,7 +582,7 @@
 
     function atualizarLobbyInterface() {
         const listaDiv = document.getElementById('lobby-lista-jogadores');
-        listaDiv.innerHTML = "<strong style='color:#8257e5;'>Memeiros na Sala:</strong><br>";
+        listaDiv.innerHTML = "<strong style='color:#fff;'>Memeiros na Sala:</strong><br>";
         
         const selectV = document.getElementById('selectVitima');
         selectV.innerHTML = '<option value="">-- Não sabotar ninguém --</option>';
@@ -586,15 +590,13 @@
         jogadores.forEach((j, i) => { 
             let sufixo = i === 0 ? " <span>(HOST)</span>" : "";
             if(j.id === idCampeaoAnterior) sufixo += " 👑 [Vencedor Anterior]";
-            listaDiv.innerHTML += `<div style='padding: 6px 0; border-bottom: 1px solid #1c1c1f;'>👤 ${j.nome}${sufixo}</div>`; 
+            listaDiv.innerHTML += `<div style='padding: 6px 0; border-bottom: 1px solid #222;'>👤 ${j.nome}${sufixo}</div>`; 
             
-            // Popula alvos válidos (bloqueia auto-sabotagem)
             if (j.id !== idCampeaoAnterior) {
                 selectV.innerHTML += `<option value="${j.id}">${j.nome}</option>`;
             }
         });
 
-        // Mostra painel de sabotagem se o jogador logado for o campeão da rodada anterior
         if(peer && peer.id === idCampeaoAnterior && jogadores.length > 1) {
             document.getElementById('painel-campeao-sabotagem').classList.remove('hidden');
         } else {
@@ -604,7 +606,6 @@
 
     document.getElementById('btnIniciarJogo').onclick = () => { 
         tocarSomNativo('clique'); 
-        
         if(peer.id === idCampeaoAnterior) {
             idSabotadoAtual = document.getElementById('selectVitima').value;
         }
@@ -796,7 +797,7 @@
                         sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores, campeao: idCampeaoAnterior });
                     }
                 } else { if (conexoes[0] && conexoes[0].open) { conexoes[0].send({ tipo: "voto", idVotado: m.id }); } }
-                galeria.innerHTML = "<h3>Voto Computado! Aguardando a avaliação da banca...</h3><div class='loader'></div>";
+                galeria.innerHTML = "<h3>Voto Computado! Aguardando os outros memeiros...</h3><div class='loader'></div>";
             };
             card.appendChild(img); card.appendChild(btnVoto); galeria.appendChild(card);
         });
@@ -822,44 +823,47 @@
     document.getElementById('btnVoltarJogo').onclick = () => { tocarSomNativo('clique'); if(modoJogo === "host") iniciarNovaRodadaLógica(); };
 
     function drawMeme() {
-        ctx.fillStyle = "#050507"; 
+        ctx.fillStyle = "#000"; 
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         if (imagemCarregada && imagemMemeAtual.complete && imagemMemeAtual.naturalWidth > 0) {
             ctx.drawImage(imagemMemeAtual, 0, 0, canvas.width, canvas.height);
         } else {
-            ctx.fillStyle = "#0b0b0e"; 
+            ctx.fillStyle = "#111"; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#fffae0"; 
+            ctx.fillStyle = "#fff"; 
             ctx.font = "14px sans-serif"; 
             ctx.textAlign = "center";
             ctx.fillText("[Carregando imagem base...]", canvas.width / 2, canvas.height / 2);
         }
 
-        textosMeme.forEach(t => { 
-            ctx.save();
-            ctx.translate(t.x, t.y);
-            ctx.rotate((t.rotacao * Math.PI) / 180);
-            
-            ctx.strokeStyle = 'black'; 
-            ctx.fillStyle = 'white'; 
-            ctx.textAlign = 'center'; 
-            ctx.textBaseline = 'middle';
-            ctx.font = `bold ${t.tamanho}px Impact, Arial Black, sans-serif`;
-            ctx.lineWidth = t.tamanho / 4; 
+        // Renderiza as legendas de forma resiliente
+        if(textosMeme && textosMeme.length > 0) {
+            textosMeme.forEach(t => { 
+                ctx.save();
+                ctx.translate(t.x, t.y);
+                ctx.rotate((t.rotacao * Math.PI) / 180);
+                
+                ctx.strokeStyle = 'black'; 
+                ctx.fillStyle = 'white'; 
+                ctx.textAlign = 'center'; 
+                ctx.textBaseline = 'middle';
+                ctx.font = `bold ${t.tamanho || 30}px Impact, Arial Black, sans-serif`;
+                ctx.lineWidth = (t.tamanho || 30) / 4; 
 
-            let linhas = t.conteudo.toUpperCase().split('\n');
-            let alturaLinha = t.tamanho * 1.2;
-            let offsetTotal = ((linhas.length - 1) * alturaLinha) / 2;
+                let linhas = (t.conteudo || "").toUpperCase().split('\n');
+                let alturaLinha = (t.tamanho || 30) * 1.2;
+                let offsetTotal = ((linhas.length - 1) * alturaLinha) / 2;
 
-            linhas.forEach((linha, i) => {
-                let posY = (i * alturaLinha) - offsetTotal;
-                ctx.strokeText(linha, 0, posY); 
-                ctx.fillText(linha, 0, posY); 
+                linhas.forEach((linha, i) => {
+                    let posY = (i * alturaLinha) - offsetTotal;
+                    ctx.strokeText(linha, 0, posY); 
+                    ctx.fillText(linha, 0, posY); 
+                });
+                
+                ctx.restore();
             });
-            
-            ctx.restore();
-        });
+        }
     }
 </script>
 </body>
