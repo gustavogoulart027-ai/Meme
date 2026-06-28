@@ -135,7 +135,7 @@
             background: #16161c; 
             color: #fff; 
             border: 1px solid #333; 
-            padding: 6px 12px; 
+            padding: 8px 14px; 
             border-radius: 6px; 
             font-weight: bold; 
             cursor: pointer; 
@@ -178,7 +178,7 @@
             100% { box-shadow: 0 0 30px #ef4444; }
         }
 
-        /* Inputs Modernizados com Área de Edição de Texto Maior */
+        /* Inputs de Texto */
         input[type="text"] { 
             padding: 16px; 
             width: 100%; 
@@ -201,13 +201,26 @@
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), inset 0 2px 8px rgba(0,0,0,0.6);
         }
         
-        /* Caixa de edição de legenda ampliada para melhor visualização */
+        /* Estrutura do Bloco de Legenda Expandida (Mais Larga) */
+        .bloco-legenda {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-bottom: 18px;
+            background: #08080b;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid #222;
+            box-sizing: border-box;
+        }
+
+        /* Caixa de edição usando largura máxima disponível */
         textarea { 
             padding: 16px; 
             width: 100%; 
-            border-radius: 12px; 
+            border-radius: 10px; 
             border: 2px solid #333; 
-            margin: 12px 0; 
+            margin: 0 0 10px 0; 
             background: #000; 
             color: #fff; 
             font-size: 19px; 
@@ -218,13 +231,22 @@
             transition: all 0.2s ease;
             box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
             resize: none; 
-            height: 110px; 
+            height: 105px; 
             font-weight: bold;
         }
         textarea:focus {
             border-color: #fff; 
             outline: none; 
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), inset 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        /* Controles posicionados abaixo da caixa para não esmagar a largura */
+        .controles-legenda {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         
         /* Molduras de Amostra e Canvas */
@@ -241,7 +263,6 @@
         .ranking-item:first-child span { color: #000; text-shadow: none; font-weight: bold; }
         
         .lista-textos { text-align: left; background: #000; padding: 14px; border-radius: 12px; margin: 12px 0; border: 1px solid #222; }
-        .linha-input { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
         
         /* Placas de Tempo Customizadas */
         #temporizador, #timer-exposicao { font-size: 22px; background: #111; padding: 14px; border-radius: 12px; border: 2px solid #333; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
@@ -444,7 +465,7 @@
 
         textosMeme = [
             { conteudo: "TEXTO\nSUPERIOR", x: canvas.width / 2, y: 50, tamanho: 30, rotacao: 0 },
-            { conteudo: "TEXTO\nINFERIOR", x: canvas.width / 2, y: canvas.height - 60, tamanho: 30, rotacao: 0 }
+            { conteudo: "TEXTO\nINFERIOR", x: canvas.width / 2, y: canvas.height - 60, tamanho: 30, gig: 0, rotacao: 0 }
         ];
         inicializarInputs();
     }
@@ -485,11 +506,14 @@
         const container = document.getElementById('container-inputs');
         container.innerHTML = "";
         textosMeme.forEach((t, index) => {
-            const div = document.createElement('div'); div.className = "linha-input";
+            const bloco = document.createElement('div'); bloco.className = "bloco-legenda";
             
             const txt = document.createElement('textarea'); txt.value = t.conteudo;
+            txt.placeholder = "Escreva sua legenda aqui...";
             txt.oninput = (e) => { t.conteudo = e.target.value; };
             
+            const controles = document.createElement('div'); controles.className = "controles-legenda";
+
             const btnMenos = document.createElement('button'); btnMenos.className = "btn-size"; btnMenos.innerText = "A-";
             btnMenos.onclick = () => { t.tamanho = Math.max(12, t.tamanho - 3); };
             
@@ -503,21 +527,23 @@
             btnGirarDir.onclick = () => { t.rotacao = (t.rotacao + 15) % 360; };
 
             const btnApagar = document.createElement('button'); btnApagar.innerText = "X";
-            btnApagar.style.background = "#ef4444"; btnApagar.style.color = "white"; btnApagar.style.border = "none"; btnApagar.style.padding = "10px"; btnApagar.style.borderRadius = "6px"; btnApagar.style.fontWeight = "bold"; btnApagar.style.cursor = "pointer";
+            btnApagar.style.background = "#ef4444"; btnApagar.style.color = "white"; btnApagar.style.border = "none"; btnApagar.style.padding = "8px 14px"; btnApagar.style.borderRadius = "6px"; btnApagar.style.fontWeight = "bold"; btnApagar.style.cursor = "pointer"; btnApagar.style.fontSize = "14px";
             btnApagar.onclick = () => { textosMeme.splice(index, 1); inicializarInputs(); };
             
-            div.appendChild(txt);
-            div.appendChild(btnMenos);
-            div.appendChild(btnMais);
-            div.appendChild(btnGirarEsq);
-            div.appendChild(btnGirarDir);
-            if(textosMeme.length > 1) div.appendChild(btnApagar);
-            container.appendChild(div);
+            controles.appendChild(btnMenos);
+            controles.appendChild(btnMais);
+            controles.appendChild(btnGirarEsq);
+            controles.appendChild(btnGirarDir);
+            if(textosMeme.length > 1) controles.appendChild(btnApagar);
+            
+            bloco.appendChild(txt);
+            bloco.appendChild(controles);
+            container.appendChild(bloco);
         });
     }
 
     document.getElementById('btnAdicionarTexto').onclick = () => {
-        textosMeme.push({ conteudo: "NOVA\nLEGENDA", x: canvas.width / 2, y: canvas.height / 2, size: 30, tamanho: 30, rotations: 0, rotacao: 0 });
+        textosMeme.push({ conteudo: "NOVA\nLEGENDA", x: canvas.width / 2, y: canvas.height / 2, tamanho: 30, rotacao: 0 });
         inicializarInputs();
     };
 
