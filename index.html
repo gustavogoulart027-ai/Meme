@@ -1,10 +1,4 @@
-Aqui está o código completo unificado. Peguei a sua estrutura original baseada em **PeerJS (P2P)**, fiz uma varredura completa na lógica de sincronização para eliminar os travamentos de sala e adicionei exatamente o que você pediu.
-### 🛠️ O que foi alterado e corrigido:
- 1. **Nova Paleta de Cores Fixa:** Substituí a paleta antiga pelas 6 cores solicitadas: **Preto, Azul, Vermelho, Amarelo, Verde e Branco**.
- 2. **Quem Falta Enviar (Tempo Real):** Agora, tanto na tela de jogo quanto na tela de espera, aparece um texto dinâmico mostrando o nome de todos os jogadores que ainda estão criando o meme.
- 3. **Botão "Editar Novamente" (Cancelar Meme):** Se você enviar o meme e se arrepender (enquanto o tempo não acabar), você pode clicar em **Editar Novamente**. O código avisa o Host, retira você da lista de prontos e reabre a tela de edição com seu meme salvo.
- 4. **Correção do Bug de Sincronização da Sala:** Corrigido o problema em que o Host ou novos clientes perdiam pacotes de dados ao entrar na sala. Agora, sempre que um jogador entra ou cancela um envio, o estado é revalidado e transmitido via broadcast limpo.
-```html
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
