@@ -1,5 +1,4 @@
 
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -179,8 +178,8 @@
             100% { box-shadow: 0 0 30px #ef4444; }
         }
 
-        /* Inputs Modernizados */
-        input[type="text"], textarea { 
+        /* Inputs Modernizados com Área de Edição de Texto Maior */
+        input[type="text"] { 
             padding: 16px; 
             width: 100%; 
             border-radius: 12px; 
@@ -196,12 +195,37 @@
             transition: all 0.2s ease;
             box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
         }
-        input[type="text"]:focus, textarea:focus { 
+        input[type="text"]:focus { 
             border-color: #fff; 
             outline: none; 
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), inset 0 2px 8px rgba(0,0,0,0.6);
         }
-        textarea { resize: none; height: 60px; }
+        
+        /* Caixa de edição de legenda ampliada para melhor visualização */
+        textarea { 
+            padding: 16px; 
+            width: 100%; 
+            border-radius: 12px; 
+            border: 2px solid #333; 
+            margin: 12px 0; 
+            background: #000; 
+            color: #fff; 
+            font-size: 19px; 
+            box-sizing: border-box; 
+            -webkit-user-select: text; 
+            user-select: text; 
+            font-family: inherit; 
+            transition: all 0.2s ease;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+            resize: none; 
+            height: 110px; 
+            font-weight: bold;
+        }
+        textarea:focus {
+            border-color: #fff; 
+            outline: none; 
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), inset 0 2px 8px rgba(0,0,0,0.6);
+        }
         
         /* Molduras de Amostra e Canvas */
         #canvas-container { position: relative; display: inline-block; max-width: 100%; margin-top: 15px; }
@@ -272,7 +296,7 @@
     <div id="tela-espera" class="hidden">
         <div style="padding: 40px 20px;">
             <h2>Meme Enviado!</h2>
-            <p style="color: #888; font-weight: bold;">Aguardando os outros memeiros...</p>
+            <p style="color: #888; font-weight: bold;">Aguardando os outros crioulos...</p>
             <div class="loader"></div>
         </div>
     </div>
@@ -302,7 +326,7 @@
 <script>
     let audioCtx = null;
     let musicLoopStarted = false;
-    let textosMeme = []; // Inicializado no topo para evitar quebras de undefined no loop
+    let textosMeme = []; 
 
     function iniciarContextoAudio() {
         try {
@@ -493,7 +517,7 @@
     }
 
     document.getElementById('btnAdicionarTexto').onclick = () => {
-        textosMeme.push({ conteudo: "NOVA\nLEGENDA", x: canvas.width / 2, y: canvas.height / 2, size: 30, tamanho: 30, rotacao: 0 });
+        textosMeme.push({ conteudo: "NOVA\nLEGENDA", x: canvas.width / 2, y: canvas.height / 2, size: 30, tamanho: 30, rotations: 0, rotacao: 0 });
         inicializarInputs();
     };
 
@@ -582,7 +606,7 @@
 
     function atualizarLobbyInterface() {
         const listaDiv = document.getElementById('lobby-lista-jogadores');
-        listaDiv.innerHTML = "<strong style='color:#fff;'>Memeiros na Sala:</strong><br>";
+        listaDiv.innerHTML = "<strong style='color:#fff;'>Crioulos na Sala:</strong><br>";
         
         const selectV = document.getElementById('selectVitima');
         selectV.innerHTML = '<option value="">-- Não sabotar ninguém --</option>';
@@ -797,7 +821,7 @@
                         sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores, campeao: idCampeaoAnterior });
                     }
                 } else { if (conexoes[0] && conexoes[0].open) { conexoes[0].send({ tipo: "voto", idVotado: m.id }); } }
-                galeria.innerHTML = "<h3>Voto Computado! Aguardando os outros memeiros...</h3><div class='loader'></div>";
+                galeria.innerHTML = "<h3>Voto Computado! Aguardando os outros crioulos...</h3><div class='loader'></div>";
             };
             card.appendChild(img); card.appendChild(btnVoto); galeria.appendChild(card);
         });
@@ -837,7 +861,6 @@
             ctx.fillText("[Carregando imagem base...]", canvas.width / 2, canvas.height / 2);
         }
 
-        // Renderiza as legendas de forma resiliente
         if(textosMeme && textosMeme.length > 0) {
             textosMeme.forEach(t => { 
                 ctx.save();
