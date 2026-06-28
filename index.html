@@ -1,158 +1,222 @@
+
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Make It Meme</title>
+    <title>Make It Meme - Cyber Edition</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
     
     <style>
-        /* Estética Geral do Site */
+        /* Estética Geral Avançada (Nível Extremo) */
         body { 
-            font-family: 'Segoe UI', sans-serif; 
-            background: #050507; 
+            font-family: 'Segoe UI', -apple-system, sans-serif; 
+            background: radial-gradient(circle at center, #0e0a16 0%, #050507 100%); 
             color: #fff; 
             text-align: center; 
             padding: 15px; 
             margin: 0; 
             -webkit-user-select: none; 
             user-select: none; 
+            min-height: 100vh;
         }
         
-        /* Fontes de Letreiro estilo Grafite para o site */
-        h1, h2, h3, .font-graffiti, #lobby-codigo, #temporizador, #timer-exposicao, .ranking-item span { 
+        /* Fontes de Letreiro estilo Memes Premium */
+        h1, h2, h3, .font-memes, #lobby-codigo, #temporizador, #timer-exposicao, .ranking-item span, .sabotagem-alerta h2 { 
             font-family: 'Permanent Marker', 'Sedgwick Ave Display', cursive;
             color: #fffae0; /* Amarelo Claro */
-            text-shadow: 2px 2px 0px #8257e5, 4px 4px 0px #000; /* Sombra roxa marcante */
-            letter-spacing: 2px;
+            text-shadow: 3px 3px 0px #8257e5, -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000, 1px 1px 0px #000;
+            letter-spacing: 3px;
         }
 
-        h1 { font-size: 38px; margin-bottom: 25px; }
+        h1 { 
+            font-size: 42px; 
+            margin-top: 10px;
+            margin-bottom: 25px; 
+            animation: glitchNeon 2s infinite alternate;
+        }
 
+        @keyframes glitchNeon {
+            0% { text-shadow: 3px 3px 0px #8257e5, 0 0 10px rgba(130,87,229,0.6); }
+            100% { text-shadow: 3px 3px 0px #feb72b, 0 0 20px rgba(254,183,43,0.8); }
+        }
+
+        /* Container Ultra Detalhado com Borda Neon Pulsante */
         .container { 
-            max-width: 500px; 
-            margin: 0 auto; 
-            background: #0b0b0e; 
-            padding: 25px; 
-            border-radius: 24px; 
+            max-width: 520px; 
+            margin: 20px auto; 
+            background: rgba(11, 11, 14, 0.95); 
+            padding: 30px 25px; 
+            border-radius: 28px; 
             box-sizing: border-box; 
-            box-shadow: 0 0 30px rgba(130, 87, 229, 0.25); /* Brilho roxo sutil */
-            border: 2px dashed #8257e5; /* Borda tracejada roxa */
+            box-shadow: 0 0 40px rgba(130, 87, 229, 0.15), inset 0 0 15px rgba(130, 87, 229, 0.1); 
+            border: 3px solid #8257e5;
+            position: relative;
+            animation: borderGlow 4s infinite alternate;
+        }
+
+        @keyframes borderGlow {
+            0% { border-color: #8257e5; box-shadow: 0 0 30px rgba(130, 87, 229, 0.2); }
+            100% { border-color: #a855f7; box-shadow: 0 0 45px rgba(168, 85, 247, 0.4); }
         }
         
         .hidden { display: none !important; }
         
-        /* Botões - Estilo Cyber Graffiti (Formato Pílula) */
+        /* Botões Hidráulicos Premium (Formato Pílula Avançado) */
         .btn { 
             font-family: 'Permanent Marker', sans-serif;
-            background: #8257e5; 
+            background: linear-gradient(135deg, #8257e5 0%, #633bbc 100%); 
             color: #fffae0; 
             border: 2px solid #fffae0; 
-            padding: 14px 20px; 
+            padding: 16px 24px; 
             border-radius: 50px; 
             cursor: pointer; 
-            font-size: 18px; 
-            margin: 12px 0; 
+            font-size: 20px; 
+            margin: 14px 0; 
             width: 100%; 
             display: block; 
             box-sizing: border-box; 
-            transition: 0.3s ease; 
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             text-transform: uppercase;
-            box-shadow: 0 4px 0px #4f46e5;
+            box-shadow: 0 6px 0px #3b1d82, 0 8px 20px rgba(0,0,0,0.5);
+            text-shadow: 1px 1px 0px #000;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0px #3b1d82, 0 12px 24px rgba(130, 87, 229, 0.3);
         }
         .btn:active { 
-            transform: translateY(4px); 
-            box-shadow: 0 0px 0px transparent;
+            transform: translateY(6px); 
+            box-shadow: 0 0px 0px transparent, 0 2px 5px rgba(0,0,0,0.8);
         }
         .btn:disabled { 
-            background: #222226 !important; 
-            color: #555 !important; 
-            border-color: #333 !important;
+            background: #1a1a24 !important; 
+            color: #4a4a5a !important; 
+            border-color: #2a2a35 !important;
             cursor: not-allowed; 
             transform: none !important; 
             box-shadow: none !important; 
         }
         
+        /* Variações Elegantes de Botões */
         .btn-vote { 
-            background: #fffae0; 
+            background: linear-gradient(135deg, #fffae0 0%, #e6dfb8 100%); 
             color: #050507; 
             border: 2px solid #8257e5;
-            box-shadow: 0 4px 0px #b5b094;
+            box-shadow: 0 6px 0px #969176, 0 8px 15px rgba(0,0,0,0.4);
+            text-shadow: none;
         }
+        .btn-vote:hover { box-shadow: 0 8px 0px #969176, 0 12px 20px rgba(255, 250, 224, 0.2); }
         .btn-sub { 
             background: #14141c; 
-            padding: 8px; 
-            font-size: 14px; 
-            margin: 5px 0; 
+            padding: 10px; 
+            font-size: 15px; 
+            margin: 6px 0; 
             border: 2px solid #8257e5; 
-            border-radius: 12px;
+            border-radius: 14px;
             box-shadow: none;
         }
+        .btn-sub:hover { background: #1c1c28; border-color: #fffae0; }
         .btn-download { 
             background: #050507; 
             color: #fffae0; 
             border: 2px solid #8257e5; 
             margin-top: 5px; 
-            box-shadow: 0 4px 0px #4f46e5;
+            box-shadow: 0 5px 0px #4f46e5;
         }
         .btn-size { 
             font-family: sans-serif;
             background: #14141c; 
             color: #fffae0; 
             border: 1px solid #8257e5; 
-            padding: 6px 10px; 
+            padding: 6px 12px; 
             border-radius: 8px; 
             font-weight: bold; 
             cursor: pointer; 
-            font-size: 13px; 
+            font-size: 14px; 
+            transition: 0.1s;
         }
+        .btn-size:active { background: #8257e5; }
         
-        /* Inputs de Texto */
+        /* Painel Especial de Sabotagem (Extremo) */
+        .painel-sabotagem {
+            background: linear-gradient(135deg, #200b14 0%, #0c050a 100%);
+            border: 2px dashed #ef4444;
+            border-radius: 18px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+        }
+        .select-sabotagem {
+            width: 100%;
+            padding: 12px;
+            background: #050507;
+            color: #ef4444;
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            font-family: 'Permanent Marker', sans-serif;
+            font-size: 16px;
+            margin-top: 10px;
+            outline: none;
+        }
+        .sabotagem-alerta {
+            background: #ef4444 !important;
+            border: 3px solid #fffae0 !important;
+            animation: pulseAlerta 1s infinite alternate;
+        }
+        @keyframes pulseAlerta {
+            0% { box-shadow: 0 0 10px #ef4444; }
+            100% { box-shadow: 0 0 30px #ef4444; }
+        }
+
+        /* Inputs Modernizados */
         input[type="text"], textarea { 
-            padding: 14px; 
+            padding: 16px; 
             width: 100%; 
-            border-radius: 16px; 
+            border-radius: 18px; 
             border: 2px solid #8257e5; 
-            margin: 10px 0; 
+            margin: 12px 0; 
             background: #050507; 
             color: #fff; 
-            font-size: 15px; 
+            font-size: 16px; 
             box-sizing: border-box; 
             -webkit-user-select: text; 
             user-select: text; 
             font-family: inherit; 
-            transition: 0.2s;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
         }
         input[type="text"]:focus, textarea:focus { 
             border-color: #fffae0; 
             outline: none; 
-            box-shadow: 0 0 10px rgba(255, 250, 224, 0.2);
+            box-shadow: 0 0 15px rgba(255, 250, 224, 0.25), inset 0 2px 8px rgba(0,0,0,0.6);
         }
-        textarea { resize: none; height: 55px; }
+        textarea { resize: none; height: 60px; }
         
-        /* Containers e Canvas */
+        /* Molduras de Amostra e Canvas */
         #canvas-container { position: relative; display: inline-block; max-width: 100%; margin-top: 15px; }
-        canvas { max-width: 100%; border-radius: 16px; border: 3px solid #8257e5; background: #050507; touch-action: none; display: block; box-shadow: 0 0 20px rgba(130, 87, 229, 0.4); }
+        canvas { max-width: 100%; border-radius: 20px; border: 4px solid #8257e5; background: #050507; touch-action: none; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
         
-        .galeria { display: flex; flex-direction: column; gap: 20px; margin-top: 20px; }
-        .meme-card { background: #0b0b0e; padding: 15px; border-radius: 20px; border: 2px solid #8257e5; text-align: center; box-shadow: 0 6px 15px rgba(0,0,0,0.6); }
-        .meme-card img { width: 100%; border-radius: 12px; display: block; background: #050507; min-height: 200px; object-fit: contain; }
+        .galeria { display: flex; flex-direction: column; gap: 22px; margin-top: 20px; }
+        .meme-card { background: #0b0b0e; padding: 18px; border-radius: 24px; border: 2px solid #8257e5; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.8); }
+        .meme-card img { width: 100%; border-radius: 16px; display: block; background: #050507; min-height: 200px; object-fit: contain; }
         
-        /* Ranking */
-        .ranking-item { background: #121217; padding: 16px; margin: 10px 0; border-radius: 14px; display: flex; justify-content: space-between; font-size: 20px; border: 1px solid #222; }
-        .ranking-item:first-child { background: #fffae0; border: 2px solid #8257e5; box-shadow: 0 0 20px rgba(130, 87, 229, 0.4); }
-        .ranking-item:first-child span { color: #050507; text-shadow: none; }
+        /* Ranking e Podio Premium */
+        .ranking-item { background: #121217; padding: 18px; margin: 12px 0; border-radius: 16px; display: flex; justify-content: space-between; font-size: 22px; border: 1px solid #222; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .ranking-item:first-child { background: linear-gradient(135deg, #fffae0 0%, #f3eaaf 100%); border: 3px solid #8257e5; box-shadow: 0 0 25px rgba(130, 87, 229, 0.5); }
+        .ranking-item:first-child span { color: #050507; text-shadow: none; font-weight: bold; }
         
-        .lista-textos { text-align: left; background: #050507; padding: 12px; border-radius: 16px; margin: 12px 0; border: 1px solid #1c1c24; }
-        .linha-input { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+        .lista-textos { text-align: left; background: #050507; padding: 14px; border-radius: 18px; margin: 12px 0; border: 1px solid #1c1c24; }
+        .linha-input { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
         
-        /* Timers */
-        #temporizador, #timer-exposicao { font-size: 20px; background: #121217; padding: 12px; border-radius: 50px; border: 2px solid #8257e5; margin-bottom: 20px; }
-        #timer-exposicao { border-color: #fffae0; box-shadow: 0 0 15px rgba(255, 250, 224, 0.15); }
+        /* Placas de Tempo Customizadas */
+        #temporizador, #timer-exposicao { font-size: 22px; background: #121217; padding: 14px; border-radius: 50px; border: 2px solid #8257e5; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        #timer-exposicao { border-color: #fffae0; box-shadow: 0 0 20px rgba(255, 250, 224, 0.2); }
         
-        .loader { border: 4px solid #1c1c24; border-top: 4px solid #fffae0; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        .loader { border: 4px solid #1c1c24; border-top: 4px solid #fffae0; border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin: 25px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
@@ -164,19 +228,28 @@
         <input type="text" id="inputNome" placeholder="Seu Nome / Apelido"><br>
         <button class="btn" id="btnCriar">Criar Nova Sala</button>
         <input type="text" id="inputCodigo" placeholder="Código da Sala"><br>
-        <button class="btn" id="btnEntrar" style="background: #14141c; color: #777; border: 2px solid #222; box-shadow: none;">Entrar na Sala</button>
+        <button class="btn" id="btnEntrar" style="background: #14141c; color: #555; border: 2px solid #222; box-shadow: none;">Entrar na Sala</button>
     </div>
 
     <div id="tela-lobby" class="hidden">
         <div style="background: #050507; padding: 15px; border-radius: 16px; border: 2px dashed #8257e5; margin-bottom: 20px;">
             <h1 id="lobby-codigo" style="margin: 0; letter-spacing: 4px;">-</h1>
         </div>
-        <div id="lobby-lista-jogadores" style="text-align: left; margin-bottom: 20px; font-size: 16px; color: #fffae0;"></div>
+        
+        <div id="painel-campeao-sabotagem" class="painel-sabotagem hidden">
+            <label style="color: #ef4444; font-weight: bold; font-size: 14px;">👑 VOCÊ É O VENCEDOR DA RODADA! ESCOLHA ALGUÉM PARA SABOTAR (-2 MINUTOS):</label>
+            <select id="selectVitima" class="select-sabotagem">
+                <option value="">-- Não sabotar ninguém --</option>
+            </select>
+        </div>
+
+        <div id="lobby-lista-jogadores" style="text-align: left; margin-bottom: 20px; font-size: 17px; color: #fffae0;"></div>
         <button class="btn hidden" id="btnIniciarJogo" style="background: #fffae0; color: #050507; border-color: #8257e5;">🚀 Iniciar Jogo</button>
     </div>
 
     <div id="tela-jogo" class="hidden">
         <div id="temporizador">⏱️ Tempo: 04:00</div>
+        <div id="alerta-sabotado" style="color: #ef4444; font-weight: bold; margin-bottom: 10px;" class="hidden">⚠️ VOCÊ FOI SABOTADO! TEMPO REDUZIDO PARA 2 MINUTOS! ⚠️</div>
         <div id="lista-jogadores" style="color:#8257e5; margin-bottom: 15px; font-size: 14px; font-weight: bold;"></div>
         <div class="lista-textos">
             <div id="container-inputs"></div>
@@ -192,7 +265,7 @@
     <div id="tela-espera" class="hidden">
         <div style="padding: 40px 20px;">
             <h2>Meme Enviado!</h2>
-            <p style="color: #8257e5; font-weight: bold;">Aguardando os outros grafiteiros...</p>
+            <p style="color: #8257e5; font-weight: bold;">Aguardando os outros memeiros...</p>
             <div class="loader"></div>
         </div>
     </div>
@@ -293,6 +366,10 @@
     let textosMeme = [];
     let textoArrastando = null;
     let timerExposicaoLoop = null; 
+    
+    // Controle de Sabotagem
+    let idCampeaoAnterior = ""; 
+    let idSabotadoAtual = "";
 
     const telaInicial = document.getElementById('tela-inicial');
     const telaLobby = document.getElementById('tela-lobby');
@@ -351,15 +428,27 @@
 
     function iniciarTemporizador() {
         clearInterval(intervaloTimer);
-        tempoRestante = 240; 
+        
+        // Aplica o debuff de tempo caso o jogador esteja sabotado
+        if(idSabotadoAtual === peer.id) {
+            tempoRestante = 120; // 2 minutos cravados
+            document.getElementById('alerta-sabotado').classList.remove('hidden');
+            document.querySelector('.container').classList.add('sabotagem-alerta');
+        } else {
+            tempoRestante = 240; // 4 minutos normais
+            document.getElementById('alerta-sabotado').classList.add('hidden');
+            document.querySelector('.container').classList.remove('sabotagem-alerta');
+        }
+
         document.getElementById('btnEnviar').disabled = false;
         document.getElementById('temporizador').style.color = "#fffae0";
+        
         intervaloTimer = setInterval(() => {
             tempoRestante--;
             let minutes = Math.floor(tempoRestante / 60);
             let segundos = tempoRestante % 60;
             document.getElementById('temporizador').innerText = `⏱️ Tempo: ${minutes.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
-            if (tempoRestante <= 20) document.getElementById('temporizador').style.color = "#e53e3e";
+            if (tempoRestante <= 20) document.getElementById('temporizador').style.color = "#ef4444";
             if (tempoRestante <= 0) { clearInterval(intervaloTimer); if (!jaEnviouMeme) enviarMemeForçado(); }
         }, 1000);
     }
@@ -386,7 +475,7 @@
             btnGirarDir.onclick = () => { t.rotacao = (t.rotacao + 15) % 360; };
 
             const btnApagar = document.createElement('button'); btnApagar.innerText = "X";
-            btnApagar.style.background = "#e53e3e"; btnApagar.style.color = "white"; btnApagar.style.border = "none"; btnApagar.style.padding = "10px"; btnApagar.style.borderRadius = "6px"; btnApagar.style.fontWeight = "bold"; btnApagar.style.cursor = "pointer";
+            btnApagar.style.background = "#ef4444"; btnApagar.style.color = "white"; btnApagar.style.border = "none"; btnApagar.style.padding = "10px"; btnApagar.style.borderRadius = "6px"; btnApagar.style.fontWeight = "bold"; btnApagar.style.cursor = "pointer";
             btnApagar.onclick = () => { textosMeme.splice(index, 1); inicializarInputs(); };
             
             div.appendChild(txt);
@@ -455,7 +544,7 @@
         peer.on('connection', (conn) => {
             conexoes.push(conn);
             conn.on('data', (data) => lidarComDadosHost(data, conn));
-            setTimeout(() => { sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores }); }, 500);
+            setTimeout(() => { sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores, campeao: idCampeaoAnterior }); }, 500);
         });
     };
 
@@ -478,6 +567,7 @@
     function abrirTelaLobby() {
         telaInicial.classList.add('hidden'); telaLobby.classList.remove('hidden');
         document.getElementById('lobby-codigo').innerText = codigoSala;
+        
         if(modoJogo === "host") {
             document.getElementById('btnIniciarJogo').classList.remove('hidden');
         } else {
@@ -488,15 +578,43 @@
 
     function atualizarLobbyInterface() {
         const listaDiv = document.getElementById('lobby-lista-jogadores');
-        listaDiv.innerHTML = "<strong style='color:#8257e5;'>Grafiteiros na Sala:</strong><br>";
-        jogadores.forEach((j, i) => { listaDiv.innerHTML += `<div style='padding: 6px 0; border-bottom: 1px solid #1c1c1f;'>👤 ${j.nome} ${i === 0 ? "<span>(HOST)</span>" : ""}</div>`; });
+        listaDiv.innerHTML = "<strong style='color:#8257e5;'>Memeiros na Sala:</strong><br>";
+        
+        const selectV = document.getElementById('selectVitima');
+        selectV.innerHTML = '<option value="">-- Não sabotar ninguém --</option>';
+        
+        jogadores.forEach((j, i) => { 
+            let sufixo = i === 0 ? " <span>(HOST)</span>" : "";
+            if(j.id === idCampeaoAnterior) sufixo += " 👑 [Vencedor Anterior]";
+            listaDiv.innerHTML += `<div style='padding: 6px 0; border-bottom: 1px solid #1c1c1f;'>👤 ${j.nome}${sufixo}</div>`; 
+            
+            // Popula alvos válidos (bloqueia auto-sabotagem)
+            if (j.id !== idCampeaoAnterior) {
+                selectV.innerHTML += `<option value="${j.id}">${j.nome}</option>`;
+            }
+        });
+
+        // Mostra painel de sabotagem se o jogador logado for o campeão da rodada anterior
+        if(peer && peer.id === idCampeaoAnterior && jogadores.length > 1) {
+            document.getElementById('painel-campeao-sabotagem').classList.remove('hidden');
+        } else {
+            document.getElementById('painel-campeao-sabotagem').classList.add('hidden');
+        }
     }
 
-    document.getElementById('btnIniciarJogo').onclick = () => { tocarSomNativo('clique'); iniciarNovaRodadaLógica(); };
+    document.getElementById('btnIniciarJogo').onclick = () => { 
+        tocarSomNativo('clique'); 
+        
+        if(peer.id === idCampeaoAnterior) {
+            idSabotadoAtual = document.getElementById('selectVitima').value;
+        }
+        iniciarNovaRodadaLógica(); 
+    };
 
     function iniciarNovaRodadaLógica() {
         if(timerExposicaoLoop) clearInterval(timerExposicaoLoop);
         let indicesEscolhidosNestaRodada = [];
+        
         jogadores.forEach(j => {
             j.enviou = false; j.votou = false; j.meme = "";
             if (!j.imagensRestantes || j.imagensRestantes.length === 0) {
@@ -504,6 +622,7 @@
             }
             if (!j.imagensVistas) j.imagensVistas = [];
         });
+        
         jogadores.forEach(j => {
             let opcoesValidas = j.imagensRestantes.filter(idx => !indicesEscolhidosNestaRodada.includes(idx));
             if (opcoesValidas.length === 0) { opcoesValidas = j.imagensRestantes; }
@@ -513,7 +632,8 @@
             j.imagensVistas.push(indiceSorteado);
             indicesEscolhidosNestaRodada.push(indiceSorteado);
         });
-        sincronizarTodosOsClientes({ tipo: "começar_jogo", lista: jogadores });
+        
+        sincronizarTodosOsClientes({ tipo: "começar_jogo", lista: jogadores, sabotado: idSabotadoAtual });
     }
 
     function abrirTelaJogo() {
@@ -529,7 +649,10 @@
                     imagensRestantes: Array.from({length: memeImages.length}, (_, i) => i), imagensVistas: []
                 });
             }
-            sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores });
+            sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores, campeao: idCampeaoAnterior });
+        }
+        if (data.tipo === "definir_sabotagem") {
+            idSabotadoAtual = data.idVitima;
         }
         if (data.tipo === "submeter_meme") {
             let j = jogadores.find(p => p.id === conn.peer); 
@@ -546,21 +669,33 @@
                 ele.votou = true;
                 let jVotado = jogadores.find(p => p.id === data.idVotado); if(jVotado) jVotado.pontos += 10;
             }
-            if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
+            if (jogadores.every(p => p.votou)) {
+                let ordenada = [...jogadores].sort((a, b) => b.pontos - a.pontos);
+                idCampeaoAnterior = ordenada[0] ? ordenada[0].id : "";
+                sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores, campeao: idCampeaoAnterior });
+            }
         }
     }
 
     function lidarComDadosCliente(data) {
-        if (data.tipo === "lista_lobby") { jogadores = data.lista; atualizarLobbyInterface(); }
+        if (data.tipo === "lista_lobby") { 
+            jogadores = data.lista; 
+            idCampeaoAnterior = data.campeao || "";
+            atualizarLobbyInterface(); 
+        }
         if (data.tipo === "começar_jogo") {
             jaEnviouMeme = false; jogadores = data.lista;
+            idSabotadoAtual = data.sabotado || "";
             let meuDados = jogadores.find(p => p.id === peer.id);
             if(meuDados && meuDados.imgIndice !== undefined) gerarFundoMemeVirtual(meuDados.imgIndice);
             abrirTelaJogo(); iniciarTemporizador();
         }
         if (data.tipo === "mostrar_meme_individual") abrirTelaExposicaoDinamica(data.nomeAutor, data.imagemMeme, data.segundosRestantes);
         if (data.tipo === "ir_votacao") montarTelaVotacao(data.listaMemes);
-        if (data.tipo === "ir_ranking") montarTelaRanking(data.listaRanking);
+        if (data.tipo === "ir_ranking") {
+            idCampeaoAnterior = data.campeao || "";
+            montarTelaRanking(data.listaRanking);
+        }
     }
 
     function sincronizarTodosOsClientes(objeto) {
@@ -569,8 +704,16 @@
     }
 
     function atualizarListaInterface() {
-        document.getElementById('lista-jogadores').innerText = "Status: " + jogadores.map(j => j.nome + (j.enviou ? " (Pronto 👑)" : " (Pintando ✍️)")).join(", ");
+        document.getElementById('lista-jogadores').innerText = "Status: " + jogadores.map(j => j.nome + (j.enviou ? " (Pronto 👑)" : " (Criando ✍️)")).join(", ");
     }
+
+    document.getElementById('selectVitima').onchange = (e) => {
+        if(modoJogo === "cliente" && conexoes[0] && conexoes[0].open) {
+            conexoes[0].send({ tipo: "definir_sabotagem", idVitima: e.target.value });
+        } else {
+            idSabotadoAtual = e.target.value;
+        }
+    };
 
     document.getElementById('btnEnviar').onclick = () => { tocarSomNativo('clique'); enviarMemeManual(); };
 
@@ -581,6 +724,8 @@
         const imgFinal = canvas.toDataURL('image/jpeg', 0.5);
         
         telaJogo.classList.add('hidden'); telaEspera.classList.remove('hidden');
+        document.querySelector('.container').classList.remove('sabotagem-alerta');
+        
         if (modoJogo === "host") {
             let j = jogadores.find(p => p.id === peer.id); 
             if(j && !j.enviou) { j.enviou = true; j.meme = imgFinal; }
@@ -594,7 +739,6 @@
 
     function enviarMemeForçado() { enviarMemeManual(); }
 
-    /* Exposição Dinâmica por 15 segundos corrigida */
     function ejecutarSequenciaExposicaoMeme(listaMemes) {
         if(timerExposicaoLoop) clearInterval(timerExposicaoLoop);
         let indiceMeme = 0; 
@@ -646,9 +790,13 @@
                 if(modoJogo === "host") {
                     let ele = jogadores.find(p => p.id === peer.id);
                     if(ele && !ele.votou) { ele.votou = true; let j = jogadores.find(p => p.id === m.id); if(j) j.pontos += 10; }
-                    if (jogadores.every(p => p.votou)) sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores });
+                    if (jogadores.every(p => p.votou)) {
+                        let ordenada = [...jogadores].sort((a, b) => b.pontos - a.pontos);
+                        idCampeaoAnterior = ordenada[0] ? ordenada[0].id : "";
+                        sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores, campeao: idCampeaoAnterior });
+                    }
                 } else { if (conexoes[0] && conexoes[0].open) { conexoes[0].send({ tipo: "voto", idVotado: m.id }); } }
-                galeria.innerHTML = "<h3>Voto Computado! Aguardando o resto da banca...</h3><div class='loader'></div>";
+                galeria.innerHTML = "<h3>Voto Computado! Aguardando a avaliação da banca...</h3><div class='loader'></div>";
             };
             card.appendChild(img); card.appendChild(btnVoto); galeria.appendChild(card);
         });
@@ -659,18 +807,20 @@
         telaVotacao.classList.add('hidden'); telaRanking.classList.remove('hidden');
         const podio = document.getElementById('podio-scores'); podio.innerHTML = "";
         let ordenada = [...listaRanking].sort((a, b) => b.pontos - a.pontos);
+        
         ordenada.forEach((j, idx) => {
             const item = document.createElement('div'); item.className = "ranking-item";
-            item.innerHTML = `<span>#${idx+1} ${j.nome}</span> <span>${j.pontos} pts</span>`;
+            let coroa = idx === 0 ? "👑 " : "";
+            item.innerHTML = `<span>#${idx+1} ${coroa}${j.nome}</span> <span>${j.pontos} pts</span>`;
             podio.appendChild(item);
         });
+        
         if(modoJogo === "host") document.getElementById('btnVoltarJogo').classList.remove('hidden');
         else document.getElementById('btnVoltarJogo').classList.add('hidden');
     }
 
     document.getElementById('btnVoltarJogo').onclick = () => { tocarSomNativo('clique'); if(modoJogo === "host") iniciarNovaRodadaLógica(); };
 
-    /* Legenda de Meme Tradicional (Impact) */
     function drawMeme() {
         ctx.fillStyle = "#050507"; 
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -683,7 +833,7 @@
             ctx.fillStyle = "#fffae0"; 
             ctx.font = "14px sans-serif"; 
             ctx.textAlign = "center";
-            ctx.fillText("[Carregando base do graffiti...]", canvas.width / 2, canvas.height / 2);
+            ctx.fillText("[Carregando imagem base...]", canvas.width / 2, canvas.height / 2);
         }
 
         textosMeme.forEach(t => { 
@@ -714,3 +864,5 @@
 </script>
 </body>
 </html>
+
+```
