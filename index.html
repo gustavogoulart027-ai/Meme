@@ -44,6 +44,28 @@
             100% { background-position: 200% center; }
         }
 
+        /* Botão de Mudo Fixo e Elegante */
+        .btn-muto-fixo {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: #111;
+            color: #fff;
+            border: 2px solid #333;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: 0.2s;
+        }
+        .btn-muto-fixo:active { transform: scale(0.9); }
+
         /* Container Black com Borda Neon Transição RGB */
         .container { 
             max-width: 520px; 
@@ -272,6 +294,9 @@
     </style>
 </head>
 <body>
+
+<button class="btn-muto-fixo" id="btnMudo" title="Mutar/Desmutar Música">🔊</button>
+
 <div class="container">
     <h1>Make It Meme 🎭</h1>
     
@@ -346,7 +371,16 @@
 <script>
     let audioCtx = null;
     let musicLoopStarted = false;
+    let estaMutado = false; // Estado do mudo global
     let textosMeme = []; 
+
+    // Evento do botão de mudo
+    document.getElementById('btnMudo').onclick = (e) => {
+        e.stopPropagation(); // Evita ativar outros gatilhos de clique
+        estaMutado = !estaMutado;
+        document.getElementById('btnMudo').innerText = estaMutado ? "❌" : "🔊";
+        iniciarContextoAudio();
+    };
 
     function iniciarContextoAudio() {
         try {
@@ -360,7 +394,7 @@
         let acordesSunday = [[261.63, 329.63, 392.00, 493.88], [261.63, 311.13, 392.00, 466.16], [293.66, 349.23, 440.00, 523.25], [392.00, 493.88, 587.33, 698.46]];
         let passo = 0;
         setInterval(() => {
-            if (!audioCtx || audioCtx.state === 'suspended') return;
+            if (!audioCtx || audioCtx.state === 'suspended' || estaMutado) return;
             try {
                 let notasAtuais = acordesSunday[passo % acordesSunday.length];
                 let tempoAtual = audioCtx.currentTime;
@@ -381,6 +415,7 @@
 
     function tocarSomNativo(tipo) {
         try {
+            if (estaMutado) return;
             iniciarContextoAudio();
             if (!audioCtx || audioCtx.state === 'suspended') return;
             let osc = audioCtx.createOscillator();
@@ -792,7 +827,7 @@
     function ejecutarSequenciaExposicaoMeme(listaMemes) {
         if(timerExposicaoLoop) clearInterval(timerExposicaoLoop);
         let indiceMeme = 0; 
-        let tempoRestanteExposicao = 10; // Ajustado de 15 para 10 segundos
+        let tempoRestanteExposicao = 10; 
         
         function apresentarProximoMeme() {
             if(timerExposicaoLoop) clearInterval(timerExposicaoLoop);
@@ -801,7 +836,7 @@
             if (indiceMeme >= listaMemes.length) { sincronizarTodosOsClientes({ tipo: "ir_votacao", listaMemes: listaMemes }); return; }
             
             let memeAtual = listaMemes[indiceMeme]; 
-            tempoRestanteExposicao = 10; // Reinicia o timer com 10 segundos
+            tempoRestanteExposicao = 10; 
             
             sincronizarTodosOsClientes({ tipo: "mostrar_meme_individual", nomeAutor: memeAtual.nome, imagemMeme: memeAtual.imagem, segundosRestantes: tempoRestanteExposicao });
             
