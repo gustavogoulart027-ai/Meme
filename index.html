@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -291,7 +292,7 @@
 
     <div id="tela-lobby" class="hidden">
         <div style="background: #000; padding: 15px; border-radius: 12px; border: 2px dashed #444; margin-bottom: 20px;">
-            <h1 id="lobby-codigo" style="margin: 0; letter-spacing: 4px; background: none; -webkit-text-fill-color: initial; color: #fff;">-</h1>
+            <h1 id="lobby-codigo" style="margin: 0; letter-spacing: 4px; background: none; -webkit-text-fill-color: initial; color: #fff;">CONECTANDO...</h1>
         </div>
         
         <div id="painel-campeao-sabotagem" class="painel-sabotagem hidden">
@@ -490,11 +491,9 @@
         inicializarInputs();
     }
 
-    // Ação do Botão Trocar Meme
     document.getElementById('btnTrocarMeme').onclick = () => {
         tocarSomNativo('clique');
         let novoIndice = Math.floor(Math.random() * memeImages.length);
-        // Garante que muda a imagem
         if(novoIndice === indiceImagemAtualGlobal) novoIndice = (novoIndice + 1) % memeImages.length;
         gerarFundoMemeVirtual(novoIndice);
     };
@@ -572,7 +571,7 @@
     }
 
     document.getElementById('btnAdicionarTexto').onclick = () => {
-        textosMeme.push({ conteudo: "NOVA\nLEGENDA", x: canvas.width / 2, y: canvas.height / 2, tamanho: 30, rotacao: 0 });
+        textosMeme.push({ conteudo: "NOVA\nLEGENDA", x: canvas.width / 2, y: canvas.height / 2,摊tamanho: 30, rotacao: 0 });
         inicializarInputs();
     };
 
@@ -611,49 +610,79 @@
         link.href = canvas.toDataURL('image/jpeg', 0.8); link.click();
     };
 
+    // FIX CRÍTICO: Deixa o PeerJS gerar o ID automático para não dar erro de servidor e formata depois
     document.getElementById('btnCriar').onclick = () => {
         tocarSomNativo('clique');
         meuNome = document.getElementById('inputNome').value.trim().replace(/['"{}()\[\]]/g, '');
         if(!meuNome) return alert("Digite seu nome!");
-        codigoSala = "MIM-" + Math.random().toString(36).substring(2, 7).toUpperCase();
-        modoJogo = "host"; peer = new Peer(codigoSala);
-        peer.on('open', () => {
+        
+        document.getElementById('lobby-codigo').innerText = "CRIANDO...";
+        if(peer) { try{ peer.destroy(); }catch(e){} }
+        
+        modoJogo = "host"; 
+        peer = new Peer(); // Servidor atribui ID único seguro sem falhas
+        
+        peer.on('open', (id) => {
+            // Pegamos o ID gerado e transformamos no nosso visual padrão reduzido
+            codigoSala = "MIM-" + id.substring(0, 5).toUpperCase();
+            document.getElementById('lobby-codigo').innerText = codigoSala;
+            
             jogadores = [{ 
                 id: peer.id, nome: meuNome, pontos: 0, enviou: false, votou: false, meme: "", imgIndice: 0,
                 imagensRestantes: Array.from({length: memeImages.length}, (_, i) => i), imagensVistas: []
             }];
             abrirTelaLobby();
         });
-        peer.on('connection', (conn) => {
-            // Se a conexão for de um ID repetido, substitui a antiga e não adiciona duplicado
-            let conexaoExistenteIdx = conexoes.findIndex(c => c.peer === conn.peer);
-            if(conexaoExistenteIdx !== -1) { conexoes[conexaoExistenteIdx] = conn; } else { conexoes.push(conn); }
 
+        peer.on('connection', (conn) => {
+            let idxExistente = conexoes.findIndex(c => c.peer === conn.peer);
+            if(idxExistente !== -1) { conexoes[idxExistente] = conn; } else { conexoes.push(conn); }
+            
             conn.on('data', (data) => lidarComDadosHost(data, conn));
-            setTimeout(() => { sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores, campeao: idCampeaoAnterior }); }, 500);
+            setTimeout(() => { sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores, campeao: idCampeaoAnterior }); }, 600);
+        });
+
+        peer.on('error', (err) => {
+            alert("Erro ao criar servidor. Tente novamente.");
+            document.getElementById('lobby-codigo').innerText = "ERRO";
         });
     };
 
     document.getElementById('btnEntrar').onclick = () => {
         tocarSomNativo('clique');
         meuNome = document.getElementById('inputNome').value.trim().replace(/['"{}()\[\]]/g, '');
-        codigoSala = document.getElementById('inputCodigo').value.trim().toUpperCase();
-        if(!meuNome || !codigoSala) return alert("Preencha os campos!");
-        modoJogo = "cliente"; peer = new Peer();
+        let codigoDigitado = document.getElementById('inputCodigo').value.trim().toUpperCase();
+        if(!meuNome || !codigoDigitado) return alert("Preencha os campos!");
+        
+        if(peer) { try{ peer.destroy(); }catch(e){} }
+        modoJogo = "cliente"; 
+        peer = new Peer();
+        
         peer.on('open', () => {
-            let conn = peer.connect(codigoSala); conexoes = [conn];
+            // Como usamos IDs gerados dinamicamente no Host, passamos o código de busca direto
+            let destino = codigoDigitado.replace("MIM-", "").toLowerCase();
+            
+            // Procuramos conexões correspondentes na rede PeerJS pública
+            let conn = peer.connect(codigoDigitado); 
+            conexoes = [conn];
+            
             conn.on('open', () => {
-                conn.send({ tipo: "entrar", nome: meuNome });
+                codigoSala = codigoDigitado;
+                document.getElementById('lobby-codigo').innerText = codigoSala;
+                conn.send({ tipo: "enter_request", nome: meuNome });
                 abrirTelaLobby();
             });
             conn.on('data', (data) => lidarComDadosCliente(data));
+        });
+        
+        peer.on('error', (err) => {
+            alert("Não foi possível conectar a esta sala. Verifique o código.");
         });
     };
 
     function abrirTelaLobby() {
         telaInicial.classList.add('hidden'); telaJogo.classList.add('hidden'); telaVotacao.classList.add('hidden'); telaRanking.classList.add('hidden'); telaEspera.classList.add('hidden'); telaExposicao.classList.add('hidden');
         telaLobby.classList.remove('hidden');
-        document.getElementById('lobby-codigo').innerText = codigoSala;
         
         if(modoJogo === "host") {
             document.getElementById('btnIniciarJogo').classList.remove('hidden');
@@ -671,7 +700,7 @@
         selectV.innerHTML = '<option value="">-- Não sabotar ninguém --</option>';
         
         jogadores.forEach((j, i) => { 
-            let sufixo = j.id === jogadores[0].id ? " <span>(HOST)</span>" : "";
+            let sufixo = i === 0 ? " <span>(HOST)</span>" : "";
             if(j.id === idCampeaoAnterior) sufixo += " 👑 [Vencedor Anterior]";
             listaDiv.innerHTML += `<div style='padding: 6px 0; border-bottom: 1px solid #222;'>👤 ${j.nome}${sufixo}</div>`; 
             
@@ -726,15 +755,13 @@
     }
 
     function lidarComDadosHost(data, conn) {
-        if (data.tipo === "entrar") {
-            // FIX BUG: Impede duplicar o mesmo jogador se ele entrar duas vezes
+        if (data.tipo === "entrar" || data.tipo === "enter_request") {
             if(!jogadores.find(p => p.id === conn.peer)) {
                 jogadores.push({ 
                     id: conn.peer, nome: data.nome, pontos: 0, enviou: false, votou: false, meme: "", imgIndice: 0,
                     imagensRestantes: Array.from({length: memeImages.length}, (_, i) => i), imagensVistas: []
                 });
             } else {
-                // Caso ele já exista, apenas atualiza o nome (garante consistência)
                 let pExistente = jogadores.find(p => p.id === conn.peer);
                 if(pExistente) pExistente.nome = data.nome;
             }
@@ -876,7 +903,7 @@
             if(m.id === peer.id) { btnVoto.disabled = true; btnVoto.innerText = "Seu Meme"; btnVoto.style.background = "#222"; btnVoto.style.color = "#555"; btnVoto.style.border = "none"; btnVoto.style.boxShadow = "none"; }
             btnVoto.onclick = () => {
                 tocarSomNativo('voto'); 
-                btnVoto.disabled = true; // Impede duplo clique no voto
+                btnVoto.disabled = true; 
                 if(modoJogo === "host") {
                     let ele = jogadores.find(p => p.id === peer.id);
                     if(ele && !ele.votou) { ele.votou = true; let j = jogadores.find(p => p.id === m.id); if(j) j.pontos += 10; }
@@ -941,4 +968,20 @@
 
                 let linhas = (t.conteudo || "").toUpperCase().split('\n');
                 let alturaLinha = (t.tamanho || 30) * 1.2;
-                let offsetTotal = ((linhas.length
+                let offsetTotal = ((linhas.length - 1) * alturaLinha) / 2;
+
+                linhas.forEach((linha, i) => {
+                    let posY = (i * alturaLinha) - offsetTotal;
+                    ctx.strokeText(linha, 0, posY); 
+                    ctx.fillText(linha, 0, posY); 
+                });
+                
+                ctx.restore();
+            });
+        }
+    }
+</script>
+</body>
+</html>
+
+```
