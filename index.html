@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,7 +7,6 @@
     <title>Make It Meme - Cyber Black Edition</title>
     
     <style>
-        /* Estética Geral Avançada (Tema Preto Profundo) */
         body { 
             font-family: 'Segoe UI', -apple-system, sans-serif; 
             background: #050507; 
@@ -19,15 +19,13 @@
             min-height: 100vh;
         }
         
-        /* Tipografia de Letreiro Padrão */
-        h1, h2, h3, #lobby-codigo, #temporizador, #timer-exposicao, .ranking-item span, .sabotagem-alerta h2 { 
+        h1, h2, h3, #lobby-codigo, #temporizador, #timer-exposicao, .ranking-item span, .sabotagem-alerta h2, .titulo-tabela { 
             font-family: 'Impact', 'Arial Black', sans-serif;
             color: #fff;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        /* Título Principal com Efeito RGB */
         h1 { 
             font-size: 42px; 
             margin-top: 10px;
@@ -44,7 +42,6 @@
             100% { background-position: 200% center; }
         }
 
-        /* Botão de Mudo Fixo */
         .btn-muto-fixo {
             position: fixed;
             top: 15px;
@@ -66,7 +63,6 @@
         }
         .btn-muto-fixo:active { transform: scale(0.9); }
 
-        /* Container Black com Borda Neon Transição RGB */
         .container { 
             max-width: 520px; 
             margin: 20px auto; 
@@ -90,7 +86,6 @@
         
         .hidden { display: none !important; }
         
-        /* Botões Hidráulicos Premium */
         .btn { 
             font-family: 'Impact', 'Arial Black', sans-serif;
             background: linear-gradient(135deg, #1f1f25 0%, #111114 100%); 
@@ -126,7 +121,6 @@
             box-shadow: none !important; 
         }
         
-        /* Botões Especiais */
         .btn-vote { 
             background: linear-gradient(135deg, #ffffff 0%, #dddddd 100%); 
             color: #000; 
@@ -145,20 +139,9 @@
         }
         .btn-sub:hover { background: #222; border-color: #fff; }
         
-        /* Layout de Ações do Canvas */
-        .acoes-canvas {
-            display: flex;
-            gap: 10px;
-            margin-top: 5px;
-        }
-        .btn-half {
-            flex: 1;
-            margin: 0;
-            font-size: 16px;
-            padding: 12px;
-        }
+        .acoes-canvas { display: flex; gap: 10px; margin-top: 5px; }
+        .btn-half { flex: 1; margin: 0; font-size: 16px; padding: 12px; }
 
-        /* Painel de Sabotagem */
         .painel-sabotagem {
             background: #14070a;
             border: 2px dashed #ef4444;
@@ -168,93 +151,39 @@
             box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
         }
         .select-sabotagem {
-            width: 100%;
-            padding: 12px;
-            background: #000;
-            color: #ef4444;
-            border: 2px solid #ef4444;
-            border-radius: 8px;
-            font-family: 'Impact', sans-serif;
-            font-size: 16px;
-            margin-top: 10px;
-            outline: none;
+            width: 100%; padding: 12px; background: #000; color: #ef4444; border: 2px solid #ef4444; border-radius: 8px; font-family: 'Impact', sans-serif; font-size: 16px; margin-top: 10px; outline: none;
         }
-        .sabotagem-alerta {
-            background: #ef4444 !important;
-            border: 3px solid #fff !important;
-            animation: pulseAlerta 1s infinite alternate;
-        }
-        .sabotagem-alerta h1 {
-            -webkit-text-fill-color: #fff !important;
-        }
-        @keyframes pulseAlerta {
-            0% { box-shadow: 0 0 10px #ef4444; }
-            100% { box-shadow: 0 0 30px #ef4444; }
-        }
+        .sabotagem-alerta { background: #ef4444 !important; border: 3px solid #fff !important; animation: pulseAlerta 1s infinite alternate; }
+        .sabotagem-alerta h1 { -webkit-text-fill-color: #fff !important; }
+        @keyframes pulseAlerta { 0% { box-shadow: 0 0 10px #ef4444; } 100% { box-shadow: 0 0 30px #ef4444; } }
 
-        /* Inputs */
-        input[type="text"] { 
-            padding: 16px; 
-            width: 100%; 
-            border-radius: 12px; 
-            border: 2px solid #333; 
-            margin: 12px 0; 
-            background: #000; 
-            color: #fff; 
-            font-size: 16px; 
-            box-sizing: border-box; 
-            -webkit-user-select: text; 
-            user-select: text; 
-            font-family: inherit; 
-            transition: all 0.2s ease;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+        .input-wrapper { display: flex; align-items: center; background: #000; border: 2px solid #333; border-radius: 12px; margin: 12px 0; padding-left: 16px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.6); }
+        .input-prefix { color: #888; font-family: 'Impact', sans-serif; font-size: 16px; user-select: none; }
+        .input-wrapper input { background: transparent !important; border: none !important; margin: 0 !important; box-shadow: none !important; padding-left: 4px !important; }
+
+        input[type="text"], select.config-input { 
+            padding: 16px; width: 100%; border-radius: 12px; border: 2px solid #333; margin: 12px 0; background: #000; color: #fff; font-size: 16px; box-sizing: border-box; -webkit-user-select: text; user-select: text; font-family: inherit; transition: all 0.2s ease; box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
         }
-        input[type="text"]:focus { 
-            border-color: #fff; 
-            outline: none; 
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), inset 0 2px 8px rgba(0,0,0,0.6);
-        }
+        input[type="text"]:focus { border-color: #fff; outline: none; box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), inset 0 2px 8px rgba(0,0,0,0.6); }
         
-        .bloco-legenda {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            margin-bottom: 18px;
-            background: #08080b;
-            padding: 10px;
-            border-radius: 12px;
-            border: 1px solid #222;
-            box-sizing: border-box;
-        }
+        .bloco-legenda { display: flex; flex-direction: column; width: 100%; margin-bottom: 18px; background: #08080b; padding: 10px; border-radius: 12px; border: 1px solid #222; box-sizing: border-box; }
+        textarea { padding: 16px; width: 100%; border-radius: 10px; border: 2px solid #333; margin: 0 0 10px 0; background: #000; color: #fff; font-size: 19px; box-sizing: border-box; -webkit-user-select: text; user-select: text; font-family: inherit; transition: all 0.2s ease; box-shadow: inset 0 2px 8px rgba(0,0,0,0.6); resize: none; height: 105px; font-weight: bold; }
 
-        textarea { 
-            padding: 16px; 
-            width: 100%; 
-            border-radius: 10px; 
-            border: 2px solid #333; 
-            margin: 0 0 10px 0; 
-            background: #000; 
-            color: #fff; 
-            font-size: 19px; 
-            box-sizing: border-box; 
-            -webkit-user-select: text; 
-            user-select: text; 
-            font-family: inherit; 
-            transition: all 0.2s ease;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
-            resize: none; 
-            height: 105px; 
-            font-weight: bold;
-        }
+        .controles-legenda { display: flex; align-items: center; justify-content: flex-start; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+        .btn-size { background: #222; color: #fff; border: 1px solid #444; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .btn-size:hover { background: #333; }
 
-        .controles-legenda {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
+        .tabela-cores { display: table; width: 100%; border-collapse: collapse; background: #000; border-radius: 6px; overflow: hidden; border: 1px solid #222; }
+        .linha-cores { display: table-row; }
+        .celula-cor { display: table-cell; height: 24px; cursor: pointer; transition: transform 0.1s; position: relative; }
+        .celula-cor:hover { transform: scale(1.15); z-index: 10; }
+        .celula-cor.ativa::after { content: '✓'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #000; font-weight: bold; font-size: 12px; text-shadow: 0 0 2px #fff; }
+
+        .tabela-config { width: 100%; border-collapse: collapse; margin: 15px 0; background: #000; border: 2px solid #222; border-radius: 12px; overflow: hidden; text-align: left; }
+        .tabela-config th, .tabela-config td { padding: 12px; border-bottom: 1px solid #111; font-size: 14px; }
+        .tabela-config th { background: #111; color: #aaa; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+        select.config-input { margin: 0; padding: 8px; font-size: 14px; border-radius: 6px; }
+
         #canvas-container { position: relative; display: inline-block; max-width: 100%; margin-top: 15px; }
         canvas { max-width: 100%; border-radius: 14px; border: 4px solid #222; background: #000; touch-action: none; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
         
@@ -267,9 +196,7 @@
         .ranking-item:first-child span { color: #000; text-shadow: none; font-weight: bold; }
         
         .lista-textos { text-align: left; background: #000; padding: 14px; border-radius: 12px; margin: 12px 0; border: 1px solid #222; }
-        
         #temporizador, #timer-exposicao { font-size: 22px; background: #111; padding: 14px; border-radius: 12px; border: 2px solid #333; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        #timer-exposicao { border-color: #fff; box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); }
         
         .loader { border: 4px solid #222; border-top: 4px solid #fff; border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin: 25px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -285,33 +212,83 @@
     <div id="tela-inicial">
         <input type="text" id="inputNome" placeholder="Seu Nome / Apelido"><br>
         <button class="btn" id="btnCriar">Criar Nova Sala</button>
-        <input type="text" id="inputCodigo" placeholder="Código da Sala"><br>
-        <button class="btn" id="btnEntrar" style="background: #111; color: #666; border: 2px solid #222; box-shadow: none;">Entrar na Sala</button>
+        
+        <div class="input-wrapper">
+            <span class="input-prefix">MIM-</span>
+            <input type="text" id="inputCodigo" placeholder="CÓDIGO">
+        </div>
+        <button class="btn" id="btnEntrar" style="background: #111; color: #aaa; border: 2px solid #222;">Entrar na Sala</button>
     </div>
 
     <div id="tela-lobby" class="hidden">
         <div style="background: #000; padding: 15px; border-radius: 12px; border: 2px dashed #444; margin-bottom: 20px;">
-            <h1 id="lobby-codigo" style="margin: 0; letter-spacing: 4px; background: none; -webkit-text-fill-color: initial; color: #fff;">CONECTANDO...</h1>
+            <h1 id="lobby-codigo" style="margin: 0; letter-spacing: 4px; background: none; -webkit-text-fill-color: initial; color: #fff;">MIM-LOGGING</h1>
         </div>
         
+        <div id="painel-config-host" class="hidden" style="margin-bottom: 20px;">
+            <div class="titulo-tabela" style="font-size: 14px; text-align: left; margin-bottom: 4px; color: #666;">⚙️ Ajustes da Partida</div>
+            <table class="tabela-config">
+                <thead>
+                    <tr>
+                        <th>Parâmetro</th>
+                        <th>Configuração</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Tempo de Criação</td>
+                        <td>
+                            <select id="configTempo" class="config-input">
+                                <option value="60">1 Minuto</option>
+                                <option value="120">2 Minutos</option>
+                                <option value="180">3 Minutos</option>
+                                <option value="240" selected>4 Minutos</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Máximo de Rodadas</td>
+                        <td>
+                            <select id="configRodadas" class="config-input">
+                                <option value="3" selected>3 Rodadas</option>
+                                <option value="5">5 Rodadas</option>
+                                <option value="10">10 Rodadas</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Trocas de Meme Permitidas</td>
+                        <td>
+                            <select id="configTrocas" class="config-input">
+                                <option value="1">Apenas 1</option>
+                                <option value="3" selected>Até 3 Trocas</option>
+                                <option value="999">Ilimitadas</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
         <div id="painel-campeao-sabotagem" class="painel-sabotagem hidden">
-            <label style="color: #ef4444; font-weight: bold; font-size: 14px;">👑 VOCÊ É O VENCEDOR DA RODADA! ESCOLHA ALGUÉM PARA SABOTAR (-2 MINUTOS):</label>
-            <select id="selectVitima" class="select-sabotagem">
-                <option value="">-- Não sabotar ninguém --</option>
-            </select>
+            <label style="color: #ef4444; font-weight: bold; font-size: 14px;">👑 VOCÊ GANHOU A ÚLTIMA! ESCOLHA ALGUÉM PARA SABOTAR (METADE DO TEMPO):</label>
+            <select id="selectVitima" class="select-sabotagem"><option value="">-- Não sabotar ninguém --</option></select>
         </div>
 
         <div id="lobby-lista-jogadores" style="text-align: left; margin-bottom: 20px; font-size: 17px; color: #fff;"></div>
-        <button class="btn hidden" id="btnIniciarJogo" style="background: #fff; color: #000; border-color: #000;">🚀 Iniciar Jogo</button>
+        <button class="btn" id="btnIniciarJogo" style="background: #fff; color: #000; border-color: #000; display:none;">🚀 Iniciar Jogo</button>
+        <button class="btn" id="btnSairLobby" style="background: #14070a; color: #ef4444; border-color: #3a1217; font-size: 15px; padding: 10px;">🚪 Sair da Sala</button>
     </div>
 
     <div id="tela-jogo" class="hidden">
         <div id="temporizador">⏱️ Tempo: 04:00</div>
-        <div id="alerta-sabotado" style="color: #ef4444; font-weight: bold; margin-bottom: 10px;" class="hidden">⚠️ VOCÊ FOI SABOTADO! TEMPO REDUZIDO PARA 2 MINUTOS! ⚠️</div>
+        <div id="alerta-sabotado" style="color: #ef4444; font-weight: bold; margin-bottom: 10px;" class="hidden">⚠️ VOCÊ FOI SABOTADO! SEU TEMPO FOI CORTADO PELA METADE! ⚠️</div>
         <div id="lista-jogadores" style="color:#aaa; margin-bottom: 15px; font-size: 14px; font-weight: bold;"></div>
+        <div id="contador-trocas-ui" style="color: #f59e0b; font-size: 13px; font-weight: bold; margin-bottom: 5px; text-align: left;">🎲 Trocas restantes: 3</div>
+        
         <div class="lista-textos">
             <div id="container-inputs"></div>
-            <button class="btn btn-sub" id="btnAdicionarTexto">+ Legenda</button>
+            <button class="btn btn-sub" id="btnAdicionarTexto">+ Adicionar Linha de Legenda</button>
         </div>
         <div id="canvas-container">
             <canvas id="memeCanvas"></canvas>
@@ -326,10 +303,11 @@
     </div>
 
     <div id="tela-espera" class="hidden">
-        <div style="padding: 40px 20px;">
-            <h2>Meme Enviado!</h2>
-            <p style="color: #888; font-weight: bold;">Aguardando os outros crioulos...</p>
+        <div style="padding: 30px 20px;">
+            <h2>Meme Enviado Com Sucesso!</h2>
+            <p style="color: #888; font-weight: bold;">Aguardando os outros terminarem...</p>
             <div class="loader"></div>
+            <button class="btn" id="btnCancelarEnvio" style="background: #1f1f25; border-color: #444; font-size: 16px; padding: 12px; margin-top: 20px;">✏️ Editar Novamente</button>
         </div>
     </div>
 
@@ -347,23 +325,33 @@
     </div>
 
     <div id="tela-ranking" class="hidden">
-        <h2>🏆 Classificação 🏆</h2>
+        <h2 id="titulo-rodada-ranking">🏆 Classificação Geral 🏆</h2>
         <div id="podio-scores"></div>
-        <button class="btn hidden" id="btnVoltarJogo" style="margin-top:20px;">Próxima Rodada</button>
+        <button class="btn hidden" id="btnVoltarJogo" style="margin-top:20px;">Avançar Próxima Rodada</button>
+        <button class="btn" id="btnSairGame" style="background: #14070a; color: #ef4444; border-color: #3a1217; font-size: 16px; margin-top: 10px;">🚪 Abandonar Partida</button>
     </div>
 </div>
 
 <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
 
 <script>
-    let audioCtx = null;
-    let musicLoopStarted = false;
-    let estaMutado = false; 
+    let audioCtx = null, musicLoopStarted = false, estaMutado = false; 
     let textosMeme = []; 
+    let peer = null, conexoes = [], modoJogo = "host", meuNome = "", codigoSala = "", jogadores = [];
+    let tempoRestante = 240, intervaloTimer = null, jaEnviouMeme = false;
+    let imagemMemeAtual = new Image(), imagemCarregada = false, indiceImagemAtualGlobal = 0; 
+    let textoArrastando = null, timerExposicaoLoop = null; 
+    let idCampeaoAnterior = "", idSabotadoAtual = "";
+    
+    let configPartida = { tempo: 240, rodadasMax: 3, rodadaAtual: 1, trocasMax: 3 };
+    let trocasRealizadasPeloUsuario = 0;
+
+    const listaCoresPaleta = [
+        '#FFFFFF', '#FFFF00', '#FF0000', '#00FF00', '#00FFFF', '#FF00FF', '#FF9900', '#9900FF'
+    ];
 
     document.getElementById('btnMudo').onclick = (e) => {
-        e.stopPropagation(); 
-        estaMutado = !estaMutado;
+        e.stopPropagation(); estaMutado = !estaMutado;
         document.getElementById('btnMudo').innerText = estaMutado ? "❌" : "🔊";
         iniciarContextoAudio();
     };
@@ -385,18 +373,16 @@
                 let notasAtuais = acordesSunday[passo % acordesSunday.length];
                 let tempoAtual = audioCtx.currentTime;
                 notasAtuais.forEach((frequencia, index) => {
-                    let osc = audioCtx.createOscillator();
-                    let g = audioCtx.createGain();
-                    osc.type = 'triangle'; 
-                    osc.frequency.setValueAtTime(frequencia, tempoAtual + (index * 0.12)); 
-                    g.gain.setValueAtTime(0.08, tempoAtual + (index * 0.12));
+                    let osc = audioCtx.createOscillator(); let g = audioCtx.createGain();
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(frequencia, tempoAtual + (index * 0.12)); 
+                    g.gain.setValueAtTime(0.05, tempoAtual + (index * 0.12));
                     g.gain.exponentialRampToValueAtTime(0.001, tempoAtual + 1.2);
                     osc.connect(g); g.connect(audioCtx.destination);
                     osc.start(tempoAtual + (index * 0.12)); osc.stop(tempoAtual + 1.2);
                 });
                 passo++;
             } catch(e){}
-        }, 1500); 
+        }, 1600); 
     }
 
     function tocarSomNativo(tipo) {
@@ -404,42 +390,27 @@
             if (estaMutado) return;
             iniciarContextoAudio();
             if (!audioCtx || audioCtx.state === 'suspended') return;
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
+            let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
             osc.connect(gain); gain.connect(audioCtx.destination);
             let tempoAtual = audioCtx.currentTime;
             if (tipo === 'clique') {
                 osc.type = 'sine'; osc.frequency.setValueAtTime(450, tempoAtual);
                 osc.frequency.exponentialRampToValueAtTime(150, tempoAtual + 0.08);
-                gain.gain.setValueAtTime(0.4, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.08);
+                gain.gain.setValueAtTime(0.3, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.08);
                 osc.start(tempoAtual); osc.stop(tempoAtual + 0.08);
             } else if (tipo === 'voto') {
                 osc.type = 'triangle'; osc.frequency.setValueAtTime(587.33, tempoAtual);
-                osc.frequency.setValueAtTime(698.46, tempoAtual + 0.07); osc.frequency.setValueAtTime(880.00, tempoAtual + 0.14);
-                gain.gain.setValueAtTime(0.5, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.25);
-                osc.start(tempoAtual); osc.stop(tempoAtual + 0.25);
+                osc.frequency.setValueAtTime(783.99, tempoAtual + 0.1);
+                gain.gain.setValueAtTime(0.3, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.2);
+                osc.start(tempoAtual); osc.stop(tempoAtual + 0.2);
             } else if (tipo === 'vitoria') {
                 osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, tempoAtual);
                 osc.frequency.setValueAtTime(659.25, tempoAtual + 0.1); osc.frequency.setValueAtTime(783.99, tempoAtual + 0.2);
-                osc.frequency.setValueAtTime(1046.50, tempoAtual + 0.3); gain.gain.setValueAtTime(0.4, tempoAtual);
-                gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.45);
-                osc.start(tempoAtual); osc.stop(tempoAtual + 0.45);
+                gain.gain.setValueAtTime(0.3, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.4);
+                osc.start(tempoAtual); osc.stop(tempoAtual + 0.4);
             }
         } catch(e) {}
     }
-
-    let peer = null, conexoes = [], modoJogo = "host", meuNome = "", codigoSala = "", jogadores = [];
-    let tempoRestante = 240; 
-    let intervaloTimer = null;
-    let jaEnviouMeme = false;
-    let imagemMemeAtual = new Image();
-    let imagemCarregada = false;
-    let indiceImagemAtualGlobal = 0; 
-    let textoArrastando = null;
-    let timerExposicaoLoop = null; 
-    
-    let idCampeaoAnterior = ""; 
-    let idSabotadoAtual = "";
 
     const telaInicial = document.getElementById('tela-inicial');
     const telaLobby = document.getElementById('tela-lobby');
@@ -451,8 +422,7 @@
     const canvas = document.getElementById('memeCanvas');
     const ctx = canvas.getContext('2d');
 
-    canvas.width = 400; 
-    canvas.height = 360;
+    canvas.width = 400; canvas.height = 360;
 
     document.addEventListener('click', iniciarContextoAudio);
     document.addEventListener('touchstart', iniciarContextoAudio);
@@ -475,43 +445,54 @@
         imagemMemeAtual = new Image();
         imagemMemeAtual.crossOrigin = "anonymous";
         
-        let imgTimeout = setTimeout(() => {
-            if (!imagemCarregada) { imagemCarregada = true; }
-        }, 3000);
-        
+        let imgTimeout = setTimeout(() => { imagemCarregada = true; }, 3500);
         imagemMemeAtual.onload = () => { clearTimeout(imgTimeout); imagemCarregada = true; };
         imagemMemeAtual.onerror = () => { clearTimeout(imgTimeout); imagemCarregada = true; };
         imagemMemeAtual.src = urlSelecionada;
 
-        textosMeme = [
-            { conteudo: "TEXTO\nSUPERIOR", x: canvas.width / 2, y: 50, tamanho: 30, rotacao: 0 },
-            { conteudo: "TEXTO\nINFERIOR", x: canvas.width / 2, y: canvas.height - 60, tamanho: 30, rotacao: 0 }
-        ];
+        if (textosMeme.length === 0) {
+            textosMeme = [
+                { conteudo: "TEXTO SUPERIOR", x: canvas.width / 2, y: 50, tamanho: 30, rotacao: 0, cor: '#FFFFFF' },
+                { conteudo: "TEXTO INFERIOR", x: canvas.width / 2, y: canvas.height - 60, tamanho: 30, rotacao: 0, cor: '#FFFFFF' }
+            ];
+        }
         inicializarInputs();
     }
 
     document.getElementById('btnTrocarMeme').onclick = () => {
         tocarSomNativo('clique');
+        if (trocasRealizadasPeloUsuario >= configPartida.trocasMax) {
+            alert("Você atingiu o limite máximo de trocas de meme para esta rodada!");
+            return;
+        }
+        trocasRealizadasPeloUsuario++;
+        atualizarTrocasInterface();
         let novoIndice = Math.floor(Math.random() * memeImages.length);
         if(novoIndice === indiceImagemAtualGlobal) novoIndice = (novoIndice + 1) % memeImages.length;
         gerarFundoMemeVirtual(novoIndice);
     };
 
-    function renderLoop() {
-        drawMeme();
-        requestAnimationFrame(renderLoop);
+    function atualizarTrocasInterface() {
+        let elemento = document.getElementById('contador-trocas-ui');
+        if (configPartida.trocasMax > 100) {
+            elemento.innerText = "🎲 Trocas restantes: Ilimitadas";
+        } else {
+            elemento.innerText = `🎲 Trocas restantes: ${configPartida.trocasMax - trocasRealizadasPeloUsuario}`;
+        }
     }
+
+    function renderLoop() { drawMeme(); requestAnimationFrame(renderLoop); }
     requestAnimationFrame(renderLoop);
 
     function iniciarTemporizador() {
         clearInterval(intervaloTimer);
         
         if(idSabotadoAtual === peer.id) {
-            tempoRestante = 120; 
+            tempoRestante = Math.floor(configPartida.tempo / 2); 
             document.getElementById('alerta-sabotado').classList.remove('hidden');
             document.querySelector('.container').classList.add('sabotagem-alerta');
         } else {
-            tempoRestante = 240; 
+            tempoRestante = configPartida.tempo; 
             document.getElementById('alerta-sabotado').classList.add('hidden');
             document.querySelector('.container').classList.remove('sabotagem-alerta');
         }
@@ -521,10 +502,9 @@
         
         intervaloTimer = setInterval(() => {
             tempoRestante--;
-            let minutes = Math.floor(tempoRestante / 60);
-            let segundos = tempoRestante % 60;
+            let minutes = Math.floor(tempoRestante / 60); let segundos = tempoRestante % 60;
             document.getElementById('temporizador').innerText = `⏱️ Tempo: ${minutes.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
-            if (tempoRestante <= 20) document.getElementById('temporizador').style.color = "#ef4444";
+            if (tempoRestante <= 15) document.getElementById('temporizador').style.color = "#ef4444";
             if (tempoRestante <= 0) { clearInterval(intervaloTimer); if (!jaEnviouMeme) enviarMemeForçado(); }
         }, 1000);
     }
@@ -536,7 +516,7 @@
             const bloco = document.createElement('div'); bloco.className = "bloco-legenda";
             
             const txt = document.createElement('textarea'); txt.value = t.conteudo;
-            txt.placeholder = "Escreva sua legenda aqui...";
+            txt.placeholder = "Texto do meme...";
             txt.oninput = (e) => { t.conteudo = e.target.value; };
             
             const controles = document.createElement('div'); controles.className = "controles-legenda";
@@ -554,23 +534,40 @@
             btnGirarDir.onclick = () => { t.rotacao = (t.rotacao + 15) % 360; };
 
             const btnApagar = document.createElement('button'); btnApagar.innerText = "X";
-            btnApagar.style.background = "#ef4444"; btnApagar.style.color = "white"; btnApagar.style.border = "none"; btnApagar.style.padding = "8px 14px"; btnApagar.style.borderRadius = "6px"; btnApagar.style.fontWeight = "bold"; btnApagar.style.cursor = "pointer"; btnApagar.style.fontSize = "14px";
+            btnApagar.style = "background:#ef4444; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;";
             btnApagar.onclick = () => { textosMeme.splice(index, 1); inicializarInputs(); };
             
-            controles.appendChild(btnMenos);
-            controles.appendChild(btnMais);
-            controles.appendChild(btnGirarEsq);
-            controles.appendChild(btnGirarDir);
+            controles.appendChild(btnMenos); controles.appendChild(btnMais); controles.appendChild(btnGirarEsq); controles.appendChild(btnGirarDir);
             if(textosMeme.length > 1) controles.appendChild(btnApagar);
             
+            const tabelaCores = document.createElement('div'); tabelaCores.className = "tabela-cores";
+            const linhaCores = document.createElement('div'); linhaCores.className = "linha-cores";
+            
+            listaCoresPaleta.forEach(cor => {
+                const celula = document.createElement('div');
+                celula.className = "celula-cor";
+                celula.style.backgroundColor = cor;
+                if(t.cor === cor) celula.classList.add('ativa');
+                
+                celula.onclick = () => {
+                    tocarSomNativo('clique');
+                    t.cor = cor;
+                    bloco.querySelectorAll('.celula-cor').forEach(c => c.classList.remove('ativa'));
+                    celula.classList.add('ativa');
+                };
+                linhaCores.appendChild(celula);
+            });
+            tabelaCores.appendChild(linhaCores);
+
             bloco.appendChild(txt);
             bloco.appendChild(controles);
+            bloco.appendChild(tabelaCores);
             container.appendChild(bloco);
         });
     }
 
     document.getElementById('btnAdicionarTexto').onclick = () => {
-        textosMeme.push({ conteudo: "NOVA\nLEGENDA", x: canvas.width / 2, y: canvas.height / 2, tamanho: 30, rotacao: 0 });
+        textosMeme.push({ conteudo: "NOVO TEXTO", x: canvas.width / 2, y: canvas.height / 2, tamanho: 28, rotacao: 0, cor: '#FFFFFF' });
         inicializarInputs();
     };
 
@@ -595,37 +592,34 @@
         textoArrastando.x = pos.x; textoArrastando.y = pos.y;
     }
 
-    canvas.addEventListener('mousedown', iniciarArrasto);
-    canvas.addEventListener('mousemove', movendoArrasto);
-    window.addEventListener('mouseup', () => textoArrastando = null);
-    canvas.addEventListener('touchstart', iniciarArrasto, { passive: false });
-    canvas.addEventListener('touchmove', movendoArrasto, { passive: false });
-    window.addEventListener('touchend', () => textoArrastando = null);
+    canvas.addEventListener('mousedown', iniciarArrasto); canvas.addEventListener('mousemove', movendoArrasto); window.addEventListener('mouseup', () => textoArrastando = null);
+    canvas.addEventListener('touchstart', iniciarArrasto, { passive: false }); canvas.addEventListener('touchmove', movendoArrasto, { passive: false }); window.addEventListener('touchend', () => textoArrastando = null);
 
     document.getElementById('btnDownload').onclick = () => {
         tocarSomNativo('clique');
-        const link = document.createElement('a');
-        link.download = 'meme-' + Math.floor(Math.random() * 10000) + '.jpg';
+        const link = document.createElement('a'); link.download = 'meme-' + Math.floor(Math.random() * 10000) + '.jpg';
         link.href = canvas.toDataURL('image/jpeg', 0.8); link.click();
     };
 
-    // FIX DEFINITIVO: Cria uma ID alfanumérica limpa e direta na rede do PeerJS
     document.getElementById('btnCriar').onclick = () => {
         tocarSomNativo('clique');
         meuNome = document.getElementById('inputNome').value.trim().replace(/['"{}()\[\]]/g, '');
         if(!meuNome) return alert("Digite seu nome!");
         
         document.getElementById('lobby-codigo').innerText = "CRIANDO...";
-        if(peer) { try{ peer.destroy(); }catch(e){} }
+        desconectarComSeguranca();
         
         modoJogo = "host"; 
-        codigoSala = "MIM-" + Math.random().toString(36).substring(2, 7).toUpperCase();
+        let idGerada = Math.random().toString(36).substring(2, 7).toUpperCase();
+        codigoSala = "MIM-" + idGerada;
         
-        // Passamos a nossa ID diretamente no construtor principal
         peer = new Peer(codigoSala); 
         
         peer.on('open', (id) => {
             document.getElementById('lobby-codigo').innerText = id;
+            document.getElementById('painel-config-host').classList.remove('hidden');
+            document.getElementById('btnIniciarJogo').style.display = 'block';
+            
             jogadores = [{ 
                 id: peer.id, nome: meuNome, pontos: 0, enviou: false, votou: false, meme: "", imgIndice: 0,
                 imagensRestantes: Array.from({length: memeImages.length}, (_, i) => i), imagensVistas: []
@@ -638,34 +632,41 @@
             if(idxExistente !== -1) { conexoes[idxExistente] = conn; } else { conexoes.push(conn); }
             
             conn.on('data', (data) => lidarComDadosHost(data, conn));
-            setTimeout(() => { sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores, campeao: idCampeaoAnterior }); }, 600);
+            setTimeout(() => { 
+                sincronizarTodosOsClientes({ 
+                    tipo: "lista_lobby", lista: jogadores, campeao: idCampeaoAnterior, config: configPartida 
+                }); 
+            }, 600);
         });
 
         peer.on('error', (err) => {
-            console.error(err);
-            alert("Código de sala já ocupado ou instabilidade na rede. Clique em Criar novamente para tentar outro código.");
-            document.getElementById('lobby-codigo').innerText = "ERRO - TENTE DE NOVO";
+            alert("Erro na rede ou sala ocupada. Clique em Criar Sala de novo.");
+            document.getElementById('lobby-codigo').innerText = "ERRO";
         });
     };
 
     document.getElementById('btnEntrar').onclick = () => {
         tocarSomNativo('clique');
         meuNome = document.getElementById('inputNome').value.trim().replace(/['"{}()\[\]]/g, '');
-        let codigoDigitado = document.getElementById('inputCodigo').value.trim().toUpperCase();
-        if(!meuNome || !codigoDigitado) return alert("Preencha os campos!");
+        let sufixoCodigo = document.getElementById('inputCodigo').value.trim().toUpperCase();
+        if(!meuNome || !sufixoCodigo) return alert("Preencha seu nome e o código!");
         
-        if(peer) { try{ peer.destroy(); }catch(e){} }
+        let codigoLimpo = sufixoCodigo.replace("MIM-", "").replace(/[^A-Z0-9]/gi, '');
+        codigoSala = "MIM-" + codigoLimpo; 
+        
+        document.getElementById('lobby-codigo').innerText = "CONECTANDO...";
+        desconectarComSeguranca();
         modoJogo = "cliente"; 
         peer = new Peer();
         
         peer.on('open', () => {
-            // Conecta diretamente na ID exata gerada pelo Host
-            let conn = peer.connect(codigoDigitado); 
+            let conn = peer.connect(codigoSala); 
             conexoes = [conn];
             
             conn.on('open', () => {
-                codigoSala = codigoDigitado;
                 document.getElementById('lobby-codigo').innerText = codigoSala;
+                document.getElementById('painel-config-host').classList.add('hidden');
+                document.getElementById('btnIniciarJogo').style.display = 'none';
                 conn.send({ tipo: "enter_request", nome: meuNome });
                 abrirTelaLobby();
             });
@@ -673,38 +674,36 @@
         });
         
         peer.on('error', (err) => {
-            console.error(err);
-            alert("Não foi possível conectar. Verifique se o código está correto e tente de novo.");
+            alert("Sala não encontrada ou desfeita! Lembre-se de colocar apenas as letras após o MIM-");
+            voltarParaTelaInicial();
         });
     };
+
+    function lerConfiguracoesDoPainel() {
+        if(modoJogo !== "host") return;
+        configPartida.tempo = parseInt(document.getElementById('configTempo').value);
+        configPartida.rodadasMax = parseInt(document.getElementById('configRodadas').value);
+        configPartida.trocasMax = parseInt(document.getElementById('configTrocas').value);
+    }
 
     function abrirTelaLobby() {
         telaInicial.classList.add('hidden'); telaJogo.classList.add('hidden'); telaVotacao.classList.add('hidden'); telaRanking.classList.add('hidden'); telaEspera.classList.add('hidden'); telaExposicao.classList.add('hidden');
         telaLobby.classList.remove('hidden');
-        
-        if(modoJogo === "host") {
-            document.getElementById('btnIniciarJogo').classList.remove('hidden');
-        } else {
-            document.getElementById('btnIniciarJogo').classList.add('hidden');
-        }
         atualizarLobbyInterface();
     }
 
     function atualizarLobbyInterface() {
         const listaDiv = document.getElementById('lobby-lista-jogadores');
-        listaDiv.innerHTML = "<strong style='color:#fff;'>Crioulos na Sala:</strong><br>";
+        listaDiv.innerHTML = "<strong style='color:#fff;'>Participantes:</strong><br>";
         
         const selectV = document.getElementById('selectVitima');
         selectV.innerHTML = '<option value="">-- Não sabotar ninguém --</option>';
         
         jogadores.forEach((j, i) => { 
-            let sufixo = i === 0 ? " <span>(HOST)</span>" : "";
-            if(j.id === idCampeaoAnterior) sufixo += " 👑 [Vencedor Anterior]";
+            let sufixo = j.id.includes("MIM-") && i === 0 ? " <span>(LÍDER)</span>" : "";
+            if(j.id === idCampeaoAnterior) sufixo += " 👑 [Carrasco]";
             listaDiv.innerHTML += `<div style='padding: 6px 0; border-bottom: 1px solid #222;'>👤 ${j.nome}${sufixo}</div>`; 
-            
-            if (j.id !== idCampeaoAnterior) {
-                selectV.innerHTML += `<option value="${j.id}">${j.nome}</option>`;
-            }
+            if (j.id !== idCampeaoAnterior) selectV.innerHTML += `<option value="${j.id}">${j.nome}</option>`;
         });
 
         if(peer && peer.id === idCampeaoAnterior && jogadores.length > 1) {
@@ -716,66 +715,63 @@
 
     document.getElementById('btnIniciarJogo').onclick = () => { 
         tocarSomNativo('clique'); 
-        if(peer.id === idCampeaoAnterior) {
-            idSabotadoAtual = document.getElementById('selectVitima').value;
-        }
+        lerConfiguracoesDoPainel();
+        if(peer.id === idCampeaoAnterior) { idSabotadoAtual = document.getElementById('selectVitima').value; }
+        configPartida.rodadaAtual = 1;
+        jogadores.forEach(j => j.pontos = 0);
         iniciarNovaRodadaLógica(); 
     };
 
     function iniciarNovaRodadaLógica() {
         if(timerExposicaoLoop) clearInterval(timerExposicaoLoop);
         let indicesEscolhidosNestaRodada = [];
+        trocasRealizadasPeloUsuario = 0;
+        textosMeme = [];
         
         jogadores.forEach(j => {
             j.enviou = false; j.votou = false; j.meme = "";
-            if (!j.imagensRestantes || j.imagensRestantes.length === 0) {
-                j.imagensRestantes = Array.from({length: memeImages.length}, (_, i) => i);
-            }
-            if (!j.imagensVistas) j.imagensVistas = [];
+            if (!j.imagensRestantes || j.imagensRestantes.length === 0) { j.imagensRestantes = Array.from({length: memeImages.length}, (_, i) => i); }
         });
         
         jogadores.forEach(j => {
             let opcoesValidas = j.imagensRestantes.filter(idx => !indicesEscolhidosNestaRodada.includes(idx));
             if (opcoesValidas.length === 0) { opcoesValidas = j.imagensRestantes; }
             let indiceSorteado = opcoesValidas[Math.floor(Math.random() * opcoesValidas.length)];
+            
+            if(indiceSorteado === undefined) { indiceSorteado = Math.floor(Math.random() * memeImages.length); }
+            
             j.imgIndice = indiceSorteado;
             j.imagensRestantes = j.imagensRestantes.filter(idx => idx !== indiceSorteado);
-            j.imagensVistas.push(indiceSorteado);
             indicesEscolhidosNestaRodada.push(indiceSorteado);
         });
         
-        sincronizarTodosOsClientes({ tipo: "começar_jogo", lista: jogadores, sabotado: idSabotadoAtual });
+        sincronizarTodosOsClientes({ tipo: "começar_jogo", lista: jogadores, sabotado: idSabotadoAtual, config: configPartida });
     }
 
     function abrirTelaJogo() {
         telaLobby.classList.add('hidden'); telaVotacao.classList.add('hidden'); telaRanking.classList.add('hidden'); telaEspera.classList.add('hidden'); telaExposicao.classList.add('hidden'); telaJogo.classList.remove('hidden');
+        atualizarTrocasInterface();
         atualizarListaInterface();
     }
 
     function lidarComDadosHost(data, conn) {
-        if (data.tipo === "entrar" || data.tipo === "enter_request") {
+        if (data.tipo === "enter_request") {
             if(!jogadores.find(p => p.id === conn.peer)) {
-                jogadores.push({ 
-                    id: conn.peer, nome: data.nome, pontos: 0, enviou: false, votou: false, meme: "", imgIndice: 0,
-                    imagensRestantes: Array.from({length: memeImages.length}, (_, i) => i), imagensVistas: []
-                });
-            } else {
-                let pExistente = jogadores.find(p => p.id === conn.peer);
-                if(pExistente) pExistente.nome = data.nome;
+                jogadores.push({ id: conn.peer, nome: data.nome, pontos: 0, enviou: false, votou: false, meme: "", imgIndice: 0, imagensRestantes: Array.from({length: memeImages.length}, (_, i) => i), imagensVistas: [] });
             }
-            sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores, campeao: idCampeaoAnterior });
+            sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores, campeao: idCampeaoAnterior, config: configPartida });
         }
-        if (data.tipo === "definir_sabotagem") {
-            idSabotadoAtual = data.idVitima;
-        }
+        if (data.tipo === "definir_sabotagem") { idSabotadoAtual = data.idVitima; }
         if (data.tipo === "submeter_meme") {
             let j = jogadores.find(p => p.id === conn.peer); 
-            if(j && !j.enviou) { j.enviou = true; j.meme = data.imagem; }
+            if(j) { j.enviou = true; j.meme = data.imagem; }
             atualizarListaInterface();
-            if (jogadores.every(p => p.enviou)) {
-                clearInterval(intervaloTimer);
-                ejecutarSequenciaExposicaoMeme(jogadores.map(p => ({id: p.id, nome: p.nome, imagem: p.meme})));
-            }
+            verificarTerminoDeEnvios();
+        }
+        if (data.tipo === "cancelar_meme") {
+            let j = jogadores.find(p => p.id === conn.peer);
+            if(j) { j.enviou = false; j.meme = ""; }
+            atualizarListaInterface();
         }
         if (data.tipo === "voto") {
             let ele = jogadores.find(p => p.id === conn.peer);
@@ -783,33 +779,34 @@
                 ele.votou = true;
                 let jVotado = jogadores.find(p => p.id === data.idVotado); if(jVotado) jVotado.pontos += 10;
             }
-            if (jogadores.every(p => p.votou)) {
-                let ordenada = [...jogadores].sort((a, b) => b.pontos - a.pontos);
-                idCampeaoAnterior = ordenada[0] ? ordenada[0].id : "";
-                sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores, campeao: idCampeaoAnterior });
-            }
+            if (jogadores.every(p => p.votou)) {finalizarFaseDeVotacaoLógica();}
         }
     }
 
-    function lidarComDadosCliente(data) {
-        if (data.tipo === "lista_lobby") { 
-            jogadores = data.lista; 
-            idCampeaoAnterior = data.campeao || "";
-            atualizarLobbyInterface(); 
+    function verificarTerminoDeEnvios() {
+        if (jogadores.every(p => p.enviou)) {
+            clearInterval(intervaloTimer);
+            ejecutarSequenciaExposicaoMeme(jogadores.map(p => ({id: p.id, nome: p.nome, imagem: p.meme})));
         }
+    }
+
+    function finalizarFaseDeVotacaoLógica() {
+        let ordenada = [...jogadores].sort((a, b) => b.pontos - a.pontos);
+        idCampeaoAnterior = ordenada[0] ? ordenada[0].id : "";
+        sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores, campeao: idCampeaoAnterior, config: configPartida });
+    }
+
+    function lidarComDadosCliente(data) {
+        if (data.tipo === "lista_lobby") { jogadores = data.lista; idCampeaoAnterior = data.campeao || ""; configPartida = data.config; atualizarLobbyInterface(); }
         if (data.tipo === "começar_jogo") {
-            jaEnviouMeme = false; jogadores = data.lista;
-            idSabotadoAtual = data.sabotado || "";
+            jaEnviouMeme = false; jogadores = data.lista; idSabotadoAtual = data.sabotado || ""; configPartida = data.config;
             let meuDados = jogadores.find(p => p.id === peer.id);
             if(meuDados && meuDados.imgIndice !== undefined) gerarFundoMemeVirtual(meuDados.imgIndice);
             abrirTelaJogo(); iniciarTemporizador();
         }
         if (data.tipo === "mostrar_meme_individual") abrirTelaExposicaoDinamica(data.nomeAutor, data.imagemMeme, data.segundosRestantes);
         if (data.tipo === "ir_votacao") montarTelaVotacao(data.listaMemes);
-        if (data.tipo === "ir_ranking") {
-            idCampeaoAnterior = data.campeao || "";
-            montarTelaRanking(data.listaRanking);
-        }
+        if (data.tipo === "ir_ranking") { idCampeaoAnterior = data.campeao || ""; configPartida = data.config; montarTelaRanking(data.listaRanking); }
     }
 
     function sincronizarTodosOsClientes(objeto) {
@@ -818,15 +815,12 @@
     }
 
     function atualizarListaInterface() {
-        document.getElementById('lista-jogadores').innerText = "Status: " + jogadores.map(j => j.nome + (j.enviou ? " (Pronto 👑)" : " (Criando ✍️)")).join(", ");
+        document.getElementById('lista-jogadores').innerText = "Status: " + jogadores.map(j => j.nome + (j.enviou ? " (Pronto ✅)" : " (Criando ✍️)")).join(", ");
     }
 
     document.getElementById('selectVitima').onchange = (e) => {
-        if(modoJogo === "cliente" && conexoes[0] && conexoes[0].open) {
-            conexoes[0].send({ tipo: "definir_sabotagem", idVitima: e.target.value });
-        } else {
-            idSabotadoAtual = e.target.value;
-        }
+        if(modoJogo === "cliente" && conexoes[0] && conexoes[0].open) { conexoes[0].send({ tipo: "definir_sabotagem", idVitima: e.target.value }); } 
+        else { idSabotadoAtual = e.target.value; }
     };
 
     document.getElementById('btnEnviar').onclick = () => { tocarSomNativo('clique'); enviarMemeManual(); };
@@ -834,50 +828,48 @@
     function enviarMemeManual() {
         if(jaEnviouMeme) return; jaEnviouMeme = true;
         document.getElementById('btnEnviar').disabled = true;
-        
         const imgFinal = canvas.toDataURL('image/jpeg', 0.5);
         
-        telaJogo.classList.add('hidden'); telaEspera.classList.remove('hidden');
+        telaJogo.classList.add('hidden'); telaEspera.remove('hidden');
         document.querySelector('.container').classList.remove('sabotagem-alerta');
         
         if (modoJogo === "host") {
-            let j = jogadores.find(p => p.id === peer.id); 
-            if(j && !j.enviou) { j.enviou = true; j.meme = imgFinal; }
-            atualizarListaInterface();
-            if (jogadores.every(p => p.enviou)) {
-                clearInterval(intervaloTimer);
-                ejecutarSequenciaExposicaoMeme(jogadores.map(p => ({id: p.id, nome: p.nome, imagem: p.meme})));
-            }
+            let j = jogadores.find(p => p.id === peer.id); if(j) { j.enviou = true; j.meme = imgFinal; }
+            atualizarListaInterface(); verificarTerminoDeEnvios();
         } else { if (conexoes[0] && conexoes[0].open) { conexoes[0].send({ tipo: "submeter_meme", imagem: imgFinal }); } }
     }
 
     function enviarMemeForçado() { enviarMemeManual(); }
 
+    document.getElementById('btnCancelarEnvio').onclick = () => {
+        tocarSomNativo('clique');
+        jaEnviouMeme = false;
+        document.getElementById('btnEnviar').disabled = false;
+        telaEspera.classList.add('hidden');
+        telaJogo.classList.remove('hidden');
+        
+        if (modoJogo === "host") {
+            let j = jogadores.find(p => p.id === peer.id); if(j) { j.enviou = false; j.meme = ""; }
+            atualizarListaInterface();
+        } else { if (conexoes[0] && conexoes[0].open) { conexoes[0].send({ tipo: "cancelar_meme" }); } }
+    };
+
     function ejecutarSequenciaExposicaoMeme(listaMemes) {
         if(timerExposicaoLoop) clearInterval(timerExposicaoLoop);
-        let indiceMeme = 0; 
-        let tempoRestanteExposicao = 10; 
+        let indiceMeme = 0; let tempoRestanteExposicao = 10; 
         
         function apresentarProximoMeme() {
             if(timerExposicaoLoop) clearInterval(timerExposicaoLoop);
-            
             while(indiceMeme < listaMemes.length && !listaMemes[indiceMeme].imagem) { indiceMeme++; }
             if (indiceMeme >= listaMemes.length) { sincronizarTodosOsClientes({ tipo: "ir_votacao", listaMemes: listaMemes }); return; }
             
-            let memeAtual = listaMemes[indiceMeme]; 
-            tempoRestanteExposicao = 10; 
-            
+            let memeAtual = listaMemes[indiceMeme]; tempoRestanteExposicao = 10; 
             sincronizarTodosOsClientes({ tipo: "mostrar_meme_individual", nomeAutor: memeAtual.nome, imagemMeme: memeAtual.imagem, segundosRestantes: tempoRestanteExposicao });
             
             timerExposicaoLoop = setInterval(() => {
                 tempoRestanteExposicao--;
-                if (tempoRestanteExposicao <= 0) {
-                    clearInterval(timerExposicaoLoop); 
-                    indiceMeme++; 
-                    apresentarProximoMeme();
-                } else {
-                    sincronizarTodosOsClientes({ tipo: "mostrar_meme_individual", nomeAutor: memeAtual.nome, imagemMeme: memeAtual.imagem, segundosRestantes: tempoRestanteExposicao });
-                }
+                if (tempoRestanteExposicao <= 0) { clearInterval(timerExposicaoLoop); indiceMeme++; apresentarProximoMeme(); } 
+                else { sincronizarTodosOsClientes({ tipo: "mostrar_meme_individual", nomeAutor: memeAtual.nome, imagemMeme: memeAtual.imagem, segundosRestantes: tempoRestanteExposicao }); }
             }, 1000);
         }
         apresentarProximoMeme();
@@ -898,20 +890,16 @@
             const card = document.createElement('div'); card.className = "meme-card";
             const img = document.createElement('img'); img.src = m.imagem;
             const btnVoto = document.createElement('button'); btnVoto.className = "btn btn-vote"; btnVoto.innerText = "👍 Votar em " + m.nome;
-            if(m.id === peer.id) { btnVoto.disabled = true; btnVoto.innerText = "Seu Meme"; btnVoto.style.background = "#222"; btnVoto.style.color = "#555"; btnVoto.style.border = "none"; btnVoto.style.boxShadow = "none"; }
+            if(m.id === peer.id) { btnVoto.disabled = true; btnVoto.innerText = "Seu Meme"; btnVoto.style = "background:#222; color:#555; border:none; box-shadow:none;"; }
+            
             btnVoto.onclick = () => {
-                tocarSomNativo('voto'); 
-                btnVoto.disabled = true; 
+                tocarSomNativo('voto'); btnVoto.disabled = true; 
                 if(modoJogo === "host") {
                     let ele = jogadores.find(p => p.id === peer.id);
                     if(ele && !ele.votou) { ele.votou = true; let j = jogadores.find(p => p.id === m.id); if(j) j.pontos += 10; }
-                    if (jogadores.every(p => p.votou)) {
-                        let ordenada = [...jogadores].sort((a, b) => b.pontos - a.pontos);
-                        idCampeaoAnterior = ordenada[0] ? ordenada[0].id : "";
-                        sincronizarTodosOsClientes({ tipo: "ir_ranking", listaRanking: jogadores, campeao: idCampeaoAnterior });
-                    }
+                    if (jogadores.every(p => p.votou)) { finalizarFaseDeVotacaoLógica(); }
                 } else { if (conexoes[0] && conexoes[0].open) { conexoes[0].send({ tipo: "voto", idVotado: m.id }); } }
-                galeria.innerHTML = "<h3>Voto Computado! Aguardando os outros crioulos...</h3><div class='loader'></div>";
+                galeria.innerHTML = "<h3>Voto Computado! Aguardando o resto...</h3><div class='loader'></div>";
             };
             card.appendChild(img); card.appendChild(btnVoto); galeria.appendChild(card);
         });
@@ -920,6 +908,8 @@
     function montarTelaRanking(listaRanking) {
         tocarSomNativo('vitoria');
         telaVotacao.classList.add('hidden'); telaRanking.classList.remove('hidden');
+        document.getElementById('titulo-rodada-ranking').innerText = `🏆 Rodada ${configPartida.rodadaAtual} de ${configPartida.rodadasMax} 🏆`;
+        
         const podio = document.getElementById('podio-scores'); podio.innerHTML = "";
         let ordenada = [...listaRanking].sort((a, b) => b.pontos - a.pontos);
         
@@ -930,37 +920,54 @@
             podio.appendChild(item);
         });
         
-        if(modoJogo === "host") document.getElementById('btnVoltarJogo').classList.remove('hidden');
-        else document.getElementById('btnVoltarJogo').classList.add('hidden');
+        if(modoJogo === "host") {
+            const btnVoltar = document.getElementById('btnVoltarJogo');
+            btnVoltar.classList.remove('hidden');
+            if (configPartida.rodadaAtual >= configPartida.rodadasMax) {
+                btnVoltar.innerText = "🔄 Reiniciar Nova Partida";
+            } else {
+                btnVoltar.innerText = "Avançar Próxima Rodada";
+            }
+        } else { document.getElementById('btnVoltarJogo').classList.add('hidden'); }
     }
 
-    document.getElementById('btnVoltarJogo').onclick = () => { tocarSomNativo('clique'); if(modoJogo === "host") iniciarNovaRodadaLógica(); };
+    document.getElementById('btnVoltarJogo').onclick = () => { 
+        tocarSomNativo('clique'); 
+        if(modoJogo !== "host") return;
+        if (configPartida.rodadaAtual >= configPartida.rodadasMax) {
+            configPartida.rodadaAtual = 1; jogadores.forEach(j => j.pontos = 0);
+        } else { configPartida.rodadaAtual++; }
+        iniciarNovaRodadaLógica(); 
+    };
+
+    function desconectarComSeguranca() {
+        if(intervaloTimer) clearInterval(intervaloTimer);
+        if(timerExposicaoLoop) clearInterval(timerExposicaoLoop);
+        conexoes.forEach(c => { try{c.close();}catch(e){} }); conexoes = [];
+        if(peer) { try{peer.destroy();}catch(e){} peer = null; }
+    }
+
+    function voltarParaTelaInicial() {
+        desconectarComSeguranca();
+        telaLobby.classList.add('hidden'); telaJogo.classList.add('hidden'); telaEspera.classList.add('hidden'); telaExposicao.classList.add('hidden'); telaVotacao.classList.add('hidden'); telaRanking.classList.add('hidden');
+        telaInicial.classList.remove('hidden');
+    }
+
+    document.getElementById('btnSairLobby').onclick = () => { tocarSomNativo('clique'); voltarParaTelaInicial(); };
+    document.getElementById('btnSairGame').onclick = () => { tocarSomNativo('clique'); voltarParaTelaInicial(); };
 
     function drawMeme() {
-        ctx.fillStyle = "#000"; 
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        if (imagemCarregada && imagemMemeAtual.complete && imagemMemeAtual.naturalWidth > 0) {
-            ctx.drawImage(imagemMemeAtual, 0, 0, canvas.width, canvas.height);
-        } else {
-            ctx.fillStyle = "#111"; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#fff"; 
-            ctx.font = "14px sans-serif"; 
-            ctx.textAlign = "center";
-            ctx.fillText("[Carregando imagem base...]", canvas.width / 2, canvas.height / 2);
+        ctx.fillStyle = "#000"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        if (imagemCarregada && imagemMemeAtual.complete && imagemMemeAtual.naturalWidth > 0) { ctx.drawImage(imagemMemeAtual, 0, 0, canvas.width, canvas.height); } 
+        else {
+            ctx.fillStyle = "#111"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#fff"; ctx.font = "14px sans-serif"; ctx.textAlign = "center"; ctx.fillText("[Carregando Imagem...]", canvas.width / 2, canvas.height / 2);
         }
-
         if(textosMeme && textosMeme.length > 0) {
             textosMeme.forEach(t => { 
-                ctx.save();
-                ctx.translate(t.x, t.y);
-                ctx.rotate((t.rotacao * Math.PI) / 180);
-                
-                ctx.strokeStyle = 'black'; 
-                ctx.fillStyle = 'white'; 
-                ctx.textAlign = 'center'; 
-                ctx.textBaseline = 'middle';
+                ctx.save(); ctx.translate(t.x, t.y); ctx.rotate((t.rotacao * Math.PI) / 180);
+                ctx.strokeStyle = 'black'; ctx.fillStyle = t.cor || '#FFFFFF'; 
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                 ctx.font = `bold ${t.tamanho || 30}px Impact, Arial Black, sans-serif`;
                 ctx.lineWidth = (t.tamanho || 30) / 4; 
 
@@ -970,10 +977,8 @@
 
                 linhas.forEach((linha, i) => {
                     let posY = (i * alturaLinha) - offsetTotal;
-                    ctx.strokeText(linha, 0, posY); 
-                    ctx.fillText(linha, 0, posY); 
+                    ctx.strokeText(linha, 0, posY); ctx.fillText(linha, 0, posY); 
                 });
-                
                 ctx.restore();
             });
         }
@@ -981,3 +986,5 @@
 </script>
 </body>
 </html>
+
+```
