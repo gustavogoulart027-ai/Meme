@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -63,7 +62,6 @@
         }
         .btn-muto-fixo:active { transform: scale(0.9); }
 
-        /* Botão Secreto no Canto da Tela */
         .btn-secreto-fixo {
             position: fixed;
             bottom: 15px;
@@ -78,7 +76,6 @@
         }
         .btn-secreto-fixo:hover { color: #555; }
 
-        /* Modal do Painel de Administração */
         .admin-modal {
             position: fixed;
             top: 50%;
@@ -142,7 +139,7 @@
         }
         .btn:active { 
             transform: translateY(5px); 
-            box-shadow: 0 0px 0px transparent, 0 2px 5px rgba(0,0,0,0.8);
+            box-shadow: 0px 0px 0px transparent, 0 2px 5px rgba(0,0,0,0.8);
         }
         .btn:disabled { 
             background: #111 !important; 
@@ -398,9 +395,7 @@
     let configPartida = { tempo: 240, rodadasMax: 3, rodadaAtual: 1, trocasMax: 3 };
     let trocasRealizadasPeloUsuario = 0;
 
-    // Hash SHA-256 correspondente à chave solicitada ("Geradortop12345")
     const hashChaveMestra = "3c1bb0df627df2fbf2ebf8db71f1bf434914107e034947d19dfbdfecfc40e830";
-
     const listaCoresPaleta = ['#000000', '#0000FF', '#FF0000', '#FFFF00', '#00FF00', '#FFFFFF'];
 
     document.getElementById('btnMudo').onclick = (e) => {
@@ -409,7 +404,6 @@
         iniciarContextoAudio();
     };
 
-    // Lógica Segreta do Painel Admin
     document.getElementById('btnSecreto').onclick = () => {
         document.getElementById('senhaAdmin').value = "";
         document.getElementById('areaLoginAdmin').classList.remove('hidden');
@@ -423,7 +417,6 @@
 
     document.getElementById('btnAutenticarAdmin').onclick = async () => {
         const textoDigitado = document.getElementById('senhaAdmin').value;
-        // Função interna para computar SHA-256 nativo no navegador
         const msgBuffer = new TextEncoder().encode(textoDigitado);
         const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
         const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -433,15 +426,20 @@
             document.getElementById('areaLoginAdmin').classList.add('hidden');
             document.getElementById('areaAcoesAdmin').classList.remove('hidden');
         } else {
-            // Se errar, nada acontece visualmente (conforme solicitado)
             document.getElementById('modalAdmin').classList.add('hidden');
         }
     };
 
+    // BOTÃO DE DESLIGAR REALMENTE FUNCIONAL: Alerta a rede e ejeta todo mundo globalmente
     document.getElementById('btnDesligarSalas').onclick = () => {
         redeDesligadaBloqueio = true;
         document.getElementById('modalAdmin').classList.add('hidden');
-        alert("Comando executado: Sistema de salas desativado globalmente.");
+        
+        if (modoJogo === "host" && conexoes.length > 0) {
+            sincronizarTodosOsClientes({ tipo: "derrubada_geral" });
+        }
+        
+        alert("Comando de desligamento global executado.");
         voltarParaTelaInicial();
     };
 
@@ -516,6 +514,7 @@
     document.addEventListener('click', iniciarContextoAudio);
     document.addEventListener('touchstart', iniciarContextoAudio);
 
+    // Memes da lista
     const memeImages = [
         "meme33.jpg", "meme.jpg", "meme17.jpg", "meme2.jpg", "meme8.jpg", 
         "meme3.jpg", "meme9.jpg", "meme4.jpg", "meme5.jpg", "meme18.jpg", 
@@ -536,7 +535,13 @@
         
         let imgTimeout = setTimeout(() => { imagemCarregada = true; }, 3500);
         imagemMemeAtual.onload = () => { clearTimeout(imgTimeout); imagemCarregada = true; };
-        imagemMemeAtual.onerror = () => { clearTimeout(imgTimeout); imagemCarregada = true; };
+        
+        // BUG FIX: Fallback caso a imagem local não exista (previne tela preta infinita)
+        imagemMemeAtual.onerror = () => { 
+            clearTimeout(imgTimeout); 
+            imagemMemeAtual.src = "https://picsum.photos/400/360?random=" + indice;
+            imagemCarregada = true; 
+        };
         imagemMemeAtual.src = urlSelecionada;
 
         if (textosMeme.length === 0) {
@@ -660,7 +665,7 @@
         inicializarInputs();
     };
 
-    function obterPosicao(e) {
+    function obtenerPosicao(e) {
         const rect = canvas.getBoundingClientRect();
         const clienteX = e.touches && e.touches.length > 0 ? e.touches[0].clientX : e.clientX;
         const clienteY = e.touches && e.touches.length > 0 ? e.touches[0].clientY : e.clientY;
@@ -795,7 +800,7 @@
             let sufixo = j.id.includes("MIM-") && i === 0 ? " <span>(LÍDER)</span>" : "";
             if(j.id === idCampeaoAnterior) sufixo += " 👑 [Carrasco]";
             listaDiv.innerHTML += `<div style='padding: 6px 0; border-bottom: 1px solid #222;'>👤 ${j.nome}${sufixo}</div>`; 
-            if (j.id !== idCampeaoAnterior) selectV.innerHTML += `<option value="${j.id}">${j.nome}</option>`;
+            if (j.id !== idCampeaoAnterior) selectV.innerHTML += `<option value="${j.id}">${j.nome}</option>';`;
         });
 
         if(peer && peer.id === idCampeaoAnterior && jogadores.length > 1) {
@@ -902,7 +907,10 @@
         if (data.tipo === "mostrar_meme_individual") abrirTelaExposicaoDinamica(data.nomeAutor, data.imagemMeme, data.segundosRestantes);
         if (data.tipo === "ir_votacao") montarTelaVotacao(data.listaMemes);
         if (data.tipo === "ir_ranking") { idCampeaoAnterior = data.campeao || ""; configPartida = data.config; montarTelaRanking(data.listaRanking); }
-        if (data.tipo === "ejecao_admin") { voltarParaTelaInicial(); alert("Você foi ejetado da partida: O administrador finalizou as salas da rede."); }
+        if (data.tipo === "ejecao_admin" || data.tipo === "derrubada_geral") { 
+            voltarParaTelaInicial(); 
+            alert("Aviso: A rede de salas do jogo foi derrubada globalmente pelo Administrador Master."); 
+        }
     }
 
     function sincronizarTodosOsClientes(objeto) {
@@ -910,6 +918,7 @@
         conexoes.forEach(c => { if(c.open) c.send(objeto); });
     }
 
+    // BUG FIX/FEATURE: Mostra detalhadamente e em tempo real quem falta enviar o meme
     function atualizarListaInterface() {
         let faltando = jogadores.filter(j => !j.enviou).map(j => j.nome);
         let textoFaltando = faltando.length > 0 ? faltando.join(", ") : "Ninguém! Processando...";
@@ -930,14 +939,19 @@
         document.getElementById('btnEnviar').disabled = true;
         const imgFinal = canvas.toDataURL('image/jpeg', 0.5);
         
-        telaJogo.classList.add('hidden'); telaEspera.remove('hidden');
+        telaJogo.classList.add('hidden'); 
+        telaEspera.classList.remove('hidden');
         document.querySelector('.container').classList.remove('sabotagem-alerta');
         
         if (modoJogo === "host") {
             let j = jogadores.find(p => p.id === peer.id); if(j) { j.enviou = true; j.meme = imgFinal; }
             sincronizarTodosOsClientes({ tipo: "atualizar_envios_status", lista: jogadores });
             verificarTerminoDeEnvios();
-        } else { if (conexoes[0] && conexoes[0].open) { conexoes[0].send({ tipo: "submeter_meme", imagem: imgFinal }); } }
+        } else { 
+            if (conexoes[0] && conexoes[0].open) { 
+                conexoes[0].send({ tipo: "submeter_meme", imagem: imgFinal }); 
+            } 
+        }
     }
 
     function enviarMemeForçado() { enviarMemeManual(); }
@@ -1044,9 +1058,6 @@
     function desconectarComSeguranca() {
         if(intervaloTimer) clearInterval(intervaloTimer);
         if(timerExposicaoLoop) clearInterval(timerExposicaoLoop);
-        if (modoJogo === "host" && conexoes.length > 0) {
-            sincronizarTodosOsClientes({ tipo: "ejecao_admin" });
-        }
         conexoes.forEach(c => { try{c.close();}catch(e){} }); conexoes = [];
         if(peer) { try{peer.destroy();}catch(e){} peer = null; }
     }
@@ -1092,5 +1103,3 @@
 </script>
 </body>
 </html>
-
-```
