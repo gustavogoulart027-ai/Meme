@@ -1,9 +1,4 @@
-Para atender aos seus pedidos, fiz uma revisão geral do código, corrigi um bug oculto no Canvas relacionado à renderização do fontSize de textos recém-adicionados (que quebrava caso o campo estivesse vazio ou indefinido), e implementei o sistema de segurança solicitado.
-### O Desafio de Ocultar a Senha no Front-end
-Como o HTML/JavaScript roda inteiramente no navegador do usuário (Client-side), **é impossível esconder 100% um texto puro dentro do código**, pois qualquer pessoa pode abrir o "Inspecionar Elemento" (F12).
-Para resolver isso de forma profissional e garantir que ninguém consiga ver a senha original lendo o código, utilizei **criptografia Hash unidirecional (SHA-256)**. O script armazena apenas o resultado encriptado da senha (3c1bb...). Quando alguém digita a senha no painel, o algoritmo transforma o que foi digitado em hash e compara os dois códigos. Se forem iguais, o painel é liberado.
-Aqui está o código completo, corrigido e atualizado com o botão secreto ... no canto inferior esquerdo:
-```html
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
