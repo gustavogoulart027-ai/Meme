@@ -395,8 +395,8 @@
     let configPartida = { tempo: 240, rodadasMax: 3, rodadaAtual: 1, trocasMax: 3 };
     let trocasRealizadasPeloUsuario = 0;
 
-    // Código da chave mestra corrigido para hash string puro e limpo
-    const hashChaveMestra = "3c1bb0df627df2fbf2ebf8db71f1bf434914107e034947d19dfbdfecfc40e830";
+    // SENHA ATUALIZADA COM SUCESSO PARA: Geradortop12345
+    const hashChaveMestra = "945bdf9ba03e06ef18797f1cc63e528a473da872fc100a9446d1bf275df9c72e";
     const listaCoresPaleta = ['#000000', '#0000FF', '#FF0000', '#FFFF00', '#00FF00', '#FFFFFF'];
 
     document.getElementById('btnMudo').onclick = (e) => {
@@ -416,7 +416,6 @@
         document.getElementById('modalAdmin').classList.add('hidden');
     };
 
-    // CORREÇÃO DO BUG DE AUTENTICAÇÃO: Ajustado o parser de array para hex literal
     document.getElementById('btnAutenticarAdmin').onclick = async () => {
         const textoDigitado = document.getElementById('senhaAdmin').value;
         try {
@@ -433,15 +432,14 @@
                 document.getElementById('modalAdmin').classList.add('hidden');
             }
         } catch (err) {
-            // Fallback caso a API Crypto falhe no navegador do usuário
-            if (textoDigitado === "suasenha") { 
+            // Fallback
+            if (textoDigitado === "Geradortop12345") { 
                 document.getElementById('areaLoginAdmin').classList.add('hidden');
                 document.getElementById('areaAcoesAdmin').classList.remove('hidden');
             }
         }
     };
 
-    // BOTÃO DE DESLIGAR SALAS: Sincroniza e derruba todas as conexões remotas ativas
     document.getElementById('btnDesligarSalas').onclick = () => {
         redeDesligadaBloqueio = true;
         document.getElementById('modalAdmin').classList.add('hidden');
@@ -1102,13 +1100,4 @@
                 let offsetTotal = ((linhas.length - 1) * alturaLinha) / 2;
 
                 linhas.forEach((linha, i) => {
-                    let posY = (i * alturaLinha) - offsetTotal;
-                    ctx.strokeText(linha, 0, posY); ctx.fillText(linha, 0, posY); 
-                });
-                ctx.restore();
-            });
-        }
-    }
-</script>
-</body>
-</html>
+                    let posY = (i *
