@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -62,35 +63,24 @@
         }
         .btn-muto-fixo:active { transform: scale(0.9); }
 
-        .btn-secreto-fixo {
+        .btn-abandonar-fixo {
             position: fixed;
-            bottom: 15px;
+            top: 15px;
             left: 15px;
-            background: transparent;
-            color: #222;
-            border: none;
+            background: #20080c;
+            color: #ef4444;
+            border: 2px solid #ef4444;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-family: 'Impact', sans-serif;
+            font-size: 14px;
             cursor: pointer;
-            font-size: 20px;
             z-index: 9999;
-            transition: color 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: 0.2s;
+            text-transform: uppercase;
         }
-        .btn-secreto-fixo:hover { color: #555; }
-
-        .admin-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #14070a;
-            border: 3px solid #ef4444;
-            border-radius: 16px;
-            padding: 25px;
-            z-index: 10000;
-            box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
-            max-width: 90%;
-            width: 320px;
-            box-sizing: border-box;
-        }
+        .btn-abandonar-fixo:active { transform: scale(0.95); }
 
         .container { 
             max-width: 520px; 
@@ -190,10 +180,10 @@
         .input-prefix { color: #888; font-family: 'Impact', sans-serif; font-size: 16px; user-select: none; }
         .input-wrapper input { background: transparent !important; border: none !important; margin: 0 !important; box-shadow: none !important; padding-left: 4px !important; }
 
-        input[type="text"], input[type="password"], select.config-input { 
+        input[type="text"], select.config-input { 
             padding: 16px; width: 100%; border-radius: 12px; border: 2px solid #333; margin: 12px 0; background: #000; color: #fff; font-size: 16px; box-sizing: border-box; -webkit-user-select: text; user-select: text; font-family: inherit; transition: all 0.2s ease; box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
         }
-        input[type="text"]:focus, input[type="password"]:focus { border-color: #fff; outline: none; box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), inset 0 2px 8px rgba(0,0,0,0.6); }
+        input[type="text"]:focus { border-color: #fff; outline: none; box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), inset 0 2px 8px rgba(0,0,0,0.6); }
         
         .bloco-legenda { display: flex; flex-direction: column; width: 100%; margin-bottom: 18px; background: #08080b; padding: 10px; border-radius: 12px; border: 1px solid #222; box-sizing: border-box; }
         textarea { padding: 16px; width: 100%; border-radius: 10px; border: 2px solid #333; margin: 0 0 10px 0; background: #000; color: #fff; font-size: 19px; box-sizing: border-box; -webkit-user-select: text; user-select: text; font-family: inherit; transition: all 0.2s ease; box-shadow: inset 0 2px 8px rgba(0,0,0,0.6); resize: none; height: 105px; font-weight: bold; }
@@ -232,30 +222,31 @@
 
         .loader { border: 4px solid #222; border-top: 4px solid #fff; border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin: 25px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Estilos do Perfil */
+        .container-avatar { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; }
+        .avatar-preview { width: 80px; height: 80px; border-radius: 50%; background: #222; border: 2px solid #444; object-fit: cover; display: block; margin-bottom: 8px; }
+        .player-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid #111; }
+        .player-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: #333; border: 1px solid #555; }
+        .badge-autor { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 18px; }
+        .badge-autor img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; }
     </style>
 </head>
 <body>
 
-<button class="btn-muto-fixo" id="btnMudo" title="Mutar/Desmutar Música">🔊</button>
-<button class="btn-secreto-fixo" id="btnSecreto" title="Admin">...</button>
-
-<div id="modalAdmin" class="admin-modal hidden">
-    <h3 style="margin-top:0; color:#ef4444;">Painel de Controle</h3>
-    <div id="areaLoginAdmin">
-        <input type="password" id="senhaAdmin" placeholder="Digite a chave master">
-        <button class="btn btn-sub" id="btnAutenticarAdmin">Acessar</button>
-    </div>
-    <div id="areaAcoesAdmin" class="hidden">
-        <p style="font-size:13px; color:#aaa;">O sistema está ativo. Clique abaixo para desligar globalmente a rede e ejetar jogadores ativos.</p>
-        <button class="btn" id="btnDesligarSalas" style="background:#ef4444; color:#fff; border-color:#fff;">🚨 DESLIGAR TODAS AS SALAS</button>
-    </div>
-    <button class="btn btn-sub" id="btnFecharAdmin" style="margin-top:10px; background:#222; color:#fff;">Fechar</button>
-</div>
+<button class="btn-muto-fixo" id="btnMudo" title="Mutar/Desmutar Música">🔇</button>
+<button class="btn-abandonar-fixo hidden" id="btnAbandonarFixo">🚪 Sair</button>
 
 <div class="container">
     <h1>Make It Meme 🎭</h1>
     
     <div id="tela-inicial">
+        <div class="container-avatar">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><circle cx='50' cy='35' r='20' fill='%23666'/><path d='M20,80 C20,60 80,60 80,80 Z' fill='%23666'/></svg>" class="avatar-preview" id="previewFoto">
+            <input type="file" id="inputFoto" accept="image/*" style="display: none;">
+            <button class="btn btn-sub" style="margin: 0; width: auto;" onclick="document.getElementById('inputFoto').click()">Selecionar Avatar</button>
+        </div>
+
         <input type="text" id="inputNome" placeholder="Seu Nome / Apelido"><br>
         <button class="btn" id="btnCriar">Criar Nova Sala</button>
         
@@ -361,7 +352,10 @@
 
     <div id="tela-exposicao" class="hidden">
         <div id="timer-exposicao">👀 Olhem para a tela: 10s</div>
-        <h3 id="autor-meme-exposto" style="margin-bottom: 10px;">Meme de: -</h3>
+        <div class="badge-autor" id="autor-box-exposto">
+            <img src="" id="avatar-meme-exposto">
+            <h3 id="autor-meme-exposto" style="margin:0;">Meme de: -</h3>
+        </div>
         <div class="meme-card">
             <img id="img-meme-exposto" src="" alt="Meme em exibição">
         </div>
@@ -376,86 +370,64 @@
         <h2 id="titulo-rodada-ranking">🏆 Classificação Geral 🏆</h2>
         <div id="podio-scores"></div>
         <button class="btn hidden" id="btnVoltarJogo" style="margin-top:20px;">Avançar Próxima Rodada</button>
-        <button class="btn" id="btnSairGame" style="background: #14070a; color: #ef4444; border-color: #3a1217; font-size: 16px; margin-top: 10px;">🚪 Abandonar Partida</button>
     </div>
 </div>
 
 <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
 
 <script>
-    let audioCtx = null, musicLoopStarted = false, estaMutado = false; 
+    let audioCtx = null, musicLoopStarted = false, estaMutado = true; 
     let textosMeme = []; 
     let peer = null, conexoes = [], modoJogo = "host", meuNome = "", codigoSala = "", jogadores = [];
     let tempoRestante = 240, intervaloTimer = null, jaEnviouMeme = false;
     let imagemMemeAtual = new Image(), imagemCarregada = false, indiceImagemAtualGlobal = 0; 
     let textoArrastando = null, timerExposicaoLoop = null; 
     let idCampeaoAnterior = "", idSabotadoAtual = "";
-    let redeDesligadaBloqueio = false;
+    let meuAvatarBase64 = ""; 
     
     let configPartida = { tempo: 240, rodadasMax: 3, rodadaAtual: 1, trocasMax: 3 };
     let trocasRealizadasPeloUsuario = 0;
 
-    const hashChaveMestra = "945bdf9ba03e06ef18797f1cc63e528a473da872fc100a9446d1bf275df9c72e";
     const listaCoresPaleta = ['#000000', '#0000FF', '#FF0000', '#FFFF00', '#00FF00', '#FFFFFF'];
 
-    document.getElementById('btnMudo').onclick = (e) => {
-        e.stopPropagation(); estaMutado = !estaMutado;
-        document.getElementById('btnMudo').innerText = estaMutado ? "❌" : "🔊";
-        iniciarContextoAudio();
-    };
-
-    document.getElementById('btnSecreto').onclick = () => {
-        document.getElementById('senhaAdmin').value = "";
-        document.getElementById('areaLoginAdmin').classList.remove('hidden');
-        document.getElementById('areaAcoesAdmin').classList.add('hidden');
-        document.getElementById('modalAdmin').classList.remove('hidden');
-    };
-
-    document.getElementById('btnFecharAdmin').onclick = () => {
-        document.getElementById('modalAdmin').classList.add('hidden');
-    };
-
-    document.getElementById('btnAutenticarAdmin').onclick = async () => {
-        const textoDigitado = document.getElementById('senhaAdmin').value;
-        try {
-            const msgBuffer = new TextEncoder().encode(textoDigitado);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
-
-            if (hashHex === hashChaveMestra) {
-                document.getElementById('areaLoginAdmin').classList.add('hidden');
-                document.getElementById('areaAcoesAdmin').classList.remove('hidden');
-            } else {
-                alert("Código administrativo inválido.");
-                document.getElementById('modalAdmin').classList.add('hidden');
+    // Tratamento de Avatar / Imagem de perfil
+    document.getElementById('inputFoto').onchange = function(e) {
+        let tgt = e.target || window.event.srcElement, files = tgt.files;
+        if (FileReader && files && files.length) {
+            let fr = new FileReader();
+            fr.onload = function () {
+                let img = new Image();
+                img.onload = function() {
+                    let canvasThumb = document.createElement('canvas');
+                    let ctxThumb = canvasThumb.getContext('2d');
+                    canvasThumb.width = 90; canvasThumb.height = 90;
+                    ctxThumb.drawImage(img, 0, 0, 90, 90);
+                    meuAvatarBase64 = canvasThumb.toDataURL('image/jpeg', 0.7);
+                    document.getElementById('previewFoto').src = meuAvatarBase64;
+                }
+                img.src = fr.result;
             }
-        } catch (err) {
-            if (textoDigitado === "Geradortop12345") { 
-                document.getElementById('areaLoginAdmin').classList.add('hidden');
-                document.getElementById('areaAcoesAdmin').classList.remove('hidden');
-            }
+            fr.readAsDataURL(files[0]);
+        }
+    }
+
+    // Gerenciador de Áudio Corrigido para funcionar com 1 clique
+    document.getElementById('btnMudo').onclick = () => {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        
+        estaMutado = !estaMutado;
+        document.getElementById('btnMudo').innerText = estaMutado ? "🔇" : "🔊";
+        
+        if (!estaMutado && !musicLoopStarted) {
+            musicLoopStarted = true;
+            ligarMusicaAmbienteVirtual();
         }
     };
-
-    document.getElementById('btnDesligarSalas').onclick = () => {
-        redeDesligadaBloqueio = true;
-        document.getElementById('modalAdmin').classList.add('hidden');
-        sincronizarTodosOsClientes({ tipo: "derrubada_geral" });
-        setTimeout(() => {
-            desconectarComSeguranca();
-            alert("Rede de salas desconectada e limpa com sucesso de forma global.");
-            voltarParaTelaInicial();
-        }, 500);
-    };
-
-    function iniciarContextoAudio() {
-        try {
-            if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-            if (!musicLoopStarted) { musicLoopStarted = true; ligarMusicaAmbienteVirtual(); }
-        } catch(e) {}
-    }
 
     function ligarMusicaAmbienteVirtual() {
         let acordesSunday = [[261.63, 329.63, 392.00, 493.88], [261.63, 311.13, 392.00, 466.16], [293.66, 349.23, 440.00, 523.25], [392.00, 493.88, 587.33, 698.46]];
@@ -468,7 +440,7 @@
                 notasAtuais.forEach((frequencia, index) => {
                     let osc = audioCtx.createOscillator(); let g = audioCtx.createGain();
                     osc.type = 'triangle'; osc.frequency.setValueAtTime(frequencia, tempoAtual + (index * 0.12)); 
-                    g.gain.setValueAtTime(0.05, tempoAtual + (index * 0.12));
+                    g.gain.setValueAtTime(0.04, tempoAtual + (index * 0.12));
                     g.gain.exponentialRampToValueAtTime(0.001, tempoAtual + 1.2);
                     osc.connect(g); g.connect(audioCtx.destination);
                     osc.start(tempoAtual + (index * 0.12)); osc.stop(tempoAtual + 1.2);
@@ -480,25 +452,24 @@
 
     function tocarSomNativo(tipo) {
         try {
-            if (estaMutado) return;
-            if (!audioCtx || audioCtx.state === 'suspended') return;
+            if (estaMutado || !audioCtx || audioCtx.state === 'suspended') return;
             let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
             osc.connect(gain); gain.connect(audioCtx.destination);
             let tempoAtual = audioCtx.currentTime;
             if (tipo === 'clique') {
                 osc.type = 'sine'; osc.frequency.setValueAtTime(450, tempoAtual);
                 osc.frequency.exponentialRampToValueAtTime(150, tempoAtual + 0.08);
-                gain.gain.setValueAtTime(0.3, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.08);
+                gain.gain.setValueAtTime(0.2, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.08);
                 osc.start(tempoAtual); osc.stop(tempoAtual + 0.08);
             } else if (tipo === 'voto') {
                 osc.type = 'triangle'; osc.frequency.setValueAtTime(587.33, tempoAtual);
                 osc.frequency.setValueAtTime(783.99, tempoAtual + 0.1);
-                gain.gain.setValueAtTime(0.3, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.2);
+                gain.gain.setValueAtTime(0.2, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.2);
                 osc.start(tempoAtual); osc.stop(tempoAtual + 0.2);
             } else if (tipo === 'vitoria') {
                 osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, tempoAtual);
                 osc.frequency.setValueAtTime(659.25, tempoAtual + 0.1); osc.frequency.setValueAtTime(783.99, tempoAtual + 0.2);
-                gain.gain.setValueAtTime(0.3, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.4);
+                gain.gain.setValueAtTime(0.2, tempoAtual); gain.gain.linearRampToValueAtTime(0.01, tempoAtual + 0.4);
                 osc.start(tempoAtual); osc.stop(tempoAtual + 0.4);
             }
         } catch(e) {}
@@ -637,7 +608,7 @@
                 const celula = document.createElement('div');
                 celula.className = "celula-cor";
                 celula.style.backgroundColor = cor;
-                if(t.cor === cor) celula.classList.add('active');
+                if(t.cor === cor) celula.classList.add('ativa');
                 
                 celula.onclick = () => {
                     tocarSomNativo('clique');
@@ -657,7 +628,7 @@
     }
 
     document.getElementById('btnAdicionarTexto').onclick = () => {
-        textosMeme.push({ conteudo: "NOVO TEXTO", x: canvas.width / 2, y: canvas.height / 2, tamanho: 28, Math: 0, cor: '#FFFFFF' });
+        textosMeme.push({ conteudo: "NOVO TEXTO", x: canvas.width / 2, y: canvas.height / 2, tamanho: 28, rotacao: 0, cor: '#FFFFFF' });
         inicializarInputs();
     };
 
@@ -691,8 +662,10 @@
         link.href = canvas.toDataURL('image/jpeg', 0.8); link.click();
     };
 
+    // Fallback Imagem padrão do Avatar caso o player não envie nenhuma
+    const avatarPadraoStr = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><circle cx='50' cy='35' r='20' fill='%23666'/><path d='M20,80 C20,60 80,60 80,80 Z' fill='%23666'/></svg>";
+
     document.getElementById('btnCriar').onclick = () => {
-        if(redeDesligadaBloqueio) return alert("As salas do site encontram-se temporariamente desativadas pela gerência.");
         tocarSomNativo('clique');
         meuNome = document.getElementById('inputNome').value.trim().replace(/['"{}()\[\]]/g, '');
         if(!meuNome) return alert("Digite seu nome!");
@@ -710,16 +683,16 @@
             document.getElementById('lobby-codigo').innerText = id;
             document.getElementById('painel-config-host').classList.remove('hidden');
             document.getElementById('btnIniciarJogo').style.display = 'block';
+            document.getElementById('btnAbandonarFixo').classList.remove('hidden');
             
             jogadores = [{ 
-                id: peer.id, nome: meuNome, pontos: 0, enviou: false, votou: false, meme: "", imgIndice: 0,
+                id: peer.id, nome: meuNome, avatar: meuAvatarBase64 || avatarPadraoStr, pontos: 0, enviou: false, votou: false, meme: "", imgIndice: 0,
                 imagensRestantes: Array.from({length: memeImages.length}, (_, i) => i)
             }];
             abrirTelaLobby();
         });
 
         peer.on('connection', (conn) => {
-            if(redeDesligadaBloqueio) { conn.close(); return; }
             let idxExistente = conexoes.findIndex(c => c.peer === conn.peer);
             if(idxExistente !== -1) { conexoes[idxExistente] = conn; } else { conexoes.push(conn); }
             
@@ -738,7 +711,6 @@
     };
 
     document.getElementById('btnEntrar').onclick = () => {
-        if(redeDesligadaBloqueio) return alert("As salas do site encontram-se temporariamente desativadas pela gerência.");
         tocarSomNativo('clique');
         meuNome = document.getElementById('inputNome').value.trim().replace(/['"{}()\[\]]/g, '');
         let sufixoCodigo = document.getElementById('inputCodigo').value.trim().toUpperCase();
@@ -760,7 +732,8 @@
                 document.getElementById('lobby-codigo').innerText = codigoSala;
                 document.getElementById('painel-config-host').classList.add('hidden');
                 document.getElementById('btnIniciarJogo').style.display = 'none';
-                conn.send({ tipo: "enter_request", nome: meuNome });
+                document.getElementById('btnAbandonarFixo').classList.remove('hidden');
+                conn.send({ tipo: "enter_request", nome: meuNome, avatar: meuAvatarBase64 || avatarPadraoStr });
                 abrirTelaLobby();
             });
             conn.on('data', (data) => lidarComDadosCliente(data));
@@ -782,6 +755,7 @@
     function abrirTelaLobby() {
         telaInicial.classList.add('hidden'); telaJogo.classList.add('hidden'); telaVotacao.classList.add('hidden'); telaRanking.classList.add('hidden'); telaEspera.classList.add('hidden'); telaExposicao.classList.add('hidden');
         telaLobby.classList.remove('hidden');
+        document.getElementById('btnAbandonarFixo').classList.remove('hidden');
         atualizarLobbyInterface();
     }
 
@@ -795,7 +769,12 @@
         jogadores.forEach((j, i) => { 
             let sufixo = j.id.includes("MIM-") && i === 0 ? " <span>(LÍDER)</span>" : "";
             if(j.id === idCampeaoAnterior) sufixo += " 👑 [Carrasco]";
-            listaDiv.innerHTML += `<div style='padding: 6px 0; border-bottom: 1px solid #222;'>👤 ${j.nome}${sufixo}</div>`; 
+            
+            listaDiv.innerHTML += `
+                <div class="player-row">
+                    <img src="${j.avatar || avatarPadraoStr}" class="player-avatar">
+                    <div>${j.nome}${sufixo}</div>
+                </div>`; 
             if (j.id !== idCampeaoAnterior) selectV.innerHTML += `<option value="${j.id}">${j.nome}</option>`;
         });
 
@@ -828,7 +807,7 @@
         jogadores.forEach(j => {
             let opcoesValidas = j.imagensRestantes.filter(idx => !indicesEscolhidosNestaRodada.includes(idx));
             if (opcoesValidas.length === 0) { opcoesValidas = j.imagensRestantes; }
-            let indiceSorteado = opcoesValidas[Math.floor(Math.random() * opcoesValidas.length)];
+            let indiceSorteado = opcoesValidas[Math.floor(Math.random() * Server = opcoesValidas.length)];
             if(indiceSorteado === undefined) { indiceSorteado = Math.floor(Math.random() * memeImages.length); }
             
             j.imgIndice = indiceSorteado;
@@ -848,7 +827,7 @@
     function lidarComDadosHost(data, conn) {
         if (data.tipo === "enter_request") {
             if(!jogadores.find(p => p.id === conn.peer)) {
-                jogadores.push({ id: conn.peer, nome: data.nome, pontos: 0, enviou: false, votou: false, meme: "", imgIndice: 0, imagensRestantes: Array.from({length: memeImages.length}, (_, i) => i) });
+                jogadores.push({ id: conn.peer, nome: data.nome, avatar: data.avatar || avatarPadraoStr, pontos: 0, enviou: false, votou: false, meme: "", imgIndice: 0, imagensRestantes: Array.from({length: memeImages.length}, (_, i) => i) });
             }
             sincronizarTodosOsClientes({ tipo: "lista_lobby", lista: jogadores, campeao: idCampeaoAnterior, config: configPartida });
         }
@@ -877,7 +856,7 @@
     function verificarTerminoDeEnvios() {
         if (jogadores.every(p => p.enviou)) {
             clearInterval(intervaloTimer);
-            ejecutarSequenciaExposicaoMeme(jogadores.map(p => ({id: p.id, nome: p.nome, imagem: p.meme})));
+            ejecutarSequenciaExposicaoMeme(jogadores.map(p => ({id: p.id, nome: p.nome, avatar: p.avatar, imagem: p.meme})));
         }
     }
 
@@ -899,12 +878,12 @@
             jogadores = data.lista;
             atualizarListaInterface();
         }
-        if (data.tipo === "mostrar_meme_individual") abrirTelaExposicaoDinamica(data.nomeAutor, data.imagemMeme, data.segundosRestantes);
+        if (data.tipo === "mostrar_meme_individual") abrirTelaExposicaoDinamica(data.nomeAutor, data.avatarAutor, data.imagemMeme, data.segundosRestantes);
         if (data.tipo === "ir_votacao") montarTelaVotacao(data.listaMemes);
         if (data.tipo === "ir_ranking") { idCampeaoAnterior = data.campeao || ""; configPartida = data.config; montarTelaRanking(data.listaRanking); }
-        if (data.tipo === "ejecao_admin" || data.tipo === "derrubada_geral") { 
+        if (data.tipo === "derrubada_geral") { 
             voltarParaTelaInicial(); 
-            alert("Aviso: A rede de salas do jogo foi derrubada globalmente pelo Administrador Master."); 
+            alert("Partida encerrada."); 
         }
     }
 
@@ -973,20 +952,27 @@
             if (indiceMeme >= listaMemes.length) { sincronizarTodosOsClientes({ tipo: "ir_votacao", listaMemes: listaMemes }); return; }
             
             let memeAtual = listaMemes[indiceMeme]; tempoRestanteExposicao = 10; 
-            sincronizarTodosOsClientes({ tipo: "mostrar_meme_individual", nomeAutor: memeAtual.nome, imagemMeme: memeAtual.imagem, segundosRestantes: tempoRestanteExposicao });
+            sincronizarTodosOsClientes({ 
+                tipo: "mostrar_meme_individual", nomeAutor: memeAtual.nome, avatarAutor: memeAtual.avatar || avatarPadraoStr, imagemMeme: memeAtual.imagem, segundosRestantes: tempoRestanteExposicao 
+            });
             
             timerExposicaoLoop = setInterval(() => {
                 tempoRestanteExposicao--;
                 if (tempoRestanteExposicao <= 0) { clearInterval(timerExposicaoLoop); indiceMeme++; apresentarProximoMeme(); } 
-                else { sincronizarTodosOsClientes({ tipo: "mostrar_meme_individual", nomeAutor: memeAtual.nome, imagemMeme: memeAtual.imagem, segundosRestantes: tempoRestanteExposicao }); }
+                else { 
+                    sincronizarTodosOsClientes({ 
+                        tipo: "mostrar_meme_individual", nomeAutor: memeAtual.nome, avatarAutor: memeAtual.avatar || avatarPadraoStr, imagemMeme: memeAtual.imagem, segundosRestantes: tempoRestanteExposicao 
+                    }); 
+                }
             }, 1000);
         }
         apresentarProximoMeme();
     }
 
-    function abrirTelaExposicaoDinamica(nome, imagem, segundos) {
+    function abrirTelaExposicaoDinamica(nome, avatar, imagem, segundos) {
         telaJogo.classList.add('hidden'); telaEspera.classList.add('hidden'); telaVotacao.classList.add('hidden'); telaExposicao.classList.remove('hidden');
         document.getElementById('autor-meme-exposto').innerText = "Meme de: " + nome;
+        document.getElementById('avatar-meme-exposto').src = avatar || avatarPadraoStr;
         document.getElementById('img-meme-exposto').src = imagem;
         document.getElementById('timer-exposicao').innerText = `👀 Olhem para a tela: ${segundos}s`;
     }
@@ -997,8 +983,14 @@
         listaMemes.forEach(m => {
             if(!m.imagem) return;
             const card = document.createElement('div'); card.className = "meme-card";
+            
+            const boxAutor = document.createElement('div'); boxAutor.className = "badge-autor";
+            const imgAv = document.createElement('img'); imgAv.src = m.avatar || avatarPadraoStr;
+            const lblAv = document.createElement('span'); lblAv.innerText = m.nome;
+            boxAutor.appendChild(imgAv); boxAutor.appendChild(lblAv);
+
             const img = document.createElement('img'); img.src = m.imagem;
-            const btnVoto = document.createElement('button'); btnVoto.className = "btn btn-vote"; btnVoto.innerText = "👍 Votar em " + m.nome;
+            const btnVoto = document.createElement('button'); btnVoto.className = "btn btn-vote"; btnVoto.innerText = "👍 Votar";
             if(m.id === peer.id) { btnVoto.disabled = true; btnVoto.innerText = "Seu Meme"; btnVoto.style = "background:#222; color:#555; border:none; box-shadow:none;"; }
             
             btnVoto.onclick = () => {
@@ -1010,7 +1002,7 @@
                 } else { if (conexoes[0] && conexoes[0].open) { conexoes[0].send({ tipo: "voto", idVotado: m.id }); } }
                 galeria.innerHTML = "<h3>Voto Computado! Aguardando o resto...</h3><div class='loader'></div>";
             };
-            card.appendChild(img); card.appendChild(btnVoto); galeria.appendChild(card);
+            card.appendChild(boxAutor); card.appendChild(img); card.appendChild(btnVoto); galeria.appendChild(card);
         });
     }
 
@@ -1025,7 +1017,11 @@
         ordenada.forEach((j, idx) => {
             const item = document.createElement('div'); item.className = "ranking-item";
             let coroa = idx === 0 ? "👑 " : "";
-            item.innerHTML = `<span>#${idx+1} ${coroa}${j.nome}</span> <span>${j.pontos} pts</span>`;
+            item.innerHTML = `
+                <span style="display:flex; align-items:center; gap:8px;">
+                    #${idx+1} <img src="${j.avatar || avatarPadraoStr}" class="player-avatar"> ${coroa}${j.nome}
+                </span> 
+                <span>${j.pontos} pts</span>`;
             podio.appendChild(item);
         });
         
@@ -1058,12 +1054,18 @@
 
     function voltarParaTelaInicial() {
         desconectarComSeguranca();
+        document.getElementById('btnAbandonarFixo').classList.add('hidden');
+        document.querySelector('.container').classList.remove('sabotagem-alerta');
         telaLobby.classList.add('hidden'); telaJogo.classList.add('hidden'); telaEspera.classList.add('hidden'); telaExposicao.classList.add('hidden'); telaVotacao.classList.add('hidden'); telaRanking.classList.add('hidden');
         telaInicial.classList.remove('hidden');
     }
 
     document.getElementById('btnSairLobby').onclick = () => { tocarSomNativo('clique'); voltarParaTelaInicial(); };
-    document.getElementById('btnSairGame').onclick = () => { tocarSomNativo('clique'); voltarParaTelaInicial(); };
+    document.getElementById('btnAbandonarFixo').onclick = () => { 
+        if(confirm("Deseja mesmo abandonar a partida atual e voltar ao menu?")) {
+            voltarParaTelaInicial(); 
+        }
+    };
 
     function drawMeme() {
         ctx.fillStyle = "#000"; ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1100,3 +1102,5 @@
 </script>
 </body>
 </html>
+
+```
