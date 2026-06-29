@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -97,7 +96,7 @@
         @keyframes rgbBorda {
             0% { border-color: #ff0000; box-shadow: 0 0 25px rgba(255, 0, 0, 0.4); }
             20% { border-color: #00ff00; box-shadow: 0 0 25px rgba(0, 255, 0, 0.4); }
-            40% { border-color: #0000ff; box-shadow: 0 0 25px rgba(0, 255, 0, 0.4); }
+            40% { border-color: #0000ff; box-shadow: 0 0 25px rgba(0, 0, 255, 0.4); }
             60% { border-color: #ffff00; box-shadow: 0 0 25px rgba(255, 255, 0, 0.4); }
             80% { border-color: #ff00ff; box-shadow: 0 0 25px rgba(255, 0, 255, 0.4); }
             100% { border-color: #ff0000; box-shadow: 0 0 25px rgba(255, 0, 0, 0.4); }
@@ -223,11 +222,10 @@
         .loader { border: 4px solid #222; border-top: 4px solid #fff; border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin: 25px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Estilos do Perfil */
         .container-avatar { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; }
         .avatar-preview { width: 80px; height: 80px; border-radius: 50%; background: #222; border: 2px solid #444; object-fit: cover; display: block; margin-bottom: 8px; }
-        .player-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid #111; }
-        .player-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: #333; border: 1px solid #555; }
+        .player-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #111; }
+        .player-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #333; border: 1px solid #555; display: inline-block; vertical-align: middle; }
         .badge-autor { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 18px; }
         .badge-autor img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; }
     </style>
@@ -389,8 +387,8 @@
     let trocasRealizadasPeloUsuario = 0;
 
     const listaCoresPaleta = ['#000000', '#0000FF', '#FF0000', '#FFFF00', '#00FF00', '#FFFFFF'];
+    const avatarPadraoStr = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><circle cx='50' cy='35' r='20' fill='%23666'/><path d='M20,80 C20,60 80,60 80,80 Z' fill='%23666'/></svg>";
 
-    // Tratamento de Avatar / Imagem de perfil
     document.getElementById('inputFoto').onchange = function(e) {
         let tgt = e.target || window.event.srcElement, files = tgt.files;
         if (FileReader && files && files.length) {
@@ -411,7 +409,6 @@
         }
     }
 
-    // Gerenciador de Áudio Corrigido para funcionar com 1 clique
     document.getElementById('btnMudo').onclick = () => {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -491,7 +488,7 @@
         "meme33.jpg", "meme.jpg", "meme17.jpg", "meme2.jpg", "meme8.jpg", 
         "meme3.jpg", "meme9.jpg", "meme4.jpg", "meme5.jpg", "meme18.jpg", 
         "meme6.jpg", "meme12.jpg", "meme10.jpg", "meme34.jpg", "meme13.jpg", 
-        "meme15.jpg", "meme14.jpg", "meme11.jpg", "Meme16.jpg", "meme7.jpg", 
+        "meme15.jpg", "meme14.jpg", "meme11.jpg", "MIM-16.jpg", "meme7.jpg", 
         "meme32.jpg", "meme30.jpg", "meme31.jpg", "meme19.jpg", "meme20.jpg", 
         "meme21.jpg", "meme22.jpg", "meme27.jpg", "meme23.jpg", "meme29.jpg", 
         "meme28.jpg", "meme26.jpg", "meme24.jpg", "meme25.jpg", "meme35.jpg", "meme36.jpg", "meme37.jpg", "meme38.jpg", "meme39.jpg", "meme40.jpg",
@@ -662,9 +659,6 @@
         link.href = canvas.toDataURL('image/jpeg', 0.8); link.click();
     };
 
-    // Fallback Imagem padrão do Avatar caso o player não envie nenhuma
-    const avatarPadraoStr = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><circle cx='50' cy='35' r='20' fill='%23666'/><path d='M20,80 C20,60 80,60 80,80 Z' fill='%23666'/></svg>";
-
     document.getElementById('btnCriar').onclick = () => {
         tocarSomNativo('clique');
         meuNome = document.getElementById('inputNome').value.trim().replace(/['"{}()\[\]]/g, '');
@@ -770,12 +764,13 @@
             let sufixo = j.id.includes("MIM-") && i === 0 ? " <span>(LÍDER)</span>" : "";
             if(j.id === idCampeaoAnterior) sufixo += " 👑 [Carrasco]";
             
+            let avFinal = j.avatar && j.avatar.startsWith("data:image") ? j.avatar : avatarPadraoStr;
             listaDiv.innerHTML += `
                 <div class="player-row">
-                    <img src="${j.avatar || avatarPadraoStr}" class="player-avatar">
+                    <img src="${avFinal}" class="player-avatar">
                     <div>${j.nome}${sufixo}</div>
                 </div>`; 
-            if (j.id !== idCampeaoAnterior) selectV.innerHTML += `<option value="${j.id}">${j.nome}</option>`;
+            if (j.id !== idCampeaoAnterior) selectV.innerHTML += `<option value="${j.id}">${j.nome}</option>';`;
         });
 
         if(peer && peer.id === idCampeaoAnterior && jogadores.length > 1) {
@@ -807,7 +802,7 @@
         jogadores.forEach(j => {
             let opcoesValidas = j.imagensRestantes.filter(idx => !indicesEscolhidosNestaRodada.includes(idx));
             if (opcoesValidas.length === 0) { opcoesValidas = j.imagensRestantes; }
-            let indiceSorteado = opcoesValidas[Math.floor(Math.random() * Server = opcoesValidas.length)];
+            let indiceSorteado = opcoesValidas[Math.floor(Math.random() * opcoesValidas.length)];
             if(indiceSorteado === undefined) { indiceSorteado = Math.floor(Math.random() * memeImages.length); }
             
             j.imgIndice = indiceSorteado;
@@ -952,8 +947,9 @@
             if (indiceMeme >= listaMemes.length) { sincronizarTodosOsClientes({ tipo: "ir_votacao", listaMemes: listaMemes }); return; }
             
             let memeAtual = listaMemes[indiceMeme]; tempoRestanteExposicao = 10; 
+            let avMeme = memeAtual.avatar && memeAtual.avatar.startsWith("data:image") ? memeAtual.avatar : avatarPadraoStr;
             sincronizarTodosOsClientes({ 
-                tipo: "mostrar_meme_individual", nomeAutor: memeAtual.nome, avatarAutor: memeAtual.avatar || avatarPadraoStr, imagemMeme: memeAtual.imagem, segundosRestantes: tempoRestanteExposicao 
+                tipo: "mostrar_meme_individual", nomeAutor: memeAtual.nome, avatarAutor: avMeme, imagemMeme: memeAtual.imagem, segundosRestantes: tempoRestanteExposicao 
             });
             
             timerExposicaoLoop = setInterval(() => {
@@ -961,7 +957,7 @@
                 if (tempoRestanteExposicao <= 0) { clearInterval(timerExposicaoLoop); indiceMeme++; apresentarProximoMeme(); } 
                 else { 
                     sincronizarTodosOsClientes({ 
-                        tipo: "mostrar_meme_individual", nomeAutor: memeAtual.nome, avatarAutor: memeAtual.avatar || avatarPadraoStr, imagemMeme: memeAtual.imagem, segundosRestantes: tempoRestanteExposicao 
+                        tipo: "mostrar_meme_individual", nomeAutor: memeAtual.nome, avatarAutor: avMeme, imagemMeme: memeAtual.imagem, segundosRestantes: tempoRestanteExposicao 
                     }); 
                 }
             }, 1000);
@@ -972,7 +968,7 @@
     function abrirTelaExposicaoDinamica(nome, avatar, imagem, segundos) {
         telaJogo.classList.add('hidden'); telaEspera.classList.add('hidden'); telaVotacao.classList.add('hidden'); telaExposicao.classList.remove('hidden');
         document.getElementById('autor-meme-exposto').innerText = "Meme de: " + nome;
-        document.getElementById('avatar-meme-exposto').src = avatar || avatarPadraoStr;
+        document.getElementById('avatar-meme-exposto').src = avatar && avatar.startsWith("data:image") ? avatar : avatarPadraoStr;
         document.getElementById('img-meme-exposto').src = imagem;
         document.getElementById('timer-exposicao').innerText = `👀 Olhem para a tela: ${segundos}s`;
     }
@@ -985,7 +981,7 @@
             const card = document.createElement('div'); card.className = "meme-card";
             
             const boxAutor = document.createElement('div'); boxAutor.className = "badge-autor";
-            const imgAv = document.createElement('img'); imgAv.src = m.avatar || avatarPadraoStr;
+            const imgAv = document.createElement('img'); imgAv.src = m.avatar && m.avatar.startsWith("data:image") ? m.avatar : avatarPadraoStr;
             const lblAv = document.createElement('span'); lblAv.innerText = m.nome;
             boxAutor.appendChild(imgAv); boxAutor.appendChild(lblAv);
 
@@ -1017,9 +1013,10 @@
         ordenada.forEach((j, idx) => {
             const item = document.createElement('div'); item.className = "ranking-item";
             let coroa = idx === 0 ? "👑 " : "";
+            let avRank = j.avatar && j.avatar.startsWith("data:image") ? j.avatar : avatarPadraoStr;
             item.innerHTML = `
                 <span style="display:flex; align-items:center; gap:8px;">
-                    #${idx+1} <img src="${j.avatar || avatarPadraoStr}" class="player-avatar"> ${coroa}${j.nome}
+                    #${idx+1} <img src="${avRank}" class="player-avatar"> ${coroa}${j.nome}
                 </span> 
                 <span>${j.pontos} pts</span>`;
             podio.appendChild(item);
@@ -1102,5 +1099,3 @@
 </script>
 </body>
 </html>
-
-```
