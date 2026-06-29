@@ -1,389 +1,3 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Make It Meme - Cyber Black Edition</title>
-    
-    <style>
-        body { 
-            font-family: 'Segoe UI', -apple-system, sans-serif; 
-            background: #050507; 
-            color: #fff; 
-            text-align: center; 
-            padding: 15px; 
-            margin: 0; 
-            -webkit-user-select: none; 
-            user-select: none; 
-            min-height: 100vh;
-        }
-        
-        h1, h2, h3, #lobby-codigo, #temporizador, #timer-exposicao, .ranking-item span, .sabotagem-alerta h2, .titulo-tabela { 
-            font-family: 'Impact', 'Arial Black', sans-serif;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        h1 { 
-            font-size: 42px; 
-            margin-top: 10px;
-            margin-bottom: 25px; 
-            background: linear-gradient(to right, #ff0000, #00ff00, #0000ff, #ff00ff, #ff0000);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: rgbText 4s linear infinite;
-        }
-
-        @keyframes rgbText {
-            0% { background-position: 0% center; }
-            100% { background-position: 200% center; }
-        }
-
-        .btn-muto-fixo {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            background: #111;
-            color: #fff;
-            border: 2px solid #333;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            transition: 0.2s;
-        }
-        .btn-muto-fixo:active { transform: scale(0.9); }
-
-        /* Botão Secreto no Canto da Tela */
-        .btn-secreto-fixo {
-            position: fixed;
-            bottom: 15px;
-            left: 15px;
-            background: transparent;
-            color: #222;
-            border: none;
-            cursor: pointer;
-            font-size: 20px;
-            z-index: 9999;
-            transition: color 0.3s;
-        }
-        .btn-secreto-fixo:hover { color: #555; }
-
-        /* Modal do Painel de Administração */
-        .admin-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #14070a;
-            border: 3px solid #ef4444;
-            border-radius: 16px;
-            padding: 25px;
-            z-index: 10000;
-            box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
-            max-width: 90%;
-            width: 320px;
-            box-sizing: border-box;
-        }
-
-        .container { 
-            max-width: 520px; 
-            margin: 20px auto; 
-            background: #0d0d11; 
-            padding: 30px 25px; 
-            border-radius: 24px; 
-            box-sizing: border-box; 
-            border: 3px solid #ff0000;
-            position: relative;
-            animation: rgbBorda 6s linear infinite;
-        }
-
-        @keyframes rgbBorda {
-            0% { border-color: #ff0000; box-shadow: 0 0 25px rgba(255, 0, 0, 0.4); }
-            20% { border-color: #00ff00; box-shadow: 0 0 25px rgba(0, 255, 0, 0.4); }
-            40% { border-color: #0000ff; box-shadow: 0 0 25px rgba(0, 0, 255, 0.4); }
-            60% { border-color: #ffff00; box-shadow: 0 0 25px rgba(255, 255, 0, 0.4); }
-            80% { border-color: #ff00ff; box-shadow: 0 0 25px rgba(255, 0, 255, 0.4); }
-            100% { border-color: #ff0000; box-shadow: 0 0 25px rgba(255, 0, 0, 0.4); }
-        }
-        
-        .hidden { display: none !important; }
-        
-        .btn { 
-            font-family: 'Impact', 'Arial Black', sans-serif;
-            background: linear-gradient(135deg, #1f1f25 0%, #111114 100%); 
-            color: #fff; 
-            border: 2px solid #333; 
-            padding: 16px 24px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            font-size: 20px; 
-            margin: 14px 0; 
-            width: 100%; 
-            display: block; 
-            box-sizing: border-box; 
-            transition: all 0.2s ease; 
-            text-transform: uppercase;
-            box-shadow: 0 5px 0px #000, 0 8px 15px rgba(0,0,0,0.6);
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            border-color: #666;
-            box-shadow: 0 7px 0px #000, 0 10px 20px rgba(255, 255, 255, 0.05);
-        }
-        .btn:active { 
-            transform: translateY(5px); 
-            box-shadow: 0 0px 0px transparent, 0 2px 5px rgba(0,0,0,0.8);
-        }
-        .btn:disabled { 
-            background: #111 !important; 
-            color: #444 !important; 
-            border-color: #222 !important;
-            cursor: not-allowed; 
-            transform: none !important; 
-            box-shadow: none !important; 
-        }
-        
-        .btn-vote { 
-            background: linear-gradient(135deg, #ffffff 0%, #dddddd 100%); 
-            color: #000; 
-            border: 2px solid #000;
-            box-shadow: 0 5px 0px #888, 0 8px 15px rgba(0,0,0,0.4);
-        }
-        .btn-vote:hover { border-color: #000; box-shadow: 0 7px 0px #888, 0 10px 15px rgba(255,255,255,0.1); }
-        .btn-sub { 
-            background: #16161c; 
-            padding: 10px; 
-            font-size: 15px; 
-            margin: 6px 0; 
-            border: 2px solid #333; 
-            border-radius: 8px;
-            box-shadow: none;
-        }
-        .btn-sub:hover { background: #222; border-color: #fff; }
-        
-        .acoes-canvas { display: flex; gap: 10px; margin-top: 5px; }
-        .btn-half { flex: 1; margin: 0; font-size: 16px; padding: 12px; }
-
-        .painel-sabotagem {
-            background: #14070a;
-            border: 2px dashed #ef4444;
-            border-radius: 12px;
-            padding: 15px;
-            margin: 15px 0;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
-        }
-        .select-sabotagem {
-            width: 100%; padding: 12px; background: #000; color: #ef4444; border: 2px solid #ef4444; border-radius: 8px; font-family: 'Impact', sans-serif; font-size: 16px; margin-top: 10px; outline: none;
-        }
-        .sabotagem-alerta { background: #ef4444 !important; border: 3px solid #fff !important; animation: pulseAlerta 1s infinite alternate; }
-        .sabotagem-alerta h1 { -webkit-text-fill-color: #fff !important; }
-        @keyframes pulseAlerta { 0% { box-shadow: 0 0 10px #ef4444; } 100% { box-shadow: 0 0 30px #ef4444; } }
-
-        .input-wrapper { display: flex; align-items: center; background: #000; border: 2px solid #333; border-radius: 12px; margin: 12px 0; padding-left: 16px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.6); }
-        .input-prefix { color: #888; font-family: 'Impact', sans-serif; font-size: 16px; user-select: none; }
-        .input-wrapper input { background: transparent !important; border: none !important; margin: 0 !important; box-shadow: none !important; padding-left: 4px !important; }
-
-        input[type="text"], input[type="password"], select.config-input { 
-            padding: 16px; width: 100%; border-radius: 12px; border: 2px solid #333; margin: 12px 0; background: #000; color: #fff; font-size: 16px; box-sizing: border-box; -webkit-user-select: text; user-select: text; font-family: inherit; transition: all 0.2s ease; box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
-        }
-        input[type="text"]:focus, input[type="password"]:focus { border-color: #fff; outline: none; box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), inset 0 2px 8px rgba(0,0,0,0.6); }
-        
-        .bloco-legenda { display: flex; flex-direction: column; width: 100%; margin-bottom: 18px; background: #08080b; padding: 10px; border-radius: 12px; border: 1px solid #222; box-sizing: border-box; }
-        textarea { padding: 16px; width: 100%; border-radius: 10px; border: 2px solid #333; margin: 0 0 10px 0; background: #000; color: #fff; font-size: 19px; box-sizing: border-box; -webkit-user-select: text; user-select: text; font-family: inherit; transition: all 0.2s ease; box-shadow: inset 0 2px 8px rgba(0,0,0,0.6); resize: none; height: 105px; font-weight: bold; }
-
-        .controles-legenda { display: flex; align-items: center; justify-content: flex-start; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-        .btn-size { background: #222; color: #fff; border: 1px solid #444; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
-        .btn-size:hover { background: #333; }
-
-        .tabela-cores { display: table; width: 100%; border-collapse: collapse; background: #000; border-radius: 6px; overflow: hidden; border: 1px solid #222; }
-        .linha-cores { display: table-row; }
-        .celula-cor { display: table-cell; height: 28px; cursor: pointer; transition: transform 0.1s; position: relative; }
-        .celula-cor:hover { transform: scale(1.15); z-index: 10; }
-        .celula-cor.ativa::after { content: '✓'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #000; font-weight: bold; font-size: 14px; text-shadow: 0 0 3px #fff, 0 0 3px #fff; }
-
-        .tabela-config { width: 100%; border-collapse: collapse; margin: 15px 0; background: #000; border: 2px solid #222; border-radius: 12px; overflow: hidden; text-align: left; }
-        .tabela-config th, .tabela-config td { padding: 12px; border-bottom: 1px solid #111; font-size: 14px; }
-        .tabela-config th { background: #111; color: #aaa; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
-        select.config-input { margin: 0; padding: 8px; font-size: 14px; border-radius: 6px; }
-
-        #canvas-container { position: relative; display: inline-block; max-width: 100%; margin-top: 15px; }
-        canvas { max-width: 100%; border-radius: 14px; border: 4px solid #222; background: #000; touch-action: none; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
-        
-        .galeria { display: flex; flex-direction: column; gap: 22px; margin-top: 20px; }
-        .meme-card { background: #111; padding: 18px; border-radius: 16px; border: 2px solid #333; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.8); }
-        .meme-card img { width: 100%; border-radius: 10px; display: block; background: #000; min-height: 200px; object-fit: contain; }
-        
-        .ranking-item { background: #111; padding: 18px; margin: 12px 0; border-radius: 12px; display: flex; justify-content: space-between; font-size: 22px; border: 1px solid #222; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .ranking-item:first-child { background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%); border: 3px solid #000; box-shadow: 0 0 25px rgba(255, 255, 255, 0.2); }
-        .ranking-item:first-child span { color: #000; text-shadow: none; font-weight: bold; }
-        
-        .lista-textos { text-align: left; background: #000; padding: 14px; border-radius: 12px; margin: 12px 0; border: 1px solid #222; }
-        #temporizador, #timer-exposicao { font-size: 22px; background: #111; padding: 14px; border-radius: 12px; border: 2px solid #333; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        
-        .status-painel-envio { background: #111116; border: 1px dashed #444; border-radius: 10px; padding: 10px; margin-bottom: 15px; font-size: 13px; text-align: left; color: #aaa; }
-        .status-painel-envio span { color: #ffc107; font-weight: bold; }
-
-        .loader { border: 4px solid #222; border-top: 4px solid #fff; border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin: 25px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
-</head>
-<body>
-
-<button class="btn-muto-fixo" id="btnMudo" title="Mutar/Desmutar Música">🔊</button>
-<button class="btn-secreto-fixo" id="btnSecreto" title="Admin">...</button>
-
-<div id="modalAdmin" class="admin-modal hidden">
-    <h3 style="margin-top:0; color:#ef4444;">Painel de Controle</h3>
-    <div id="areaLoginAdmin">
-        <input type="password" id="senhaAdmin" placeholder="Digite a chave master">
-        <button class="btn btn-sub" id="btnAutenticarAdmin">Acessar</button>
-    </div>
-    <div id="areaAcoesAdmin" class="hidden">
-        <p style="font-size:13px; color:#aaa;">O sistema está ativo. Clique abaixo para desligar globalmente a rede e ejetar jogadores ativos.</p>
-        <button class="btn" id="btnDesligarSalas" style="background:#ef4444; color:#fff; border-color:#fff;">🚨 DESLIGAR TODAS AS SALAS</button>
-    </div>
-    <button class="btn btn-sub" id="btnFecharAdmin" style="margin-top:10px; background:#222; color:#fff;">Fechar</button>
-</div>
-
-<div class="container">
-    <h1>Make It Meme 🎭</h1>
-    
-    <div id="tela-inicial">
-        <input type="text" id="inputNome" placeholder="Seu Nome / Apelido"><br>
-        <button class="btn" id="btnCriar">Criar Nova Sala</button>
-        
-        <div class="input-wrapper">
-            <span class="input-prefix">MIM-</span>
-            <input type="text" id="inputCodigo" placeholder="CÓDIGO">
-        </div>
-        <button class="btn" id="btnEntrar" style="background: #111; color: #aaa; border: 2px solid #222;">Entrar na Sala</button>
-    </div>
-
-    <div id="tela-lobby" class="hidden">
-        <div style="background: #000; padding: 15px; border-radius: 12px; border: 2px dashed #444; margin-bottom: 20px;">
-            <h1 id="lobby-codigo" style="margin: 0; letter-spacing: 4px; background: none; -webkit-text-fill-color: initial; color: #fff;">MIM-LOGGING</h1>
-        </div>
-        
-        <div id="painel-config-host" class="hidden" style="margin-bottom: 20px;">
-            <div class="titulo-tabela" style="font-size: 14px; text-align: left; margin-bottom: 4px; color: #666;">⚙️ Ajustes da Partida</div>
-            <table class="tabela-config">
-                <thead>
-                    <tr>
-                        <th>Parâmetro</th>
-                        <th>Configuração</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Tempo de Criação</td>
-                        <td>
-                            <select id="configTempo" class="config-input">
-                                <option value="60">1 Minuto</option>
-                                <option value="120">2 Minutos</option>
-                                <option value="180">3 Minutos</option>
-                                <option value="240" selected>4 Minutos</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Máximo de Rodadas</td>
-                        <td>
-                            <select id="configRodadas" class="config-input">
-                                <option value="3" selected>3 Rodadas</option>
-                                <option value="5">5 Rodadas</option>
-                                <option value="10">10 Rodadas</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Trocas de Meme Permitidas</td>
-                        <td>
-                            <select id="configTrocas" class="config-input">
-                                <option value="1">Apenas 1</option>
-                                <option value="3" selected>Até 3 Trocas</option>
-                                <option value="999">Ilimitadas</option>
-                            </select>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="painel-campeao-sabotagem" class="painel-sabotagem hidden">
-            <label style="color: #ef4444; font-weight: bold; font-size: 14px;">👑 VOCÊ GANHOU A ÚLTIMA! ESCOLHA ALGUÉM PARA SABOTAR (METADE DO TEMPO):</label>
-            <select id="selectVitima" class="select-sabotagem"><option value="">-- Não sabotar ninguém --</option></select>
-        </div>
-
-        <div id="lobby-lista-jogadores" style="text-align: left; margin-bottom: 20px; font-size: 17px; color: #fff;"></div>
-        <button class="btn" id="btnIniciarJogo" style="background: #fff; color: #000; border-color: #000; display:none;">🚀 Iniciar Jogo</button>
-        <button class="btn" id="btnSairLobby" style="background: #14070a; color: #ef4444; border-color: #3a1217; font-size: 15px; padding: 10px;">🚪 Sair da Sala</button>
-    </div>
-
-    <div id="tela-jogo" class="hidden">
-        <div id="temporizador">⏱️ Tempo: 04:00</div>
-        <div id="alerta-sabotado" style="color: #ef4444; font-weight: bold; margin-bottom: 10px;" class="hidden">⚠️ VOCÊ FOI SABOTADO! SEU TEMPO FOI CORTADO PELA METADE! ⚠️</div>
-        
-        <div class="status-painel-envio" id="painel-falta-enviar-jogo">Falta enviar: <span id="lista-falta-jogo">-</span></div>
-
-        <div id="contador-trocas-ui" style="color: #f59e0b; font-size: 13px; font-weight: bold; margin-bottom: 5px; text-align: left;">🎲 Trocas restantes: 3</div>
-        
-        <div class="lista-textos">
-            <div id="container-inputs"></div>
-            <button class="btn btn-sub" id="btnAdicionarTexto">+ Adicionar Linha de Legenda</button>
-        </div>
-        <div id="canvas-container">
-            <canvas id="memeCanvas"></canvas>
-        </div>
-        
-        <div class="acoes-canvas">
-            <button class="btn btn-download btn-half" id="btnDownload">📥 Salvar</button>
-            <button class="btn btn-half" id="btnTrocarMeme" style="background: linear-gradient(135deg, #3a2a0d 0%, #1a1205 100%); border-color: #f59e0b;">🎲 Trocar Meme</button>
-        </div>
-        
-        <button class="btn" id="btnEnviar" style="margin-top: 15px;">🚀 Enviar Meu Meme</button>
-    </div>
-
-    <div id="tela-espera" class="hidden">
-        <div style="padding: 30px 20px;">
-            <h2>Meme Enviado Com Sucesso!</h2>
-            <div class="status-painel-envio" id="painel-falta-enviar-espera" style="text-align: center; margin-top: 10px;">Aguardando envios de: <span id="lista-falta-espera">-</span></div>
-            <div class="loader"></div>
-            <button class="btn" id="btnCancelarEnvio" style="background: #1f1f25; border-color: #444; font-size: 16px; padding: 12px; margin-top: 20px;">✏️ Editar Novamente</button>
-        </div>
-    </div>
-
-    <div id="tela-exposicao" class="hidden">
-        <div id="timer-exposicao">👀 Olhem para a tela: 10s</div>
-        <h3 id="autor-meme-exposto" style="margin-bottom: 10px;">Meme de: -</h3>
-        <div class="meme-card">
-            <img id="img-meme-exposto" src="" alt="Meme em exibição">
-        </div>
-    </div>
-
-    <div id="tela-votacao" class="hidden">
-        <h2>🔥 Vote no Melhor Meme! 🔥</h2>
-        <div class="galeria" id="galeria-memes"></div>
-    </div>
-
-    <div id="tela-ranking" class="hidden">
-        <h2 id="titulo-rodada-ranking">🏆 Classificação Geral 🏆</h2>
-        <div id="podio-scores"></div>
-        <button class="btn hidden" id="btnVoltarJogo" style="margin-top:20px;">Avançar Próxima Rodada</button>
-        <button class="btn" id="btnSairGame" style="background: #14070a; color: #ef4444; border-color: #3a1217; font-size: 16px; margin-top: 10px;">🚪 Abandonar Partida</button>
-    </div>
-</div>
-
-<script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
-
 <script>
     let audioCtx = null, musicLoopStarted = false, estaMutado = false; 
     let textosMeme = []; 
@@ -400,10 +14,19 @@
     const hashChaveMestra = "3c1bb0df627df2fbf2ebf8db71f1bf434914107e034947d19dfbdfecfc40e830";
     const listaCoresPaleta = ['#000000', '#0000FF', '#FF0000', '#FFFF00', '#00FF00', '#FFFFFF'];
 
+    // CORREÇÃO: Lógica do botão mutar/desmutar som e imagens corrigida
     document.getElementById('btnMudo').onclick = (e) => {
-        e.stopPropagation(); estaMutado = !estaMutado;
+        e.stopPropagation(); 
+        estaMutado = !estaMutado;
         document.getElementById('btnMudo').innerText = estaMutado ? "❌" : "🔊";
-        iniciarContextoAudio();
+        
+        if (!estaMutado) {
+            iniciarContextoAudio();
+            if (!musicLoopStarted) {
+                musicLoopStarted = true;
+                ligarMusicaAmbienteVirtual();
+            }
+        }
     };
 
     document.getElementById('btnSecreto').onclick = () => {
@@ -427,29 +50,50 @@
         if (hashHex === hashChaveMestra) {
             document.getElementById('areaLoginAdmin').classList.add('hidden');
             document.getElementById('areaAcoesAdmin').classList.remove('hidden');
+            
+            // Atualiza o texto do botão com base no estado atual da rede
+            const btnDesligar = document.getElementById('btnDesligarSalas');
+            if (redeDesligadaBloqueio) {
+                btnDesligar.innerText = "🟩 LIGAR REDE DE SALAS";
+                btnDesligar.style.background = "#00ff00";
+                btnDesligar.style.color = "#000";
+            } else {
+                btnDesligar.innerText = "🚨 DESLIGAR TODAS AS SALAS";
+                btnDesligar.style.background = "#ef4444";
+                btnDesligar.style.color = "#fff";
+            }
         } else {
             document.getElementById('modalAdmin').classList.add('hidden');
         }
     };
 
+    // CORREÇÃO: Botão de Ligar e Desligar Salas de forma Global/Local
     document.getElementById('btnDesligarSalas').onclick = () => {
-        redeDesligadaBloqueio = true;
-        document.getElementById('modalAdmin').classList.add('hidden');
-        
-        // CORREÇÃO: Dispara a ejeção forçada para todos os clientes ativos antes de derrubar a sala local
-        if (modoJogo === "host" && conexoes.length > 0) {
+        if (!redeDesligadaBloqueio) {
+            // Ação de DESLIGAR
+            redeDesligadaBloqueio = true;
+            document.getElementById('modalAdmin').classList.add('hidden');
+            
+            // Ejeta todos os jogadores se você for o Host antes de fechar tudo
             sincronizarTodosOsClientes({ tipo: "ejecao_admin" });
+            
+            setTimeout(() => {
+                voltarParaTelaInicial();
+                alert("Comando executado: Sistema de salas desativado globalmente.");
+            }, 500);
+        } else {
+            // Ação de LIGAR
+            redeDesligadaBloqueio = false;
+            document.getElementById('modalAdmin').classList.add('hidden');
+            alert("Sistema de salas reativado com sucesso!");
         }
-        
-        alert("Comando executado: Sistema de salas desativado globalmente.");
-        voltarParaTelaInicial();
     };
 
     function iniciarContextoAudio() {
         try {
             if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
             if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-            if (!musicLoopStarted) { musicLoopStarted = true; ligarMusicaAmbienteVirtual(); }
+            if (!musicLoopStarted && !estaMutado) { musicLoopStarted = true; ligarMusicaAmbienteVirtual(); }
         } catch(e) {}
     }
 
@@ -630,7 +274,7 @@
             if(textosMeme.length > 1) controles.appendChild(btnApagar);
             
             const tabelaCores = document.createElement('div'); tabelaCores.className = "tabela-cores";
-            const linhaCores = document.createElement('div'); linhaCores.className = "linha-cores";
+            const tabularCores = document.createElement('div'); tabularCores.className = "linha-cores";
             
             listaCoresPaleta.forEach(cor => {
                 const celula = document.createElement('div');
@@ -644,9 +288,9 @@
                     bloco.querySelectorAll('.celula-cor').forEach(c => c.classList.remove('ativa'));
                     celula.classList.add('ativa');
                 };
-                linhaCores.appendChild(celula);
+                tabularCores.appendChild(celula);
             });
-            tabelaCores.appendChild(linhaCores);
+            tabelaCores.appendChild(tabularCores);
 
             bloco.appendChild(txt);
             bloco.appendChild(controles);
@@ -898,7 +542,12 @@
         if (data.tipo === "mostrar_meme_individual") abrirTelaExposicaoDinamica(data.nomeAutor, data.imagemMeme, data.segundosRestantes);
         if (data.tipo === "ir_votacao") montarTelaVotacao(data.listaMemes);
         if (data.tipo === "ir_ranking") { idCampeaoAnterior = data.campeao || ""; configPartida = data.config; montarTelaRanking(data.listaRanking); }
-        if (data.tipo === "ejecao_admin") { voltarParaTelaInicial(); alert("Você foi ejetado da partida: O administrador finalizou as salas da rede."); }
+        
+        // Trata a ejeção global disparada pelo admin
+        if (data.tipo === "ejecao_admin") { 
+            voltarParaTelaInicial(); 
+            alert("Você foi ejetado da partida: O administrador finalizou as salas da rede."); 
+        }
     }
 
     function sincronizarTodosOsClientes(objeto) {
@@ -927,7 +576,6 @@
         const imgFinal = canvas.toDataURL('image/jpeg', 0.5);
         
         telaJogo.classList.add('hidden'); 
-        // CORREÇÃO: Alterado .remove() para .classList.remove() consertando a quebra de tela ao submeter
         telaEspera.classList.remove('hidden');
         document.querySelector('.container').classList.remove('sabotagem-alerta');
         
@@ -1085,5 +733,3 @@
         }
     }
 </script>
-</body>
-</html>
