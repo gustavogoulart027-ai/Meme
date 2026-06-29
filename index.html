@@ -395,7 +395,6 @@
     let configPartida = { tempo: 240, rodadasMax: 3, rodadaAtual: 1, trocasMax: 3 };
     let trocasRealizadasPeloUsuario = 0;
 
-    // SENHA ATUALIZADA COM SUCESSO PARA: Geradortop12345
     const hashChaveMestra = "945bdf9ba03e06ef18797f1cc63e528a473da872fc100a9446d1bf275df9c72e";
     const listaCoresPaleta = ['#000000', '#0000FF', '#FF0000', '#FFFF00', '#00FF00', '#FFFFFF'];
 
@@ -432,7 +431,6 @@
                 document.getElementById('modalAdmin').classList.add('hidden');
             }
         } catch (err) {
-            // Fallback
             if (textoDigitado === "Geradortop12345") { 
                 document.getElementById('areaLoginAdmin').classList.add('hidden');
                 document.getElementById('areaAcoesAdmin').classList.remove('hidden');
@@ -443,9 +441,7 @@
     document.getElementById('btnDesligarSalas').onclick = () => {
         redeDesligadaBloqueio = true;
         document.getElementById('modalAdmin').classList.add('hidden');
-        
         sincronizarTodosOsClientes({ tipo: "derrubada_geral" });
-        
         setTimeout(() => {
             desconectarComSeguranca();
             alert("Rede de salas desconectada e limpa com sucesso de forma global.");
@@ -485,7 +481,6 @@
     function tocarSomNativo(tipo) {
         try {
             if (estaMutado) return;
-            iniciarContextoAudio();
             if (!audioCtx || audioCtx.state === 'suspended') return;
             let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
             osc.connect(gain); gain.connect(audioCtx.destination);
@@ -521,9 +516,6 @@
 
     canvas.width = 400; canvas.height = 360;
 
-    document.addEventListener('click', iniciarContextoAudio);
-    document.addEventListener('touchstart', iniciarContextoAudio);
-
     const memeImages = [
         "meme33.jpg", "meme.jpg", "meme17.jpg", "meme2.jpg", "meme8.jpg", 
         "meme3.jpg", "meme9.jpg", "meme4.jpg", "meme5.jpg", "meme18.jpg", 
@@ -552,12 +544,10 @@
         };
         imagemMemeAtual.src = urlSelecionada;
 
-        if (textosMeme.length === 0) {
-            textosMeme = [
-                { conteudo: "TEXTO SUPERIOR", x: canvas.width / 2, y: 50, tamanho: 30, rotacao: 0, cor: '#FFFFFF' },
-                { conteudo: "TEXTO INFERIOR", x: canvas.width / 2, y: canvas.height - 60, tamanho: 30, rotacao: 0, cor: '#FFFFFF' }
-            ];
-        }
+        textosMeme = [
+            { conteudo: "TEXTO SUPERIOR", x: canvas.width / 2, y: 50, tamanho: 30, rotacao: 0, cor: '#FFFFFF' },
+            { conteudo: "TEXTO INFERIOR", x: canvas.width / 2, y: canvas.height - 60, tamanho: 30, rotacao: 0, cor: '#FFFFFF' }
+        ];
         inicializarInputs();
     }
 
@@ -588,7 +578,6 @@
 
     function iniciarTemporizador() {
         clearInterval(intervaloTimer);
-        
         if(idSabotadoAtual === peer.id) {
             tempoRestante = Math.floor(configPartida.tempo / 2); 
             document.getElementById('alerta-sabotado').classList.remove('hidden');
@@ -598,7 +587,6 @@
             document.getElementById('alerta-sabotado').classList.add('hidden');
             document.querySelector('.container').classList.remove('sabotagem-alerta');
         }
-
         document.getElementById('btnEnviar').disabled = false;
         document.getElementById('temporizador').style.color = "#fff";
         
@@ -649,7 +637,7 @@
                 const celula = document.createElement('div');
                 celula.className = "celula-cor";
                 celula.style.backgroundColor = cor;
-                if(t.cor === cor) celula.classList.add('ativa');
+                if(t.cor === cor) celula.classList.add('active');
                 
                 celula.onclick = () => {
                     tocarSomNativo('clique');
@@ -669,7 +657,7 @@
     }
 
     document.getElementById('btnAdicionarTexto').onclick = () => {
-        textosMeme.push({ conteudo: "NOVO TEXTO", x: canvas.width / 2, y: canvas.height / 2, tamanho: 28, rotacao: 0, cor: '#FFFFFF' });
+        textosMeme.push({ conteudo: "NOVO TEXTO", x: canvas.width / 2, y: canvas.height / 2, tamanho: 28, Math: 0, cor: '#FFFFFF' });
         inicializarInputs();
     };
 
@@ -808,7 +796,7 @@
             let sufixo = j.id.includes("MIM-") && i === 0 ? " <span>(LÍDER)</span>" : "";
             if(j.id === idCampeaoAnterior) sufixo += " 👑 [Carrasco]";
             listaDiv.innerHTML += `<div style='padding: 6px 0; border-bottom: 1px solid #222;'>👤 ${j.nome}${sufixo}</div>`; 
-            if (j.id !== idCampeaoAnterior) selectV.innerHTML += `<option value="${j.id}">${j.nome}</option>';`;
+            if (j.id !== idCampeaoAnterior) selectV.innerHTML += `<option value="${j.id}">${j.nome}</option>`;
         });
 
         if(peer && peer.id === idCampeaoAnterior && jogadores.length > 1) {
@@ -831,7 +819,6 @@
         if(timerExposicaoLoop) clearInterval(timerExposicaoLoop);
         let indicesEscolhidosNestaRodada = [];
         trocasRealizadasPeloUsuario = 0;
-        textosMeme = [];
         
         jogadores.forEach(j => {
             j.enviou = false; j.votou = false; j.meme = "";
@@ -1080,10 +1067,12 @@
 
     function drawMeme() {
         ctx.fillStyle = "#000"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-        if (imagemCarregada && imagemMemeAtual.complete && imagemMemeAtual.naturalWidth > 0) { ctx.drawImage(imagemMemeAtual, 0, 0, canvas.width, canvas.height); } 
-        else {
+        if (imagemCarregada && imagemMemeAtual.complete && imagemMemeAtual.naturalWidth > 0) { 
+            ctx.drawImage(imagemMemeAtual, 0, 0, canvas.width, canvas.height); 
+        } else {
             ctx.fillStyle = "#111"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#fff"; ctx.font = "14px sans-serif"; ctx.textAlign = "center"; ctx.fillText("[Carregando Imagem...]", canvas.width / 2, canvas.height / 2);
+            ctx.fillStyle = "#fff"; ctx.font = "14px sans-serif"; ctx.textAlign = "center"; 
+            ctx.fillText("[Carregando Imagem...]", canvas.width / 2, canvas.height / 2);
         }
         if(textosMeme && textosMeme.length > 0) {
             textosMeme.forEach(t => { 
@@ -1092,12 +1081,4 @@
                 ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                 
                 let tamFonte = t.tamanho || 30;
-                ctx.font = `bold ${tamFonte}px Impact, Arial Black, sans-serif`;
-                ctx.lineWidth = tamFonte / 4; 
-
-                let linhas = (t.conteudo || "").toUpperCase().split('\n');
-                let alturaLinha = tamFonte * 1.2;
-                let offsetTotal = ((linhas.length - 1) * alturaLinha) / 2;
-
-                linhas.forEach((linha, i) => {
-                    let posY = (i *
+                ctx.font = `bold ${tamFonte}px
