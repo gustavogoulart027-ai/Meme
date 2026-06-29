@@ -1081,4 +1081,22 @@
                 ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                 
                 let tamFonte = t.tamanho || 30;
-                ctx.font = `bold ${tamFonte}px
+                ctx.font = `bold ${tamFonte}px Impact, Arial Black, sans-serif`;
+                ctx.lineWidth = tamFonte / 4; 
+
+                let linhas = (t.conteudo || "").toUpperCase().split('\n');
+                let alturaLinha = tamFonte * 1.2;
+                let offsetTotal = ((linhas.length - 1) * alturaLinha) / 2;
+
+                linhas.forEach((linha, i) => {
+                    let posY = (i * alturaLinha) - offsetTotal;
+                    ctx.strokeText(linha, 0, posY);
+                    ctx.fillText(linha, 0, posY);
+                });
+                ctx.restore();
+            });
+        }
+    }
+</script>
+</body>
+</html>
