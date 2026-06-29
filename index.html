@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -110,7 +109,7 @@
         @keyframes rgbBorda {
             0% { border-color: #ff0000; box-shadow: 0 0 25px rgba(255, 0, 0, 0.4); }
             20% { border-color: #00ff00; box-shadow: 0 0 25px rgba(0, 255, 0, 0.4); }
-            40% { border-color: #0000ff; box-shadow: 0 0 25px rgba(0, 255, 0, 0.4); }
+            40% { border-color: #0000ff; box-shadow: 0 0 25px rgba(0, 0, 255, 0.4); }
             60% { border-color: #ffff00; box-shadow: 0 0 25px rgba(255, 255, 0, 0.4); }
             80% { border-color: #ff00ff; box-shadow: 0 0 25px rgba(255, 0, 255, 0.4); }
             100% { border-color: #ff0000; box-shadow: 0 0 25px rgba(255, 0, 0, 0.4); }
@@ -398,9 +397,7 @@
     let configPartida = { tempo: 240, rodadasMax: 3, rodadaAtual: 1, trocasMax: 3 };
     let trocasRealizadasPeloUsuario = 0;
 
-    // Hash SHA-256 correspondente à chave solicitada ("Geradortop12345")
     const hashChaveMestra = "3c1bb0df627df2fbf2ebf8db71f1bf434914107e034947d19dfbdfecfc40e830";
-
     const listaCoresPaleta = ['#000000', '#0000FF', '#FF0000', '#FFFF00', '#00FF00', '#FFFFFF'];
 
     document.getElementById('btnMudo').onclick = (e) => {
@@ -409,7 +406,6 @@
         iniciarContextoAudio();
     };
 
-    // Lógica Segreta do Painel Admin
     document.getElementById('btnSecreto').onclick = () => {
         document.getElementById('senhaAdmin').value = "";
         document.getElementById('areaLoginAdmin').classList.remove('hidden');
@@ -423,7 +419,6 @@
 
     document.getElementById('btnAutenticarAdmin').onclick = async () => {
         const textoDigitado = document.getElementById('senhaAdmin').value;
-        // Função interna para computar SHA-256 nativo no navegador
         const msgBuffer = new TextEncoder().encode(textoDigitado);
         const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
         const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -433,7 +428,6 @@
             document.getElementById('areaLoginAdmin').classList.add('hidden');
             document.getElementById('areaAcoesAdmin').classList.remove('hidden');
         } else {
-            // Se errar, nada acontece visualmente (conforme solicitado)
             document.getElementById('modalAdmin').classList.add('hidden');
         }
     };
@@ -441,6 +435,12 @@
     document.getElementById('btnDesligarSalas').onclick = () => {
         redeDesligadaBloqueio = true;
         document.getElementById('modalAdmin').classList.add('hidden');
+        
+        // CORREÇÃO: Dispara a ejeção forçada para todos os clientes ativos antes de derrubar a sala local
+        if (modoJogo === "host" && conexoes.length > 0) {
+            sincronizarTodosOsClientes({ tipo: "ejecao_admin" });
+        }
+        
         alert("Comando executado: Sistema de salas desativado globalmente.");
         voltarParaTelaInicial();
     };
@@ -656,7 +656,7 @@
     }
 
     document.getElementById('btnAdicionarTexto').onclick = () => {
-        textosMeme.push({ conteudo: "NOVO TEXTO", x: canvas.width / 2, y: canvas.height / 2, tamanho: 28, rotacao: 0, cor: '#FFFFFF' });
+        textosMeme.push({ conteudo: "NOVO TEXTO", x: canvas.width / 2, y: canvas.height / 2, tamanho: 28, rotations: 0, cor: '#FFFFFF' });
         inicializarInputs();
     };
 
@@ -771,13 +771,6 @@
         });
     };
 
-    function lerConfiguracoesDoPainel() {
-        if(modoJogo !== "host") return;
-        configPartida.tempo = parseInt(document.getElementById('configTempo').value);
-        configPartida.rodadasMax = parseInt(document.getElementById('configRodadas').value);
-        configPartida.trocasMax = parseInt(document.getElementById('configTrocas').value);
-    }
-
     function abrirTelaLobby() {
         telaInicial.classList.add('hidden'); telaJogo.classList.add('hidden'); telaVotacao.classList.add('hidden'); telaRanking.classList.add('hidden'); telaEspera.classList.add('hidden'); telaExposicao.classList.add('hidden');
         telaLobby.classList.remove('hidden');
@@ -807,7 +800,10 @@
 
     document.getElementById('btnIniciarJogo').onclick = () => { 
         tocarSomNativo('clique'); 
-        lerConfiguracoesDoPainel();
+        configPartida.tempo = parseInt(document.getElementById('configTempo').value);
+        configPartida.rodadasMax = parseInt(document.getElementById('configRodadas').value);
+        configPartida.trocasMax = parseInt(document.getElementById('configTrocas').value);
+        
         if(peer.id === idCampeaoAnterior) { idSabotadoAtual = document.getElementById('selectVitima').value; }
         configPartida.rodadaAtual = 1;
         jogadores.forEach(j => j.pontos = 0);
@@ -930,7 +926,9 @@
         document.getElementById('btnEnviar').disabled = true;
         const imgFinal = canvas.toDataURL('image/jpeg', 0.5);
         
-        telaJogo.classList.add('hidden'); telaEspera.remove('hidden');
+        telaJogo.classList.add('hidden'); 
+        // CORREÇÃO: Alterado .remove() para .classList.remove() consertando a quebra de tela ao submeter
+        telaEspera.classList.remove('hidden');
         document.querySelector('.container').classList.remove('sabotagem-alerta');
         
         if (modoJogo === "host") {
@@ -1044,9 +1042,6 @@
     function desconectarComSeguranca() {
         if(intervaloTimer) clearInterval(intervaloTimer);
         if(timerExposicaoLoop) clearInterval(timerExposicaoLoop);
-        if (modoJogo === "host" && conexoes.length > 0) {
-            sincronizarTodosOsClientes({ tipo: "ejecao_admin" });
-        }
         conexoes.forEach(c => { try{c.close();}catch(e){} }); conexoes = [];
         if(peer) { try{peer.destroy();}catch(e){} peer = null; }
     }
@@ -1092,5 +1087,3 @@
 </script>
 </body>
 </html>
-
-```
