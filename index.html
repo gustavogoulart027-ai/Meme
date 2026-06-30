@@ -222,7 +222,6 @@
         .loader { border: 4px solid #222; border-top: 4px solid #fff; border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin: 25px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* FIX: Correção definitiva das proporções esticadas das imagens de perfil utilizando object-fit */
         .container-avatar { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; }
         .avatar-preview { width: 80px; height: 80px; border-radius: 50%; background: #222; border: 2px solid #444; object-fit: cover; display: block; margin-bottom: 8px; }
         .player-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #111; }
@@ -489,7 +488,7 @@
         "meme33.jpg", "meme.jpg", "meme17.jpg", "meme2.jpg", "meme8.jpg", 
         "meme3.jpg", "meme9.jpg", "meme4.jpg", "meme5.jpg", "meme18.jpg", 
         "meme6.jpg", "meme12.jpg", "meme10.jpg", "meme34.jpg", "meme13.jpg", 
-        "meme15.jpg", "meme14.jpg", "meme11.jpg", "meme16.jpg", "meme7.jpg", 
+        "meme15.jpg", "meme14.jpg", "meme11.jpg", "MIM-16.jpg", "meme7.jpg", 
         "meme32.jpg", "meme30.jpg", "meme31.jpg", "meme19.jpg", "meme20.jpg", 
         "meme21.jpg", "meme22.jpg", "meme27.jpg", "meme23.jpg", "meme29.jpg", 
         "meme28.jpg", "meme26.jpg", "meme24.jpg", "meme25.jpg", "meme35.jpg", "meme36.jpg", "meme37.jpg", "meme38.jpg", "meme39.jpg", "meme40.jpg",
@@ -503,14 +502,24 @@
         imagemMemeAtual = new Image();
         imagemMemeAtual.crossOrigin = "anonymous";
         
-        let imgTimeout = setTimeout(() => { imagemCarregada = true; }, 3500);
-        imagemMemeAtual.onload = () => { clearTimeout(imgTimeout); imagemCarregada = true; };
+        // Anti-travamento: se demorar mais de 3 segundos, assume que quebrou e pula para outra imagem aleatória
+        let imgTimeout = setTimeout(() => { 
+            console.warn("Timeout ao carregar meme, trocando...");
+            forçarTrocaDeMemeQuebrado();
+        }, 3000);
         
-        imagemMemeAtual.onerror = () => { 
+        imagemMemeAtual.onload = () => { 
             clearTimeout(imgTimeout); 
-            imagemMemeAtual.src = "https://picsum.photos/400/360?random=" + indice;
             imagemCarregada = true; 
         };
+        
+        // Executado instantaneamente caso a imagem não exista ou falhe na requisição
+        imagemMemeAtual.onerror = () => { 
+            clearTimeout(imgTimeout); 
+            console.warn("Erro crítico na imagem atual, selecionando outro meme aleatório da lista...");
+            forçarTrocaDeMemeQuebrado();
+        };
+        
         imagemMemeAtual.src = urlSelecionada;
 
         textosMeme = [
@@ -518,6 +527,12 @@
             { conteudo: "TEXTO INFERIOR", x: canvas.width / 2, y: canvas.height - 60, tamanho: 30, rotacao: 0, cor: '#FFFFFF' }
         ];
         inicializarInputs();
+    }
+
+    function forçarTrocaDeMemeQuebrado() {
+        let novoIndice = Math.floor(Math.random() * memeImages.length);
+        if(novoIndice === indiceImagemAtualGlobal) novoIndice = (novoIndice + 1) % memeImages.length;
+        gerarFundoMemeVirtual(novoIndice);
     }
 
     document.getElementById('btnTrocarMeme').onclick = () => {
@@ -873,7 +888,6 @@
         if (data.tipo === "atualizar_envios_status") {
             jogadores = data.lista;
             atualizarListaInterface();
-            // FIX: Se o host disparar a renderização por conclusão, a tela de espera avalia de forma nativa
             verificarTerminoDeEnvios();
         }
         if (data.tipo === "mostrar_meme_individual") abrirTelaExposicaoDinamica(data.nomeAutor, data.avatarAutor, data.imagemMeme, data.segundosRestantes);
@@ -927,7 +941,6 @@
 
     function enviarMemeForçado() { enviarMemeManual(); }
 
-    /* FIX: Correção do Bug de edição. Agora desativa a flag local de envio, reativa os botões visuais e sincroniza com o Host/Clientes */
     document.getElementById('btnCancelarEnvio').onclick = () => {
         tocarSomNativo('clique');
         jaEnviouMeme = false;
@@ -1000,7 +1013,7 @@
             btnVoto.onclick = () => {
                 tocarSomNativo('voto'); btnVoto.disabled = true; 
                 if(modoJogo === "host") {
-                    let ele = jogadores.find(p => p.id === peer.id);
+                    let ele = gamblers = jogadores.find(p => p.id === peer.id);
                     if(ele && !ele.votou) { ele.votou = true; let j = jogadores.find(p => p.id === m.id); if(j) j.pontos += 10; }
                     if (jogadores.every(p => p.votou)) { finalizarFaseDeVotacaoLógica(); }
                 } else { if (conexoes[0] && conexoes[0].open) { conexoes[0].send({ tipo: "voto", idVotado: m.id }); } }
